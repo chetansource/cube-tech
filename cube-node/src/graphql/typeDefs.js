@@ -357,6 +357,30 @@ const typeDefs = gql`
     facebookPixelId: String
   }
 
+  type FooterLink {
+    label: String!
+    url: String!
+  }
+
+  type FooterContact {
+    address: String
+    email: String
+  }
+
+  type FooterSocial {
+    platform: String!
+    url: String!
+  }
+
+  type Footer {
+    companyLinks: [FooterLink!]
+    quickLinks: [FooterLink!]
+    contact: FooterContact
+    socials: [FooterSocial!]
+    newsletterEnabled: Boolean
+    copyrightText: String
+  }
+
   type SiteSettings {
     id: ID!
     siteName: String
@@ -367,6 +391,7 @@ const typeDefs = gql`
     socialMedia: [SocialMedia!]
     seo: GlobalSEO
     analytics: Analytics
+    footer: Footer
     maintenanceMode: Boolean
     updatedAt: DateTime!
   }

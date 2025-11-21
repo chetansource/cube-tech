@@ -206,6 +206,7 @@ const createAdminJS = () => {
             socialMedia: { type: 'mixed' },
             seo: { type: 'mixed' },
             analytics: { type: 'mixed' },
+            footer: { type: 'mixed' },
           },
           actions: {
             new: { isVisible: false }, // Only allow editing existing settings

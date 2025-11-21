@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import LocationIcon from "./icons/location";
 import MailIcon from "./icons/mail";
@@ -8,12 +8,30 @@ import RightArrowIcon from "./icons/right-arrow";
 import UpArrowIcon from "./icons/up-arrow";
 import DownArrow from "./icons/mobile-icons/DownArrow";
 import Image from "next/image";
+import { getSiteSettings, type SiteSettings } from "@/utils/routes/SiteSettings";
 
 export default function Footer() {
   const [isCompanyOpen, setCompanyOpen] = useState(false);
   const [isQuickLinksOpen, setQuickLinksOpen] = useState(false);
   const [isContactOpen, setContactOpen] = useState(false);
-  const [isNewsLetterOpen,setNewsLetterOpen] = useState(false);
+  const [isNewsLetterOpen, setNewsLetterOpen] = useState(false);
+  const [footerData, setFooterData] = useState<SiteSettings | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFooterData = async () => {
+      try {
+        const data = await getSiteSettings();
+        setFooterData(data);
+      } catch (error) {
+        console.error("Error loading footer data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFooterData();
+  }, []);
   return (
     <footer className="w-full bg-footer text-white">
       <div className=" flex flex-col md:flex-row  justify-between pt-12 pr-8 pl-2 md:p-12 md:gap-y-12">
@@ -43,46 +61,55 @@ export default function Footer() {
                   : "opacity-0 -translate-y-2 max-h-0 overflow-hidden"
               } md:opacity-100 md:translate-y-0 md:max-h-full md:overflow-visible md:block`}
             >
-              <li>
-                <Link
-                  href="/"
-                  className="text-gray-400 hover:text-white transition-colors duration-300"
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/about-us"
-                  className="text-gray-400 hover:text-white transition-colors duration-300"
-                >
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/team"
-                  className="text-gray-400 hover:text-white transition-colors duration-300"
-                >
-                  Our Team
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/careers"
-                  className="text-gray-400 hover:text-white transition-colors duration-300"
-                >
-                  Careers
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contact-us"
-                  className="text-gray-400 hover:text-white transition-colors duration-300"
-                >
-                  Contact
-                </Link>
-              </li>
+              {loading ? (
+                <li className="text-gray-400">Loading...</li>
+              ) : footerData?.footer?.companyLinks && footerData.footer.companyLinks.length > 0 ? (
+                footerData.footer.companyLinks.map((link, index) => (
+                  <li key={index}>
+                    <Link
+                      href={link.url}
+                      className="text-gray-400 hover:text-white transition-colors duration-300"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <>
+                  <li>
+                    <Link
+                      href="/"
+                      className="text-gray-400 hover:text-white transition-colors duration-300"
+                    >
+                      Home
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/about-us"
+                      className="text-gray-400 hover:text-white transition-colors duration-300"
+                    >
+                      About Us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/careers"
+                      className="text-gray-400 hover:text-white transition-colors duration-300"
+                    >
+                      Careers
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/contact-us"
+                      className="text-gray-400 hover:text-white transition-colors duration-300"
+                    >
+                      Contact
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
 
@@ -110,38 +137,55 @@ export default function Footer() {
                   : "opacity-0 -translate-y-2 max-h-0 overflow-hidden"
               } md:opacity-100 md:translate-y-0 md:max-h-full md:overflow-visible md:block`}
             >
-              <li>
-                <Link
-                  href="/services"
-                  className="text-gray-400 hover:text-white transition-colors duration-300"
-                >
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/projects"
-                  className="text-gray-400 hover:text-white transition-colors duration-300"
-                >
-                  Projects
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/resources"
-                  className="text-gray-400 hover:text-white transition-colors duration-300"
-                >
-                  Resources
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/#faq"
-                  className="text-gray-400 hover:text-white transition-colors duration-300"
-                >
-                  FAQ
-                </Link>
-              </li>
+              {loading ? (
+                <li className="text-gray-400">Loading...</li>
+              ) : footerData?.footer?.quickLinks && footerData.footer.quickLinks.length > 0 ? (
+                footerData.footer.quickLinks.map((link, index) => (
+                  <li key={index}>
+                    <Link
+                      href={link.url}
+                      className="text-gray-400 hover:text-white transition-colors duration-300"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <>
+                  <li>
+                    <Link
+                      href="/services"
+                      className="text-gray-400 hover:text-white transition-colors duration-300"
+                    >
+                      Services
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/projects"
+                      className="text-gray-400 hover:text-white transition-colors duration-300"
+                    >
+                      Projects
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/resources"
+                      className="text-gray-400 hover:text-white transition-colors duration-300"
+                    >
+                      Resources
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/#faq"
+                      className="text-gray-400 hover:text-white transition-colors duration-300"
+                    >
+                      FAQ
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
 
@@ -169,16 +213,41 @@ export default function Footer() {
                   : "opacity-0 -translate-y-2 max-h-0 overflow-hidden"
               } md:opacity-100 md:translate-y-0 md:max-h-full md:overflow-visible md:block`}
             >
-              <li className="flex items-center gap-3 py-4">
-                <LocationIcon />
-                <span className="text-gray-400">
-                  123 Green Highway, Eco City, EC 12345
-                </span>
-              </li>
-              <li className="flex items-center gap-3">
-                <MailIcon />
-                <span className="text-gray-400">support@cube-highways.com</span>
-              </li>
+              {loading ? (
+                <li className="text-gray-400">Loading...</li>
+              ) : footerData?.footer?.contact ? (
+                <>
+                  {footerData.footer.contact.address && (
+                    <li className="flex items-center gap-3 py-4">
+                      <LocationIcon />
+                      <span className="text-gray-400">
+                        {footerData.footer.contact.address}
+                      </span>
+                    </li>
+                  )}
+                  {footerData.footer.contact.email && (
+                    <li className="flex items-center gap-3">
+                      <MailIcon />
+                      <span className="text-gray-400">
+                        {footerData.footer.contact.email}
+                      </span>
+                    </li>
+                  )}
+                </>
+              ) : (
+                <>
+                  <li className="flex items-center gap-3 py-4">
+                    <LocationIcon />
+                    <span className="text-gray-400">
+                      123 Green Highway, Eco City, EC 12345
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <MailIcon />
+                    <span className="text-gray-400">support@cube-highways.com</span>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
           <div className="md:hidden">
@@ -245,30 +314,59 @@ export default function Footer() {
               Follow Us
             </h3>
             <div className="flex gap-5 md:gap-0 md:space-x-full mb-6 md:justify-between">
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors duration-300"
-              >
-                <Facebook className="h-6 w-6" />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors duration-300"
-              >
-                <Twitter className="h-6 w-6" />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors duration-300"
-              >
-                <Instagram className="h-6 w-6" />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-white transition-colors duration-300"
-              >
-                <Linkedin className="h-6 w-6" />
-              </a>
+              {loading ? (
+                <span className="text-gray-400">Loading...</span>
+              ) : footerData?.footer?.socials && footerData.footer.socials.length > 0 ? (
+                footerData.footer.socials.map((social, index) => {
+                  const getSocialIcon = (platform: string) => {
+                    const lowerPlatform = platform.toLowerCase();
+                    if (lowerPlatform.includes('facebook')) return <Facebook className="h-6 w-6" />;
+                    if (lowerPlatform.includes('twitter')) return <Twitter className="h-6 w-6" />;
+                    if (lowerPlatform.includes('instagram')) return <Instagram className="h-6 w-6" />;
+                    if (lowerPlatform.includes('linkedin')) return <Linkedin className="h-6 w-6" />;
+                    return <Facebook className="h-6 w-6" />;
+                  };
+
+                  return (
+                    <a
+                      key={index}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-white transition-colors duration-300"
+                    >
+                      {getSocialIcon(social.platform)}
+                    </a>
+                  );
+                })
+              ) : (
+                <>
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors duration-300"
+                  >
+                    <Facebook className="h-6 w-6" />
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors duration-300"
+                  >
+                    <Twitter className="h-6 w-6" />
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors duration-300"
+                  >
+                    <Instagram className="h-6 w-6" />
+                  </a>
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors duration-300"
+                  >
+                    <Linkedin className="h-6 w-6" />
+                  </a>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -301,7 +399,9 @@ export default function Footer() {
           >
             Back to top <UpArrowIcon />
           </span>
-          <span className="px-4 md:px-0">copyrights©cubehighways 2025</span>
+          <span className="px-4 md:px-0">
+            {footerData?.footer?.copyrightText || 'copyrights©cubehighways 2025'}
+          </span>
         </div>
       </div>
     </footer>
