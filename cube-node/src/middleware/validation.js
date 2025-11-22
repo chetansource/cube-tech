@@ -13,7 +13,7 @@ const schemas = {
   resumeSubmission: Joi.object({
     fullName: Joi.string().min(2).max(100).required().trim(),
     number: Joi.string().min(10).max(15).required().trim(),
-    jobId: Joi.string().optional().allow(''),
+    jobId: Joi.string().optional().allow('', null),
     resumeUpload: Joi.string().required(), // Media ID
   }),
 

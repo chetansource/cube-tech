@@ -102,7 +102,9 @@ export default function ResumeUpload() {
               <input
                 type="text"
                 placeholder="Full Name"
-                className="w-full p-4 border border-[#EAEAEA] focus:outline-none placeholder:text-[#1C1B1F] placeholder:text-lg"
+                className="w-full p-4 border border-[#EAEAEA] bg-white focus:bg-white 
+             focus:outline-none placeholder:text-[#1C1B1F] placeholder:text-lg 
+             focus:placeholder-transparent"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 required
@@ -113,7 +115,9 @@ export default function ResumeUpload() {
               <input
                 type="tel"
                 placeholder="Contact No."
-                className="w-full p-4 border border-[#EAEAEA] focus:outline-none placeholder:text-[#1C1B1F] placeholder:text-lg"
+                className="w-full p-4 border border-[#EAEAEA] bg-white focus:bg-white 
+             focus:outline-none placeholder:text-[#1C1B1F] placeholder:text-lg
+             focus:placeholder-transparent"
                 value={contactNo}
                 onChange={(e) => setContactNo(e.target.value)}
                 required

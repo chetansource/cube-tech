@@ -33,6 +33,7 @@ const sectionSchema = new mongoose.Schema({
       'careerTitle',
       'jobListSection',
       'heroSection',
+      'exploreCardsSection',
       'servicesSection',
       'projectsSection',
       'statsSection',
@@ -74,6 +75,20 @@ const sectionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Media'
   },
+
+  // Explore Cards Section (for Career page)
+  cards: [{
+    title: String,
+    content: String,
+    date: String,
+    cardType: { type: String, enum: ['text', 'featured', 'image'] },
+    bgColor: String,
+    textColor: String,
+    image: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Media'
+    }
+  }],
 
   // Generic content fields
   title: String,

@@ -47,4 +47,19 @@ const mediaSchema = new mongoose.Schema({
 mediaSchema.index({ originalFilename: 'text', alt: 'text' });
 mediaSchema.index({ folder: 1, createdAt: -1 });
 
+// Pre-save hook to set defaults
+mediaSchema.pre('save', function(next) {
+  // Set originalFilename from filename if not provided
+  if (!this.originalFilename && this.filename) {
+    this.originalFilename = this.filename;
+  }
+
+  // Set s3Bucket from env if not provided
+  if (!this.s3Bucket) {
+    this.s3Bucket = process.env.AWS_S3_BUCKET || 'cube-highways-media';
+  }
+
+  next();
+});
+
 module.exports = mongoose.model('Media', mediaSchema);

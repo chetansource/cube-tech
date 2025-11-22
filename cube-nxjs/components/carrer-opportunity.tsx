@@ -30,7 +30,7 @@ export default function CareerOpportunities() {
 
 
   return (
-    <div className="min-h-screen bg-white pb-18 px-4 md:px-16 ">
+    <div className=" bg-white pb-18 px-4 md:px-16 ">
       <div className="max-w-8xl mx-auto flex flex-col md:flex-row gap-8">
         {/* Left Column - 35% */}
         <div className="md:w-[43%] space-y-6">
@@ -57,35 +57,41 @@ export default function CareerOpportunities() {
         </div>
 
         {/* Right Column - 65% */}
-        <div className="md:w-[65%] space-y-6">
+        <div className="md:w-[65%] grid grid-cols-1 md:grid-cols-3 gap-6">
           {jobList.map((job) => (
             <div
               key={job.id}
-              className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm"
+              className="border border-gray-200 p-6 bg-[#F6F6F6] shadow-sm
+             flex flex-col justify-between h-full"
             >
-              <div className="px-6 py-3">
-                <h2 className="text-3xl font-light text-black leading-[45px] mb-2 ">
+              <div className="py-3">
+                <h2
+                  className="text-2xl font-light text-black leading-[32px] mb-3 
+               h-[64px] line-clamp-2 overflow-hidden"
+                >
                   {job.title}
                 </h2>
 
                 <div className="flex items-center text-gray-600 mb-4">
                   <MapPin size={18} className="mr-2" />
-                  <span className="text-xl font-light text-[#2E2C2C]  leading-[30px]">
+                  <span className="text-md font-light text-[#2E2C2C]  leading-[30px]">
                     {job.location}
                   </span>
                 </div>
               </div>
 
-              <p className=" pl-[100px] md:pl-[220px] text-base font-['Glacier_Indifference']  text-[#484848] mb-6 leading-[24px]  line-clamp-4">
+              <p className=" text-base font-['Glacier_Indifference']  text-[#484848] mb-6 leading-[24px]  line-clamp-4">
                 {job.description}
               </p>
 
-              <button
-                onClick={() => router.push(`/careers/details/${job.id}`)}
-                className="ml-[100px] md:ml-[220px] bg-accent hover:bg-green-600 text-white p-2 md:px-6 md:py-2 uppercase text-sm font-medium transition-colors cursor-pointer"
-              >
-                Apply Now
-              </button>
+              <div className="flex justify-end">
+                <button
+                  onClick={() => router.push(`/careers/details/${job.id}`)}
+                  className="text-accent hover:translate-x-1 transition-all"
+                >
+                  <RightArrowIcon color="#5FBA51" />
+                </button>
+              </div>
             </div>
           ))}
         </div>

@@ -51,6 +51,7 @@ const typeDefs = gql`
     id: ID!
     title: String!
     location: String!
+    description: String
   }
 
   # Section Union Types
@@ -89,6 +90,21 @@ const typeDefs = gql`
     backgroundImage: Media
   }
 
+  type ExploreCard {
+    title: String
+    content: String
+    date: String
+    cardType: String
+    bgColor: String
+    textColor: String
+    image: Media
+  }
+
+  type ExploreCardsSection {
+    blockType: String!
+    cards: [ExploreCard!]
+  }
+
   type GenericSection {
     blockType: String!
     title: String
@@ -97,7 +113,7 @@ const typeDefs = gql`
     image: Media
   }
 
-  union Section = FaqSection | ContactInfo | CareerTitle | JobListSection | HeroSection | GenericSection
+  union Section = FaqSection | ContactInfo | CareerTitle | JobListSection | HeroSection | ExploreCardsSection | GenericSection
 
   # Page Type
   type Page {

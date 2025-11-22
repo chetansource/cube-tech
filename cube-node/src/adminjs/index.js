@@ -2,7 +2,11 @@ require('dotenv').config();
 const AdminJS = require('adminjs');
 const AdminJSExpress = require('@adminjs/express');
 const AdminJSMongoose = require('@adminjs/mongoose');
+const uploadFeature = require('@adminjs/upload');
 const bcrypt = require('bcryptjs');
+const path = require('path');
+const { s3Client, AWS_CONFIG } = require('../config/aws');
+const { PutObjectCommand } = require('@aws-sdk/client-s3');
 
 // Import models
 const Page = require('../models/Page');
@@ -23,6 +27,43 @@ const SiteSettings = require('../models/SiteSettings');
 
 // Register adapter
 AdminJS.registerAdapter(AdminJSMongoose);
+
+// Custom S3 Upload Provider for AdminJS
+const customS3Provider = {
+  async upload(file) {
+    const timestamp = Date.now();
+    const filename = `${timestamp}-${file.name}`;
+    const key = `media/${filename}`;
+
+    const params = {
+      Bucket: AWS_CONFIG.bucket,
+      Key: key,
+      Body: file.buffer,
+      ContentType: file.type,
+      ACL: 'public-read',
+    };
+
+    try {
+      await s3Client.send(new PutObjectCommand(params));
+      const url = `https://${AWS_CONFIG.bucket}.s3.${AWS_CONFIG.region}.amazonaws.com/${key}`;
+
+      return {
+        filename,
+        path: url,
+        s3Key: key,
+        size: file.size,
+        type: file.type,
+      };
+    } catch (error) {
+      console.error('S3 Upload Error:', error);
+      throw new Error(`Failed to upload to S3: ${error.message}`);
+    }
+  },
+  async delete(key) {
+    // Optional: implement delete if needed
+    console.log('Delete file:', key);
+  },
+};
 
 const createAdminJS = () => {
   const adminJs = new AdminJS({
@@ -121,16 +162,85 @@ const createAdminJS = () => {
         options: {
           navigation: { name: 'Media', icon: 'Image' },
           properties: {
+            file: {
+              type: 'string',
+              isVisible: { list: false, filter: false, show: false, edit: true },
+            },
             url: {
               isVisible: { list: false, filter: false, show: true, edit: false },
             },
             s3Key: {
               isVisible: { list: false, filter: false, show: true, edit: false },
             },
+            s3Bucket: {
+              isVisible: { list: false, filter: false, show: false, edit: false },
+            },
+            filename: {
+              isVisible: { list: true, filter: false, show: true, edit: false },
+            },
+            originalFilename: {
+              isVisible: { list: true, filter: true, show: true, edit: false },
+            },
+            mimeType: {
+              isVisible: { list: true, filter: true, show: true, edit: false },
+            },
+            fileSize: {
+              isVisible: { list: true, filter: false, show: true, edit: false },
+            },
+            alt: {
+              isVisible: { list: false, filter: false, show: true, edit: true },
+            },
+            caption: {
+              isVisible: { list: false, filter: false, show: true, edit: true },
+            },
+            width: {
+              isVisible: { list: false, filter: false, show: true, edit: true },
+            },
+            height: {
+              isVisible: { list: false, filter: false, show: true, edit: true },
+            },
+            folder: {
+              isVisible: { list: true, filter: true, show: true, edit: true },
+            },
+            uploadedBy: {
+              isVisible: { list: false, filter: false, show: true, edit: true },
+            },
+            createdAt: {
+              isVisible: { list: true, filter: false, show: true, edit: false },
+            },
+            updatedAt: {
+              isVisible: { list: false, filter: false, show: true, edit: false },
+            },
           },
           listProperties: ['filename', 'originalFilename', 'mimeType', 'fileSize', 'folder', 'createdAt'],
           filterProperties: ['originalFilename', 'mimeType', 'folder'],
         },
+        features: [
+          uploadFeature({
+            provider: {
+              aws: {
+                bucket: AWS_CONFIG.bucket,
+                region: AWS_CONFIG.region,
+                accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+                expires: 0,
+              },
+            },
+            properties: {
+              key: 's3Key',
+              file: 'file',
+              filePath: 'url',
+              filename: 'filename',
+              mimeType: 'mimeType',
+              size: 'fileSize',
+              filesToDelete: 'filesToDelete',
+            },
+            validation: {
+              mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'],
+            },
+            uploadPath: (record, filename) => `media/${Date.now()}-${filename}`,
+          }),
+        ],
       },
       {
         resource: Partner,

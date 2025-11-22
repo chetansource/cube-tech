@@ -25,8 +25,36 @@ export interface JobListSection {
   jobs: Job[];
 }
 
+export interface HeroSection {
+  blockType: string;
+  heading?: string;
+  subheading?: string;
+  backgroundImage?: {
+    url: string;
+    alt?: string;
+  };
+}
+
+export interface ExploreCard {
+  title: string;
+  content: string;
+  date?: string;
+  cardType: 'text' | 'featured' | 'image';
+  bgColor?: string;
+  textColor?: string;
+  image?: {
+    url: string;
+    alt?: string;
+  };
+}
+
+export interface ExploreCardsSection {
+  blockType: string;
+  cards: ExploreCard[];
+}
+
 interface CareerPageResponse {
-  sections: (CareerPageSection | JobListSection)[];
+  sections: (CareerPageSection | JobListSection | HeroSection | ExploreCardsSection)[];
 }
 
 export const getCareerPageContent = async (slug: string) => {
@@ -52,6 +80,30 @@ export const getCareerPageContent = async (slug: string) => {
                 description
               }
             }
+            ... on HeroSection {
+              blockType
+              heading
+              subheading
+              backgroundImage {
+                url
+                alt
+              }
+            }
+            ... on ExploreCardsSection {
+              blockType
+              cards {
+                title
+                content
+                date
+                cardType
+                bgColor
+                textColor
+                image {
+                  url
+                  alt
+                }
+              }
+            }
           }
         }
       }
@@ -68,7 +120,12 @@ export const getCareerPageContent = async (slug: string) => {
   const page = data.Pages.docs[0];
   console.log("Career Page Data:", page);
 
-  if (!page || !page.sections) return { careerHeading: null, jobList: [] };
+  if (!page || !page.sections) return {
+    careerHeading: null,
+    jobList: [],
+    heroSection: null,
+    exploreCards: []
+  };
 
   const careerHeading = page.sections.find(
     (section: any) => section.blockType === "careerTitle"
@@ -81,5 +138,16 @@ export const getCareerPageContent = async (slug: string) => {
       ) as JobListSection | undefined
     )?.jobs || [];
 
-  return { careerHeading, jobList };
+  const heroSection = page.sections.find(
+    (section: any) => section.blockType === "heroSection"
+  ) as HeroSection | undefined;
+
+  const exploreCards =
+    (
+      page.sections.find(
+        (section: any) => section.blockType === "exploreCardsSection"
+      ) as ExploreCardsSection | undefined
+    )?.cards || [];
+
+  return { careerHeading, jobList, heroSection, exploreCards };
 };
