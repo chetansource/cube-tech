@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 // import UpArrowIcon from "./icons/up-arrow";
 import PlusIcon from "./icons/Plus";
 import { usePathname } from "next/navigation";
+import type { Stat } from "@/utils/types";
 
 interface Metric {
   value: number;
@@ -11,7 +12,11 @@ interface Metric {
   isSquare?: boolean;
 }
 
-const metrics: Metric[] = [
+interface StatsProps {
+  stats?: Stat[];
+}
+
+const defaultMetrics: Metric[] = [
   { value: 14, label: "Years of experience", hasIcon: true },
   { value: 60, label: "TMS Audit for Toll Plaza", hasIcon: true },
   {
@@ -88,13 +93,22 @@ function AnimatedNumber({ number, start }: { number: number; start: boolean }) {
 }
 
 
-export default function Stats() {
+export default function Stats({ stats }: StatsProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isVisible = useIntersection(sectionRef, "-50px");
   const pathname = usePathname();
 
   const isHomePage = pathname === "/";
   // const isVisible = useIntersection(sectionRef, "0px");
+
+  // Convert stats from backend to Metric format or use default
+  const metrics: Metric[] = stats && stats.length > 0
+    ? stats.map((stat) => ({
+        value: stat.value,
+        label: stat.label,
+        hasIcon: stat.hasIcon,
+      }))
+    : defaultMetrics;
 
   return (
     <div className="relative ">

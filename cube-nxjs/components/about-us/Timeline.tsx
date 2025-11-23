@@ -5,28 +5,23 @@ import { useState } from "react";
 import OurStoryIcon_1 from "../icons/OurStoryIcon-1";
 import OurStoryIcon_2 from "../icons/OurStoryIcon-2";
 import OurStoryIcon_3 from "../icons/OurStoryIcon-3";
+import type { TimelineItemType } from "@/utils/types";
 
-type TimelineItem = {
-  year?: string;
-  side?: "left" | "right";
-  title?: string;
-  content?: string;
-  isPodcast?: boolean;
-  readMoreLink?: string;
-  isIconOnly?: boolean;
-};
+type TimelineItem = TimelineItemType;
 
-export default function Timeline() {
+interface TimelineProps {
+  heading?: string;
+  timelineItems?: TimelineItem[];
+}
+
+export default function Timeline({
+  heading = "Our Story",
+  timelineItems = []
+}: TimelineProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  const dummyPodcast = {
-    image: "/timeline-image.webp",
-    content:
-      "This is a podcast about traffic innovations, planning strategies, and future infrastructure designs. Dive deep into the world of modern transportation.",
-    link: "#",
-  };
-
-  const timelineItems: TimelineItem[] = [
+  // Fallback data if no items provided
+  const defaultTimelineItems: TimelineItem[] = [
     {
       year: "2007",
       side: "left",
@@ -41,7 +36,7 @@ export default function Timeline() {
       content: "Innovations in Traffic Engineering and Forecasting",
       isPodcast: true,
     },
-    { isIconOnly: true },
+    { isIconOnly: true, iconType: 1 },
     {
       year: "2015",
       side: "left",
@@ -49,8 +44,8 @@ export default function Timeline() {
       content: "Lenders Independent Engineer, Traffic Audit",
       isPodcast: true,
     },
-    { isIconOnly: true }, 
-    { isIconOnly: true },
+    { isIconOnly: true, iconType: 2 },
+    { isIconOnly: true, iconType: 3 },
     {
       year: "2021",
       side: "right",
@@ -60,27 +55,40 @@ export default function Timeline() {
     },
   ];
 
+  const items = timelineItems.length > 0 ? timelineItems : defaultTimelineItems;
+
   return (
     <section className="px-4 py-12 md:px-32 md:pb-12 max-w-8xl mx-auto bg-[#FAFAFA] md:bg-white">
       <h1 className="text-2xl md:text-[46px] font-light tracking-widest text-center pb-[53px]">
-        Our <span className="font-semibold text-accent italic"> Story</span>
+        {heading.includes("Story") ? (
+          <>
+            {heading.split(" ")[0]}{" "}
+            <span className="font-semibold text-accent italic">
+              {heading.split(" ").slice(1).join(" ")}
+            </span>
+          </>
+        ) : (
+          heading
+        )}
       </h1>
       <div className="relative">
         <div className="absolute left-1/2 transform -translate-x-1/2 h-[84%] w-0.5 bg-black mt-26" />
 
         <div className="relative z-10">
-          {timelineItems.map((item, index) => {
+          {items.map((item, index) => {
             const isHovered = hoveredIndex === index;
             if (item.isIconOnly) {
               let IconComponent;
-              const iconIndex = timelineItems
+
+              // Use iconType from data, or calculate based on position
+              const iconType = item.iconType || items
                 .slice(0, index + 1)
                 .filter((i) => i.isIconOnly).length;
 
-              // Map the icon index to the component
-              if (iconIndex === 1) IconComponent = OurStoryIcon_1;
-              if (iconIndex === 2) IconComponent = OurStoryIcon_2;
-              if (iconIndex === 3) IconComponent = OurStoryIcon_3;
+              // Map the icon type to the component
+              if (iconType === 1) IconComponent = OurStoryIcon_1;
+              if (iconType === 2) IconComponent = OurStoryIcon_2;
+              if (iconType === 3) IconComponent = OurStoryIcon_3;
 
               return (
                 <div key={index} className="relative flex justify-center mb-16">
@@ -120,21 +128,21 @@ export default function Timeline() {
                   >
                     <div className="w-[80%] h-[80%] md:w-[90%] md:h-[90%] relative mt-22 md:mt-10 ">
                       <Image
-                        src={dummyPodcast.image}
-                        alt="Podcast image"
-                        layout="fill"
-                        objectFit="cover"
-                        className="rounded-lg"
+                        src={item.podcastImage?.url || "/timeline-image.webp"}
+                        alt={item.podcastImage?.alt || "Podcast image"}
+                        fill
+                        className="rounded-lg object-cover"
                       />
                     </div>
                     <div className="text-gray-500 flex items-center text-sm py-2">
                       /PODCAST <ArrowRight className="ml-2 h-4 w-4" />
                     </div>
                     <p className="text-gray-700 text-sm md:text-base mt-2 w-[90%]">
-                      {dummyPodcast.content}
+                      {item.podcastContent ||
+                        "This is a podcast about traffic innovations, planning strategies, and future infrastructure designs."}
                     </p>
                     <a
-                      href={dummyPodcast.link}
+                      href={item.podcastLink || "#"}
                       className="inline-flex items-center text-green-500 text-sm font-medium mt-1"
                     >
                       READ MORE <ArrowRight className="ml-1 h-4 w-4" />

@@ -5,46 +5,64 @@ import React, { useState, useRef, useEffect } from 'react';
 import RightArrowIcon from './icons/right-arrow';
 import LeftArrowIcon from './icons/left-arrow';
 import Image from 'next/image';
+import type { Testimonial as TestimonialType } from '@/utils/types';
 
 interface Testimonial {
-  id: number;
+  id: string | number;
   quote: string;
   author: string;
   company: string;
   avatar: string;
+  position?: string;
 }
 
-export function Testimonial() {
-  const testimonials: Testimonial[] = [
-    {
-      id: 1,
-      quote: "CubeHighways has transformed our infrastructure experience with their seamless project execution and cutting-edge technology.",
-      author: "Robert Fox",
-      company: "Goldman Sachs",
-      avatar: "https://tryeasel.dev/placeholder.svg?width=60&height=60"
-    },
-    {
-      id: 2,
-      quote: "Their commitment to road safety and operational efficiency has significantly improved traffic flow and highway management.",
-      author: "Adam Zen",
-      company: "L'Oréal",
-      avatar: "https://tryeasel.dev/placeholder.svg?width=60&height=60"
-    },
-    {
-      id: 3,
-      quote: "Partnering with CubeHighways has been a game-changer for our transportation experience, especially in maintaining our logistics projects.",
-      author: "Thomas Smith",
-      company: "Tesla Inc.",
-      avatar: "https://tryeasel.dev/placeholder.svg?width=60&height=60"
-    },
-    {
-      id: 4,
-      quote: "The innovative solutions provided by their team have revolutionized how we approach infrastructure challenges.",
-      author: "Sarah Johnson",
-      company: "Microsoft",
-      avatar: "https://tryeasel.dev/placeholder.svg?width=60&height=60"
-    },
-  ];
+interface TestimonialProps {
+  testimonials?: TestimonialType[];
+}
+
+const defaultTestimonials: Testimonial[] = [
+  {
+    id: 1,
+    quote: "CubeHighways has transformed our infrastructure experience with their seamless project execution and cutting-edge technology.",
+    author: "Robert Fox",
+    company: "Goldman Sachs",
+    avatar: "https://tryeasel.dev/placeholder.svg?width=60&height=60"
+  },
+  {
+    id: 2,
+    quote: "Their commitment to road safety and operational efficiency has significantly improved traffic flow and highway management.",
+    author: "Adam Zen",
+    company: "L'Oréal",
+    avatar: "https://tryeasel.dev/placeholder.svg?width=60&height=60"
+  },
+  {
+    id: 3,
+    quote: "Partnering with CubeHighways has been a game-changer for our transportation experience, especially in maintaining our logistics projects.",
+    author: "Thomas Smith",
+    company: "Tesla Inc.",
+    avatar: "https://tryeasel.dev/placeholder.svg?width=60&height=60"
+  },
+  {
+    id: 4,
+    quote: "The innovative solutions provided by their team have revolutionized how we approach infrastructure challenges.",
+    author: "Sarah Johnson",
+    company: "Microsoft",
+    avatar: "https://tryeasel.dev/placeholder.svg?width=60&height=60"
+  },
+];
+
+export function Testimonial({ testimonials: propTestimonials }: TestimonialProps) {
+  // Convert backend testimonials to component format or use defaults
+  const testimonials: Testimonial[] = propTestimonials && propTestimonials.length > 0
+    ? propTestimonials.map((t) => ({
+        id: t.id,
+        quote: t.quote,
+        author: t.author,
+        company: t.company,
+        avatar: t.avatar?.url || "https://tryeasel.dev/placeholder.svg?width=60&height=60",
+        position: t.position,
+      }))
+    : defaultTestimonials;
 
   const [scrollPosition, setScrollPosition] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);

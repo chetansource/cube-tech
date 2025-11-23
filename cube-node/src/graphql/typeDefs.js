@@ -113,7 +113,72 @@ const typeDefs = gql`
     image: Media
   }
 
-  union Section = FaqSection | ContactInfo | CareerTitle | JobListSection | HeroSection | ExploreCardsSection | GenericSection
+  # About-Us Specific Section Types
+  type AboutHeroSection {
+    blockType: String!
+    heading: String
+    subheading: String
+    backgroundImage: Media
+  }
+
+  type LeaderCard {
+    name: String!
+    designation: String!
+    image: Media
+    bio: String
+    linkedIn: String
+  }
+
+  type LeadershipSection {
+    blockType: String!
+    title: String
+    description: String
+    leaders: [LeaderCard!]
+  }
+
+  type TimelineItemType {
+    year: String
+    side: String
+    title: String
+    content: String
+    isPodcast: Boolean
+    podcastImage: Media
+    podcastContent: String
+    podcastLink: String
+    isIconOnly: Boolean
+    iconType: Int
+  }
+
+  type TimelineSection {
+    blockType: String!
+    title: String
+    heading: String
+    timelineItems: [TimelineItemType!]
+  }
+
+  type CorporateResponsibilitySection {
+    blockType: String!
+    mainHeading: String
+    subheading: String
+    title: String
+    description: String
+    tags: [String!]
+    backgroundImage: Media
+  }
+
+  type StatsSection {
+    blockType: String!
+    title: String
+    stats: [Stat!]
+  }
+
+  type TestimonialsSection {
+    blockType: String!
+    title: String
+    testimonials: [Testimonial!]
+  }
+
+  union Section = FaqSection | ContactInfo | CareerTitle | JobListSection | HeroSection | ExploreCardsSection | GenericSection | AboutHeroSection | LeadershipSection | TimelineSection | CorporateResponsibilitySection | StatsSection | TestimonialsSection
 
   # Page Type
   type Page {

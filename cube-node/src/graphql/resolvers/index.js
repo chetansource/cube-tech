@@ -18,6 +18,8 @@ const resolvers = {
   },
 
   Section: pageResolvers.Section,
+  StatsSection: pageResolvers.StatsSection,
+  TestimonialsSection: pageResolvers.TestimonialsSection,
 };
 
 module.exports = resolvers;

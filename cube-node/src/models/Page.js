@@ -43,7 +43,10 @@ const sectionSchema = new mongoose.Schema({
       'timelineSection',
       'awardsSection',
       'solutionsSection',
-      'ctaSection'
+      'ctaSection',
+      'aboutHeroSection',
+      'leadershipSection',
+      'corporateResponsibilitySection'
     ]
   },
   // FAQ Section fields
@@ -89,6 +92,39 @@ const sectionSchema = new mongoose.Schema({
       ref: 'Media'
     }
   }],
+
+  // Leadership Section fields
+  leaders: [{
+    name: String,
+    designation: String,
+    image: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Media'
+    },
+    bio: String,
+    linkedIn: String
+  }],
+
+  // Timeline Section fields
+  timelineItems: [{
+    year: String,
+    side: { type: String, enum: ['left', 'right'] },
+    title: String,
+    content: String,
+    isPodcast: Boolean,
+    podcastImage: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Media'
+    },
+    podcastContent: String,
+    podcastLink: String,
+    isIconOnly: Boolean,
+    iconType: { type: Number, min: 1, max: 3 } // For selecting which icon (1, 2, or 3)
+  }],
+
+  // Corporate Responsibility Section fields
+  mainHeading: String,
+  tags: [String],
 
   // Generic content fields
   title: String,

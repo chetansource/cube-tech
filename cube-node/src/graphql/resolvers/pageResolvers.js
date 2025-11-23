@@ -1,4 +1,6 @@
 const Page = require('../../models/Page');
+const Stat = require('../../models/Stat');
+const Testimonial = require('../../models/Testimonial');
 
 const pageResolvers = {
   Query: {
@@ -23,6 +25,9 @@ const pageResolvers = {
         .populate('sections.backgroundImage')
         .populate('sections.image')
         .populate('sections.jobs')
+        .populate('sections.leaders.image')
+        .populate('sections.timelineItems.podcastImage')
+        .populate('sections.cards.image')
         .limit(limit)
         .skip(skip)
         .sort({ createdAt: -1 });
@@ -42,7 +47,10 @@ const pageResolvers = {
       return await Page.findById(id)
         .populate('sections.backgroundImage')
         .populate('sections.image')
-        .populate('sections.jobs');
+        .populate('sections.jobs')
+        .populate('sections.leaders.image')
+        .populate('sections.timelineItems.podcastImage')
+        .populate('sections.cards.image');
     },
   },
 
@@ -59,9 +67,36 @@ const pageResolvers = {
           return 'JobListSection';
         case 'heroSection':
           return 'HeroSection';
+        case 'exploreCardsSection':
+          return 'ExploreCardsSection';
+        case 'aboutHeroSection':
+          return 'AboutHeroSection';
+        case 'leadershipSection':
+          return 'LeadershipSection';
+        case 'timelineSection':
+          return 'TimelineSection';
+        case 'corporateResponsibilitySection':
+          return 'CorporateResponsibilitySection';
+        case 'statsSection':
+          return 'StatsSection';
+        case 'testimonialsSection':
+          return 'TestimonialsSection';
         default:
           return 'GenericSection';
       }
+    },
+  },
+
+  // Field resolvers for sections that need to fetch related data
+  StatsSection: {
+    stats: async () => {
+      return await Stat.find({ active: true }).sort({ order: 1 });
+    },
+  },
+
+  TestimonialsSection: {
+    testimonials: async () => {
+      return await Testimonial.find({ active: true }).populate('avatar').sort({ order: 1 });
     },
   },
 };

@@ -7,6 +7,27 @@ const bcrypt = require('bcryptjs');
 const path = require('path');
 const { s3Client, AWS_CONFIG } = require('../config/aws');
 const { PutObjectCommand } = require('@aws-sdk/client-s3');
+const { Upload } = require('@aws-sdk/lib-storage');
+const AWS = require('aws-sdk'); // AWS SDK v2 for @adminjs/upload
+
+// Configure AWS SDK v2 for @adminjs/upload (without ACL)
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION || 'us-east-1',
+  s3ForcePathStyle: false,
+  signatureVersion: 'v4',
+});
+
+// Monkey-patch AWS.S3 upload to remove ACL parameter
+const originalUpload = AWS.S3.prototype.upload;
+AWS.S3.prototype.upload = function(params, options, callback) {
+  // Remove ACL from params if it exists
+  if (params && params.ACL) {
+    delete params.ACL;
+  }
+  return originalUpload.call(this, params, options, callback);
+};
 
 // Import models
 const Page = require('../models/Page');
@@ -28,40 +49,42 @@ const SiteSettings = require('../models/SiteSettings');
 // Register adapter
 AdminJS.registerAdapter(AdminJSMongoose);
 
-// Custom S3 Upload Provider for AdminJS
+// Custom S3 Upload Provider for AdminJS (AWS SDK v3 - No ACL)
 const customS3Provider = {
-  async upload(file) {
+  upload: async (file, key) => {
     const timestamp = Date.now();
-    const filename = `${timestamp}-${file.name}`;
-    const key = `media/${filename}`;
+    const finalKey = key || `media/${timestamp}-${file.name}`;
 
     const params = {
       Bucket: AWS_CONFIG.bucket,
-      Key: key,
-      Body: file.buffer,
-      ContentType: file.type,
-      ACL: 'public-read',
+      Key: finalKey,
+      Body: file,
+      ContentType: file.mimetype || file.type,
+      // NO ACL - relies on bucket policy for public access
     };
 
     try {
-      await s3Client.send(new PutObjectCommand(params));
-      const url = `https://${AWS_CONFIG.bucket}.s3.${AWS_CONFIG.region}.amazonaws.com/${key}`;
+      const upload = new Upload({
+        client: s3Client,
+        params: params,
+      });
+
+      await upload.done();
+
+      const url = `https://${AWS_CONFIG.bucket}.s3.${AWS_CONFIG.region}.amazonaws.com/${finalKey}`;
 
       return {
-        filename,
-        path: url,
-        s3Key: key,
-        size: file.size,
-        type: file.type,
+        key: finalKey,
+        bucket: AWS_CONFIG.bucket,
       };
     } catch (error) {
       console.error('S3 Upload Error:', error);
       throw new Error(`Failed to upload to S3: ${error.message}`);
     }
   },
-  async delete(key) {
-    // Optional: implement delete if needed
+  delete: async (key, bucket) => {
     console.log('Delete file:', key);
+    // Optional: implement delete if needed
   },
 };
 
@@ -161,6 +184,75 @@ const createAdminJS = () => {
         resource: Media,
         options: {
           navigation: { name: 'Media', icon: 'Image' },
+          actions: {
+            delete: {
+              actionType: 'record',
+              handler: async (request, response, context) => {
+                const { record, resource, h } = context;
+
+                if (request.method === 'post') {
+                  try {
+                    // Use findByIdAndDelete instead of findOneAndRemove
+                    await Media.findByIdAndDelete(record.id());
+
+                    return {
+                      record: record.toJSON(context.currentAdmin),
+                      redirectUrl: h.resourceUrl({ resourceId: resource._name }),
+                      notice: {
+                        message: 'Successfully deleted',
+                        type: 'success',
+                      },
+                    };
+                  } catch (error) {
+                    return {
+                      record: record.toJSON(context.currentAdmin),
+                      notice: {
+                        message: `Error: ${error.message}`,
+                        type: 'error',
+                      },
+                    };
+                  }
+                }
+
+                return { record: record.toJSON(context.currentAdmin) };
+              },
+            },
+            bulkDelete: {
+              actionType: 'bulk',
+              handler: async (request, response, context) => {
+                const { records, resource, h } = context;
+
+                if (request.method === 'post') {
+                  try {
+                    const ids = records.map(record => record.id());
+                    const count = ids.length;
+
+                    // Delete the records
+                    await Media.deleteMany({ _id: { $in: ids } });
+
+                    return {
+                      records: [],
+                      redirectUrl: h.resourceUrl({ resourceId: resource._name }),
+                      notice: {
+                        message: `Successfully deleted ${count} file${count > 1 ? 's' : ''}`,
+                        type: 'success',
+                      },
+                    };
+                  } catch (error) {
+                    return {
+                      records: records.map(record => record.toJSON(context.currentAdmin)),
+                      notice: {
+                        message: `Error: ${error.message}`,
+                        type: 'error',
+                      },
+                    };
+                  }
+                }
+
+                return { records: records.map(record => record.toJSON(context.currentAdmin)) };
+              },
+            },
+          },
           properties: {
             file: {
               type: 'string',
@@ -179,7 +271,7 @@ const createAdminJS = () => {
               isVisible: { list: true, filter: false, show: true, edit: false },
             },
             originalFilename: {
-              isVisible: { list: true, filter: true, show: true, edit: false },
+              isVisible: { list: true, filter: true, show: true, edit: true },
             },
             mimeType: {
               isVisible: { list: true, filter: true, show: true, edit: false },
@@ -212,8 +304,9 @@ const createAdminJS = () => {
               isVisible: { list: false, filter: false, show: true, edit: false },
             },
           },
-          listProperties: ['filename', 'originalFilename', 'mimeType', 'fileSize', 'folder', 'createdAt'],
+          listProperties: ['originalFilename', 'mimeType', 'fileSize', 'folder', 'createdAt'],
           filterProperties: ['originalFilename', 'mimeType', 'folder'],
+          titleProperty: 'originalFilename', // Show originalFilename in selection dropdowns
         },
         features: [
           uploadFeature({
@@ -223,20 +316,24 @@ const createAdminJS = () => {
                 region: AWS_CONFIG.region,
                 accessKeyId: process.env.AWS_ACCESS_KEY_ID,
                 secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-                expires: 0,
+                s3Options: {
+                  // Prevent ACL from being set
+                  params: {},
+                  // Don't set ACL
+                  ACL: undefined,
+                },
               },
             },
             properties: {
               key: 's3Key',
               file: 'file',
               filePath: 'url',
-              filename: 'filename',
+              filename: 'originalFilename', // Maps uploaded filename to originalFilename
               mimeType: 'mimeType',
               size: 'fileSize',
-              filesToDelete: 'filesToDelete',
             },
             validation: {
-              mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'],
+              mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg', 'application/pdf'],
             },
             uploadPath: (record, filename) => `media/${Date.now()}-${filename}`,
           }),
