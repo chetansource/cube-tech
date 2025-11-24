@@ -46,7 +46,12 @@ const sectionSchema = new mongoose.Schema({
       'ctaSection',
       'aboutHeroSection',
       'leadershipSection',
-      'corporateResponsibilitySection'
+      'corporateResponsibilitySection',
+      'resourcesHeroSection',
+      'insightsImpactSection',
+      'resourceGallerySection',
+      'newsEventsSection',
+      'exploreMoreSection'
     ]
   },
   // FAQ Section fields
@@ -125,6 +130,57 @@ const sectionSchema = new mongoose.Schema({
   // Corporate Responsibility Section fields
   mainHeading: String,
   tags: [String],
+
+  // Resources Hero Section fields
+  heroTitle: String,
+  heroTitleItalic: String,
+  heroBackgroundImage: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Media'
+  },
+
+  // Insights & Impact Section fields
+  insightsHeading: String,
+  insightsSubheading: String,
+  insightsDescription: String,
+  impactHighlightWord: String, // The word to highlight in accent color
+  insightsBackgroundImage: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Media'
+  },
+  businessHeading: String,
+  businessHeadingItalic: String,
+  planetHeading: String,
+  planetHeadingItalic: String,
+  businessDescription: String,
+  exploreServicesButtonText: String,
+
+  // Resource Gallery Section fields
+  galleryBackgroundImage: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Media'
+  },
+  showNewsLink: { type: Boolean, default: true },
+  showCasestudiesLink: { type: Boolean, default: true },
+  showBlogsLink: { type: Boolean, default: true },
+  showPodcastsLink: { type: Boolean, default: true },
+
+  // News & Events Section fields
+  newsEventsTitle: String,
+  newsEventsDescription: String,
+  newsEventsBackgroundImage: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Media'
+  },
+  showNewsletter: { type: Boolean, default: true },
+
+  // Explore More Section fields (for resource detail pages)
+  exploreMoreTitle: String,
+  exploreMoreDescription: String,
+  exploreMoreBackgroundImage: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Media'
+  },
 
   // Generic content fields
   title: String,

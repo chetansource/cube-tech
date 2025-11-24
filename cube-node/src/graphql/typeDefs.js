@@ -178,7 +178,54 @@ const typeDefs = gql`
     testimonials: [Testimonial!]
   }
 
-  union Section = FaqSection | ContactInfo | CareerTitle | JobListSection | HeroSection | ExploreCardsSection | GenericSection | AboutHeroSection | LeadershipSection | TimelineSection | CorporateResponsibilitySection | StatsSection | TestimonialsSection
+  # Resources Page Specific Section Types
+  type ResourcesHeroSection {
+    blockType: String!
+    heroTitle: String
+    heroTitleItalic: String
+    heroBackgroundImage: Media
+  }
+
+  type InsightsImpactSection {
+    blockType: String!
+    insightsHeading: String
+    insightsSubheading: String
+    insightsDescription: String
+    impactHighlightWord: String
+    insightsBackgroundImage: Media
+    businessHeading: String
+    businessHeadingItalic: String
+    planetHeading: String
+    planetHeadingItalic: String
+    businessDescription: String
+    exploreServicesButtonText: String
+  }
+
+  type ResourceGallerySection {
+    blockType: String!
+    galleryBackgroundImage: Media
+    showNewsLink: Boolean
+    showCasestudiesLink: Boolean
+    showBlogsLink: Boolean
+    showPodcastsLink: Boolean
+  }
+
+  type NewsEventsSection {
+    blockType: String!
+    newsEventsTitle: String
+    newsEventsDescription: String
+    newsEventsBackgroundImage: Media
+    showNewsletter: Boolean
+  }
+
+  type ExploreMoreSection {
+    blockType: String!
+    exploreMoreTitle: String
+    exploreMoreDescription: String
+    exploreMoreBackgroundImage: Media
+  }
+
+  union Section = FaqSection | ContactInfo | CareerTitle | JobListSection | HeroSection | ExploreCardsSection | GenericSection | AboutHeroSection | LeadershipSection | TimelineSection | CorporateResponsibilitySection | StatsSection | TestimonialsSection | ResourcesHeroSection | InsightsImpactSection | ResourceGallerySection | NewsEventsSection | ExploreMoreSection
 
   # Page Type
   type Page {
@@ -295,6 +342,8 @@ const typeDefs = gql`
     content: String
     image: Media
     author: String
+    companyName: String
+    duration: String
     tags: [String!]
     featured: Boolean
     categoryColor: String

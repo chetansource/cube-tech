@@ -116,10 +116,6 @@ const CareerExploreMore: React.FC<CareerExploreMoreProps> = ({ cards: dynamicCar
   }
 
   // Helper functions
-  const getCardType = (card: CardType) => {
-    return 'cardType' in card ? card.cardType : (card as FallbackCard).type;
-  };
-
   const getCardImage = (card: CardType) => {
     if ('image' in card) {
       const img = card.image;

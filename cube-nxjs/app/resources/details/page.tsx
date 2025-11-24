@@ -40,8 +40,20 @@ const ResourceDetailPage = () => {
         </div>
       </section>
       {/* hero section stop */}
-      <SpecificResource />
-      <ResourcesSection />
+      <SpecificResource
+        resource={{
+          id: "placeholder",
+          title: "Resource Details",
+          slug: "",
+          description: "This is a placeholder page. Navigate to /resources and click on a specific resource.",
+          category: "NEWS",
+          status: "published",
+          date: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }}
+      />
+      <ResourcesSection resources={[]} />
     </div>
   );
 };

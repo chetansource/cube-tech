@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import RightArrowIcon from "@/components/icons/right-arrow";
+import { Resource } from "@/utils/routes/Resources";
+import { ExploreMoreSection } from "@/utils/routes/ResourcesPage";
 
 // Interface for ResourceCardProps
 interface ResourceCardProps {
@@ -143,8 +145,14 @@ interface PanelConfigMap {
   default: PanelConfig;
 }
 
+// Interface for ResourcesSection Props
+interface ResourcesSectionProps {
+  resources?: Resource[];
+  exploreMoreSection?: ExploreMoreSection;
+}
+
 // ResourcesSection Component
-export default function ResourcesSection() {
+export default function ResourcesSection({ resources = [], exploreMoreSection }: ResourcesSectionProps) {
   const pathname = usePathname(); // Get the current URL path
 
   // Define panelConfig with explicit type
@@ -161,23 +169,57 @@ export default function ResourcesSection() {
       showNewsletter: true,
     },
     "/resources/:id": {
-      title: "Explore more",
-      description:
-        "Technology Behind Traffic Monitoring – A deep dive into ATCC, video-based counting, and AI vision solutions.",
+      title: exploreMoreSection?.exploreMoreTitle || "Explore more",
+      description: exploreMoreSection?.exploreMoreDescription || "Technology Behind Traffic Monitoring – A deep dive into ATCC, video-based counting, and AI vision solutions.",
       showNewsletter: false,
     },
     default: {
-      title: "CUBE HIGHWAYS",
-      description: "",
+      title: exploreMoreSection?.exploreMoreTitle || "Explore more",
+      description: exploreMoreSection?.exploreMoreDescription || "Technology Behind Traffic Monitoring – A deep dive into ATCC, video-based counting, and AI vision solutions.",
       showNewsletter: false,
     },
   };
 
-  // Ensure the key exists in panelConfig, otherwise use default
-  const configKey = pathname in panelConfig ? pathname : "default";
+  // Check if pathname matches resource detail page pattern
+  const isResourceDetailPage = pathname.startsWith('/resources/details/');
+
+  // Determine config key
+  let configKey: string;
+  if (isResourceDetailPage) {
+    configKey = "/resources/:id";
+  } else if (pathname in panelConfig) {
+    configKey = pathname;
+  } else {
+    configKey = "default";
+  }
+
   const config = panelConfig[configKey];
 
-  const resources = [
+  // Get background image from exploreMoreSection if available (for resource detail pages)
+  const backgroundImage = isResourceDetailPage && exploreMoreSection?.exploreMoreBackgroundImage?.url
+    ? exploreMoreSection.exploreMoreBackgroundImage.url
+    : "/aerial-above-view.webp";
+
+  // Format date helper
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  };
+
+  // Get category label
+  const getCategoryLabel = (category: string) => {
+    const labels: Record<string, string> = {
+      'NEWS': 'NEWS',
+      'BLOG': 'BLOG',
+      'CASESTUDY': 'CASE STUDY',
+      'PODCAST': 'PODCAST',
+    };
+    return labels[category] || '';
+  };
+
+  // Fallback resources if none provided
+  const fallbackResources = [
     {
       category: "NEWS",
       title: "CubeHighways Sets a New Record in Highway Construction",
@@ -185,7 +227,7 @@ export default function ResourcesSection() {
       description:
         "CubeHighways achieved a world record by completing 112.5 lane-km of bituminous concrete paving in just 100 hours.",
       image: "/long-highway2.webp",
-      link: "/resources/cubehighways-record",
+      link: "/resources",
       categoryColor: "",
     },
     {
@@ -195,10 +237,23 @@ export default function ResourcesSection() {
       description:
         "CubeHighways enhances highway safety with AI-powered CCTV and automated incident detection.",
       image: "/long-highway3.webp",
-      link: "/resources/smart-surveillance",
+      link: "/resources",
       categoryColor: "",
     },
   ];
+
+  // Transform dynamic resources to match ResourceCardProps
+  const displayResources = resources && resources.length > 0
+    ? resources.slice(0, 2).map((resource) => ({
+        category: getCategoryLabel(resource.category),
+        title: resource.title,
+        date: formatDate(resource.publishedAt || resource.date),
+        description: resource.description,
+        image: resource.image?.url || "/long-highway2.webp",
+        link: `/resources/details/${resource.slug}`,
+        categoryColor: resource.categoryColor || "",
+      }))
+    : fallbackResources;
 
   return (
     <section className="w-full  md:mb-34">
@@ -207,13 +262,13 @@ export default function ResourcesSection() {
         <LeftPanel
           title={config.title} // Dynamically set title
           description={config.description}
-          backgroundImage="/aerial-above-view.webp"
+          backgroundImage={backgroundImage} // Dynamic background image
           showNewsletter={config.showNewsletter}
         />
 
         {/* Right panel with resource cards */}
         <div className="col-span-1 md:col-span-2 p-4 md:p-12 bg-[#F6F6F6] grid grid-cols-1 md:grid-cols-2 gap-12">
-          {resources.map((resource, index) => (
+          {displayResources.map((resource, index) => (
             <div
               key={index}
               className={`w-full ${index > 0 ? "hidden md:block" : ""}`}

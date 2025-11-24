@@ -139,6 +139,88 @@ const createAdminJS = () => {
           },
           listProperties: ['title', 'category', 'status', 'featured', 'publishedAt'],
           filterProperties: ['title', 'category', 'status', 'featured'],
+          actions: {
+            clone: {
+              actionType: 'record',
+              icon: 'Copy',
+              label: 'Clone',
+              component: false,
+              isVisible: true,
+              isAccessible: true,
+              handler: async (request, response, context) => {
+                const { record, currentAdmin, resource, h } = context;
+
+                try {
+                  console.log('=== CLONE ACTION STARTED ===');
+                  console.log('Record ID:', record.id());
+
+                  // Get the original resource data
+                  const originalResource = await Resource.findById(record.id());
+                  console.log('Original resource found:', originalResource ? 'YES' : 'NO');
+
+                  if (!originalResource) {
+                    console.log('ERROR: Resource not found');
+                    return {
+                      record: record.toJSON(currentAdmin),
+                      notice: {
+                        message: 'Resource not found',
+                        type: 'error',
+                      },
+                    };
+                  }
+
+                  // Create a clone with modified title and slug
+                  const timestamp = Date.now();
+                  const clonedData = {
+                    category: originalResource.category,
+                    title: `${originalResource.title} (Copy)`,
+                    slug: `${originalResource.slug}-copy-${timestamp}`,
+                    description: originalResource.description,
+                    content: originalResource.content,
+                    image: originalResource.image,
+                    author: originalResource.author,
+                    tags: originalResource.tags,
+                    featured: originalResource.featured,
+                    categoryColor: originalResource.categoryColor,
+                    readTime: originalResource.readTime,
+                    status: 'draft', // Set to draft to avoid accidental publishing
+                    date: new Date(),
+                    publishedAt: null,
+                  };
+
+                  console.log('Creating clone with slug:', clonedData.slug);
+
+                  // Create the new resource
+                  const clonedResource = await Resource.create(clonedData);
+                  console.log('Clone created successfully with ID:', clonedResource._id);
+
+                  const redirectUrl = h.resourceUrl({ resourceId: resource._name });
+                  console.log('Redirect URL:', redirectUrl);
+                  console.log('=== CLONE ACTION COMPLETED ===');
+
+                  return {
+                    record: record.toJSON(currentAdmin),
+                    redirectUrl: redirectUrl,
+                    notice: {
+                      message: `Resource cloned successfully! Look for "${clonedData.title}" in the list.`,
+                      type: 'success',
+                    },
+                  };
+                } catch (error) {
+                  console.error('=== CLONE ERROR ===');
+                  console.error('Error message:', error.message);
+                  console.error('Error stack:', error.stack);
+                  return {
+                    record: record.toJSON(currentAdmin),
+                    notice: {
+                      message: `Failed to clone: ${error.message}`,
+                      type: 'error',
+                    },
+                  };
+                }
+              },
+            },
+          },
         },
       },
       {
@@ -268,7 +350,7 @@ const createAdminJS = () => {
               isVisible: { list: false, filter: false, show: false, edit: false },
             },
             filename: {
-              isVisible: { list: true, filter: false, show: true, edit: false },
+              isVisible: { list: false, filter: false, show: true, edit: false },
             },
             originalFilename: {
               isVisible: { list: true, filter: true, show: true, edit: true },
@@ -307,6 +389,7 @@ const createAdminJS = () => {
           listProperties: ['originalFilename', 'mimeType', 'fileSize', 'folder', 'createdAt'],
           filterProperties: ['originalFilename', 'mimeType', 'folder'],
           titleProperty: 'originalFilename', // Show originalFilename in selection dropdowns
+          showProperties: ['originalFilename', 'filename', 'url', 's3Key', 'mimeType', 'fileSize', 'alt', 'caption', 'width', 'height', 'folder', 'uploadedBy', 'createdAt', 'updatedAt'],
         },
         features: [
           uploadFeature({
@@ -328,7 +411,7 @@ const createAdminJS = () => {
               key: 's3Key',
               file: 'file',
               filePath: 'url',
-              filename: 'originalFilename', // Maps uploaded filename to originalFilename
+              filename: 'filename', // Maps uploaded filename to filename field, leaving originalFilename manually editable
               mimeType: 'mimeType',
               size: 'fileSize',
             },

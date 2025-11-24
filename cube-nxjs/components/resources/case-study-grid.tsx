@@ -1,172 +1,293 @@
+"use client";
+
 import type React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import RightArrowIcon from "../icons/right-arrow";
+import { Resource } from "@/utils/routes/Resources";
 
-const CaseStudyGrid: React.FC = () => {
+interface CaseStudyGridProps {
+  resources?: Resource[];
+  activeCategory?: string | null;
+}
+
+// Fallback static resources data
+const fallbackResources: Resource[] = [
+  {
+    id: "1",
+    category: "CASESTUDY",
+    title: "CubeHighway's Technology-Driven Approach to Corporate Social Responsibility",
+    slug: "",
+    description: "CubeHighways merges technology with CSR to drive sustainability, road safety, and conservation.",
+    status: "published",
+    date: "2025-02-11",
+    publishedAt: "2025-02-11",
+    createdAt: "2025-02-11",
+    updatedAt: "2025-02-11",
+  },
+  {
+    id: "2",
+    category: "CASESTUDY",
+    title: "Innovative Traffic Management Solutions for Modern Highways",
+    slug: "",
+    description: "Implementing smart traffic systems to enhance highway efficiency and reduce congestion.",
+    status: "published",
+    date: "2025-02-10",
+    publishedAt: "2025-02-10",
+    createdAt: "2025-02-10",
+    updatedAt: "2025-02-10",
+  },
+  {
+    id: "3",
+    category: "PODCAST",
+    title: "The Future of Highway Infrastructure",
+    slug: "",
+    description: "We integrate AI-driven traffic monitoring, smart highway management.",
+    status: "published",
+    date: "2025-02-09",
+    publishedAt: "2025-02-09",
+    createdAt: "2025-02-09",
+    updatedAt: "2025-02-09",
+  },
+  {
+    id: "4",
+    category: "CASESTUDY",
+    title: "We are building more than just roads",
+    slug: "",
+    description: "We are creating innovative solutions and collaboration growth, and the best of planned technologies.",
+    status: "published",
+    date: "2025-02-08",
+    publishedAt: "2025-02-08",
+    createdAt: "2025-02-08",
+    updatedAt: "2025-02-08",
+  },
+  {
+    id: "5",
+    category: "CASESTUDY",
+    title: "Life at CubeHighways Tech",
+    slug: "",
+    description: "At CubeHighways, we foster teamwork and growth-oriented work environments where innovation makes impact.",
+    status: "published",
+    date: "2025-02-07",
+    publishedAt: "2025-02-07",
+    createdAt: "2025-02-07",
+    updatedAt: "2025-02-07",
+  },
+  {
+    id: "6",
+    category: "PODCAST",
+    title: "Innovation in Highway Safety",
+    slug: "",
+    description: "We are innovators shaping the future of mobility.",
+    status: "published",
+    date: "2025-02-06",
+    publishedAt: "2025-02-06",
+    createdAt: "2025-02-06",
+    updatedAt: "2025-02-06",
+  },
+  {
+    id: "7",
+    category: "CASESTUDY",
+    title: "Advanced Highway Infrastructure Development",
+    slug: "",
+    description: "Employees at CubeHighways gain hands-on experience with AI-driven traffic monitoring, smart highway management, and next-gen transportation solutions.",
+    status: "published",
+    date: "2025-02-05",
+    publishedAt: "2025-02-05",
+    createdAt: "2025-02-05",
+    updatedAt: "2025-02-05",
+  },
+  {
+    id: "8",
+    category: "CASESTUDY",
+    title: "Sustainable Highway Construction Practices",
+    slug: "",
+    description: "CubeHighways merges technology with CSR to drive sustainability, road safety, and conservation.",
+    status: "published",
+    date: "2025-02-04",
+    publishedAt: "2025-02-04",
+    createdAt: "2025-02-04",
+    updatedAt: "2025-02-04",
+  },
+  {
+    id: "9",
+    category: "PODCAST",
+    title: "Smart Highway Technologies",
+    slug: "",
+    description: "Our team thrives in a dynamic, collaborative environment where every project brings new challenges and opportunities to learn and grow.",
+    status: "published",
+    date: "2025-02-03",
+    publishedAt: "2025-02-03",
+    createdAt: "2025-02-03",
+    updatedAt: "2025-02-03",
+  },
+];
+
+const CaseStudyGrid: React.FC<CaseStudyGridProps> = ({ resources, activeCategory }) => {
+  // Use dynamic resources or fallback to static data
+  const dataSource = resources && resources.length > 0 ? resources : fallbackResources;
+
+  // Filter resources based on active category
+  let filteredResources = activeCategory
+    ? dataSource.filter(r => r.category === activeCategory)
+    : dataSource;
+
+  // Sort resources by category priority for grid display
+  // Priority order: CASESTUDY > NEWS > BLOG > PODCAST
+  const categoryPriority: Record<string, number> = {
+    'CASESTUDY': 1,
+    'NEWS': 2,
+    'BLOG': 3,
+    'PODCAST': 4,
+  };
+
+  if (!activeCategory) {
+    // Only sort when showing all categories (no filter active)
+    filteredResources = [...filteredResources].sort((a, b) => {
+      const priorityA = categoryPriority[a.category] || 999;
+      const priorityB = categoryPriority[b.category] || 999;
+
+      // Sort by category priority first, then by date (newest first)
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+
+      const dateA = new Date(a.publishedAt || a.date || 0).getTime();
+      const dateB = new Date(b.publishedAt || b.date || 0).getTime();
+      return dateB - dateA; // Newest first
+    });
+  }
+
+  // Format date helper
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  };
+
+  // Get category label with slash
+  const getCategoryLabel = (category: string) => {
+    const labels: Record<string, string> = {
+      'NEWS': '/News',
+      'BLOG': '/Blog',
+      'CASESTUDY': '/Casestudy',
+      'PODCAST': '/Podcaste',
+    };
+    return labels[category] || '/Resource';
+  };
+
   return (
     <div className="container mx-auto p-4 mb-19">
-      <div className="hidden md:grid grid-cols-3 gap-4 ">
-        {/* First row - 3 squares */}
-        <div className="bg-white p-6 border border-gray-100 shadow-sm flex flex-col">
-          <div className=" flex  flex-grow  text-base text-[#808080] font-medium mb-4 uppercase gap-4">
-            <span>/Casestudy</span>
-            <RightArrowIcon color="#5FBA51" />
-          </div>
+      {/* Desktop Grid - Masonry layout matching the design */}
+      <div className="hidden md:grid grid-cols-3 gap-4">
+        {filteredResources.slice(0, 9).map((resource, index) => {
+          const categoryLabel = getCategoryLabel(resource.category);
+          const displayDate = formatDate(resource.publishedAt || resource.date);
+          const hasLink = resource.slug && resource.slug !== "";
 
-          <h3 className="text-lg font-semibold md:leading-[22px] md:tracking-[0.75px] mb-2">
-            {`CubeHighway's Technology-Driven Approach to Corporate Social Responsibility`}
-          </h3>
+          // Define specific card layouts based on index to match the image
+          const cardLayouts = [
+            // Row 1
+            { gridClass: '', bgClass: 'bg-white', hasImage: false, height: 'md:h-[339px]' }, // Card 1
+            { gridClass: '', bgClass: 'bg-white', hasImage: false, height: 'md:h-[339px]' }, // Card 2
+            { gridClass: '', bgClass: 'bg-[#02472F]', hasImage: false, height: 'md:h-[339px]', textWhite: true }, // Card 3
+            // Row 2
+            { gridClass: '', bgClass: '', hasImage: true, height: 'md:h-[319px]', imageUrl: '/career-explore-img3.webp' }, // Card 4 - with background image
+            { gridClass: 'col-span-2', bgClass: '', hasImage: true, height: 'md:h-[319px]', imageUrl: '/career-explore-img1.webp', overlay: true }, // Card 5 - large with overlay
+            // Row 3
+            { gridClass: 'row-span-2', bgClass: '', hasImage: true, height: 'md:h-[666px]', imageUrl: '/career-explore-img2.webp', textWhite: true }, // Card 6 - tall
+            { gridClass: 'col-span-2', bgClass: 'bg-white', hasImage: false, height: 'md:h-[320px]' }, // Card 7 - wide
+            // Row 4
+            { gridClass: '', bgClass: 'bg-white', hasImage: false, height: 'md:h-[339px]' }, // Card 8
+            { gridClass: '', bgClass: 'bg-accent', hasImage: false, height: 'md:h-[339px]', textWhite: true }, // Card 9
+          ];
 
-          <p className="text-lg text-black/60 mb-2">11/02/2025</p>
+          const layout = cardLayouts[index] || cardLayouts[0];
+          const cardClassName = `${layout.gridClass} ${layout.hasImage ? 'relative' : layout.bgClass} p-6 ${layout.hasImage ? '' : 'border border-gray-100 shadow-sm'} flex flex-col ${layout.height} ${hasLink ? 'cursor-pointer hover:shadow-lg transition-shadow' : ''} group overflow-hidden`;
 
-          <p className="text-lg text-black/60">
-            CubeHighways merges technology with CSR to drive sustainability,
-            road safety, and conservation.
-          </p>
-        </div>
+          const cardContent = (
+            <>
+              {/* Background Image */}
+              {layout.hasImage && (
+                <>
+                  <Image
+                    src={resource.image?.url || layout.imageUrl || '/top-view-bridge.webp'}
+                    alt={resource.image?.alt || resource.title}
+                    fill
+                    className="object-cover"
+                  />
+                  {layout.overlay && (
+                    <div className="absolute inset-0 bg-green-600/60"></div>
+                  )}
+                  <div className={`relative z-10 flex flex-col ${layout.overlay ? 'justify-end text-white' : 'justify-between'} h-full`}>
+                    {layout.overlay ? (
+                      <>
+                        <h2 className="text-2xl font-bold mb-2">{resource.title}</h2>
+                        <div className="flex text-base text-white font-medium uppercase gap-4 mb-2">
+                          <span>{categoryLabel}</span>
+                          <RightArrowIcon color="#FFFFFF" />
+                        </div>
+                        <p className="md:text-lg md:w-[40%]">{resource.description}</p>
+                      </>
+                    ) : (
+                      <>
+                        <div className="bg-black/30 flex flex-col justify-around text-white px-8 gap-3 mt-auto">
+                          <h3 className="text-[32px] md:leading-[40px] font-bold">{resource.title}</h3>
+                          <div className="flex text-base text-white font-medium uppercase gap-4">
+                            <span>{categoryLabel}</span>
+                            <RightArrowIcon color="#FFFFFF" />
+                          </div>
+                          <p className="text-lg font-['Glacier_Indifference'] md:leading-[24px]">{resource.description}</p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </>
+              )}
 
-        <div className="bg-white p-6 border border-gray-100 shadow-sm flex flex-col">
-          <div className=" flex  flex-grow  text-base text-[#808080] font-medium mb-4 uppercase gap-4">
-            <span>/Casestudy</span>
-            <RightArrowIcon color="#5FBA51" />
-          </div>
+              {/* Regular Card Content */}
+              {!layout.hasImage && (
+                <>
+                  <div className={`flex flex-grow text-base ${layout.textWhite ? 'text-white' : 'text-[#808080]'} font-medium mb-4 uppercase gap-4`}>
+                    <span>{categoryLabel}</span>
+                    <RightArrowIcon color={layout.textWhite ? '#FFFFFF' : '#5FBA51'} />
+                  </div>
 
-          <h3 className=" text-lg font-semibold md:leading-[22px] md:tracking-[0.75px] mb-2">
-            {`CubeHighway's Technology-Driven Approach to Corporate Social Responsibility`}
-          </h3>
+                  <h3 className={`text-lg font-semibold md:leading-[22px] md:tracking-[0.75px] mb-2 ${layout.textWhite ? 'text-white' : 'text-black'} ${hasLink ? 'group-hover:text-accent transition-colors' : ''}`}>
+                    {resource.title}
+                  </h3>
 
-          <p className="text-lg text-black/60 mb-2">11/02/2025</p>
+                  {displayDate && (
+                    <p className={`text-lg ${layout.textWhite ? 'text-white/80' : 'text-black/60'} mb-2`}>
+                      {displayDate}
+                    </p>
+                  )}
 
-          <p className="text-lg text-black/60">
-            CubeHighways merges technology with CSR to drive sustainability,
-            road safety, and conservation.
-          </p>
-        </div>
+                  <p className={`text-lg ${layout.textWhite ? 'text-white/90' : 'text-black/60'} line-clamp-3`}>
+                    {resource.description}
+                  </p>
+                </>
+              )}
+            </>
+          );
 
-        <div className=" flex flex-col-reverse bg-[#02472F] p-6 text-white relative md:h-[339px]">
-          <div className="">
-            <div className="flex text-base text-[#808080] font-medium mb-4 uppercase gap-4 ">
-              <span>/Podcaste</span>
-              <RightArrowIcon color="#FFFFFF" />
+          return hasLink ? (
+            <Link
+              key={resource.id}
+              href={`/resources/details/${resource.slug}`}
+              className={cardClassName}
+            >
+              {cardContent}
+            </Link>
+          ) : (
+            <div
+              key={resource.id}
+              className={cardClassName}
+            >
+              {cardContent}
             </div>
-            <p className="text-lg md:w-[80%] ">
-              We integrate AI-driven traffic monitoring, smart highway
-              management.
-            </p>
-          </div>
-        </div>
-
-        {/* Second row - Rectangle (2 cols) + Square */}
-        <div className="relative md:h-[319px]">
-          <Image
-            src="/career-explore-img3.webp"
-            alt="Aerial view"
-            width={300}
-            height={300}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute  bottom-12 left-4  bg-black/30  flex flex-col justify-around text-white px-12 gap-3">
-            <h3 className="text-[32px] md:leading-[40px] font-bold  ">
-              We are building more than just roads
-            </h3>
-            <div className="flex text-base text-white font-medium uppercase gap-4">
-              <span>/Casestudy</span>
-              <RightArrowIcon color="#FFFFFF" />
-            </div>
-            <p className="text-lg font-['Glacier_Indifference'] md:leading-[24px] md:w-[75%]">
-              We are creating innovative solutions and collaboration growth, and
-              the best of planned technologies.
-            </p>
-          </div>
-        </div>
-
-        <div className=" bg-[#FBFBFB] col-span-2 relative h-[200px] md:h-[319px]">
-          <Image
-            src="/career-explore-img1.webp"
-            alt="Team at CubeHighways"
-            fill
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-green-600/60 p-6 flex flex-col justify-end text-white">
-            <h2 className="text-2xl font-bold">LIFE AT CUBEHIGHWAYS TECH</h2>
-            <div className="flex text-base text-white font-medium uppercase gap-4">
-              <span>/Casestudy</span>
-              <RightArrowIcon color="#FFFFFF" />
-            </div>
-            <p className="md:text-lg md:w-[40%] mt-2">
-              At CubeHighways, we foster teamwork and growth-oriented work
-              environments where innovation makes impact.
-            </p>
-          </div>
-        </div>
-
-        {/* Third row - Vertical Rectangle (spans to 4th row) + Horizontal Rectangle (2 cols) */}
-        <div className="row-span-2 relative md:h-[666px]">
-          <Image
-            src="/career-explore-img2.webp"
-            alt="Highway"
-            width={300}
-            height={600}
-            className="w-full h-full object-cover"
-          />
-
-          <div className="absolute inset-0 bg-gray/40 p-6 flex flex-col justify-end text-white">
-            <div className="flex text-base text-[#808080] font-medium mb-4 uppercase gap-4  px-8">
-              <span>/Podcaste</span>
-              <RightArrowIcon color="#FFFFFF" />
-            </div>
-            <p className="text-lg  md:w-[80%] mb-4 px-8">
-              We are innovators shaping the future of mobility
-            </p>
-          </div>
-        </div>
-
-        <div className="col-span-2 content-end bg-white p-6 shadow-sm flex flex-col">
-          <div className=" flex  flex-grow  text-base text-[#808080] font-medium mb-4 uppercase gap-4">
-            <span>/Casestudy</span>
-            <RightArrowIcon color="#5FBA51" />
-          </div>
-          <h2 className=" md:text-[42px] md:leading-[42px] md:tracking-[0.75px] md:uppercase mb-2">
-            LIFE AT <br />
-            <span>CUBEHIGHWAYS TECH</span>
-          </h2>
-          <p className="text-lg text-black/60 mb-2">11/02/2025</p>
-          <p className="text-lg text-black/60 md:leading-[24px] md:tracking-[0.25px] md:w-[80%]">
-            Employees at CubeHighways gain hands-on experience with AI-driven
-            traffic monitoring, smart highway management, and next-gen
-            transportation solutions.
-          </p>
-        </div>
-
-        {/* Fourth row - (First col is already covered by row-span-2) + Two squares */}
-        <div className="bg-white p-6 border border-gray-100 shadow-sm flex flex-col">
-          <div className=" flex  flex-grow  text-base text-[#808080] font-medium mb-4 uppercase gap-4">
-            <span>/Casestudy</span>
-            <RightArrowIcon color="#5FBA51" />
-          </div>
-
-          <h3 className=" text-lg font-semibold md:leading-[22px] md:tracking-[0.75px] mb-2">
-            {`CubeHighway's Technology-Driven Approach to Corporate Social Responsibility`}
-          </h3>
-
-          <p className="text-lg text-black/60 mb-2">11/02/2025</p>
-
-          <p className="text-lg text-black/60">
-            CubeHighways merges technology with CSR to drive sustainability,
-            road safety, and conservation.
-          </p>
-        </div>
-
-        <div className="bg-accent p-6  flex flex-col justify-end">
-          <div className="flex text-base text-[#808080] font-medium mb-4 uppercase gap-4 ">
-            <span>/Podcaste</span>
-            <RightArrowIcon color="#FFFFFF" />
-          </div>
-          <p className="text-lg font-['Glacier_Indifference'] md:leading-[24px] md:tracking-[0.25px] text-white">
-            Our team thrives in a dynamic, collaborative environment where every
-            project brings new challenges and opportunities to learn and grow
-          </p>
-        </div>
+          );
+        })}
       </div>
       {/* MOBILE ONLY: Horizontally scrollable 2-row layout */}
       <div className="md:hidden overflow-x-auto hide-scrollbar">
@@ -176,51 +297,65 @@ const CaseStudyGrid: React.FC = () => {
             height: "700px", // Two rows of 320px + gap
           }}
         >
-          {/* Container for cards grouped in columns (2 cards stacked vertically) */}
-          {[...Array(5)].map((_, colIdx) => (
-            <div key={colIdx} className="flex flex-col gap-y-4">
-              {[...Array(2)].map((_, rowIdx) => {
-                const index = colIdx * 2 + rowIdx;
-                return (
-                  <div
-                    key={index}
-                    className="w-[220px] h-[320px] bg-[#FBFBFB] p-4 flex flex-col justify-between flex-shrink-0"
-                  >
-                    <div className="flex text-base text-[#808080] font-medium uppercase gap-2">
-                      <span>/Casestudy</span>
-                      <RightArrowIcon color="#5FBA51" />
+          {/* Group resources into columns of 2 */}
+          {Array.from({ length: Math.ceil(filteredResources.length / 2) }).map((_, colIdx) => {
+            const startIdx = colIdx * 2;
+            const columnResources = filteredResources.slice(startIdx, startIdx + 2);
+
+            return (
+              <div key={colIdx} className="flex flex-col gap-y-4">
+                {columnResources.map((resource) => {
+                  const categoryLabel = getCategoryLabel(resource.category);
+                  const displayDate = formatDate(resource.publishedAt || resource.date);
+                  const hasLink = resource.slug && resource.slug !== "";
+
+                  const content = (
+                    <>
+                      {/* Show image if available */}
+                      {resource.image?.url && (
+                        <div className="relative w-full h-[120px] mb-3 -mx-4 -mt-4">
+                          <Image
+                            src={resource.image.url}
+                            alt={resource.image.alt || resource.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="flex text-base text-[#808080] font-medium uppercase gap-2">
+                        <span>{categoryLabel}</span>
+                        <RightArrowIcon color="#5FBA51" />
+                      </div>
+                      <h3 className="text-md font-semibold leading-tight line-clamp-3">
+                        {resource.title}
+                      </h3>
+                      <p className="text-sm text-black/60">{displayDate}</p>
+                      <p className="text-sm text-black/60 line-clamp-3">
+                        {resource.description}
+                      </p>
+                    </>
+                  );
+
+                  return hasLink ? (
+                    <Link
+                      key={resource.id}
+                      href={`/resources/details/${resource.slug}`}
+                      className="w-[220px] h-[320px] bg-[#FBFBFB] p-4 flex flex-col justify-between flex-shrink-0 hover:shadow-lg transition-shadow"
+                    >
+                      {content}
+                    </Link>
+                  ) : (
+                    <div
+                      key={resource.id}
+                      className="w-[220px] h-[320px] bg-[#FBFBFB] p-4 flex flex-col justify-between flex-shrink-0"
+                    >
+                      {content}
                     </div>
-                    <h3 className="text-md font-semibold leading-tight">
-                      Card {index + 1} Title Goes Here
-                    </h3>
-                    <p className="text-sm text-black/60">11/02/2025</p>
-                    <p className="text-sm text-black/60">
-                      Brief content describing the purpose or content of this
-                      card.
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-        <div className=" md:hidden text-[#808080] text-base uppercase  flex gap-6 justify-end ">
-          SEE ALL
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <path
-              d="M17.9117 17.3866L9.43543 17.7778M17.9117 17.3866L17.5205 8.91034M17.9117 17.3866L10.1527 10.3121M6.08846 6.60647L7.93584 8.29086"
-              stroke="#5FBA51"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+                  );
+                })}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

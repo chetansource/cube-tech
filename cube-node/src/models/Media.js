@@ -47,6 +47,11 @@ const mediaSchema = new mongoose.Schema({
 mediaSchema.index({ originalFilename: 'text', alt: 'text' });
 mediaSchema.index({ folder: 1, createdAt: -1 });
 
+// Add toString method for AdminJS display
+mediaSchema.methods.toString = function() {
+  return this.originalFilename || this.filename || this._id.toString();
+};
+
 // Pre-save hook to set defaults
 mediaSchema.pre('save', function(next) {
   // ALWAYS extract filename from s3Key if s3Key exists

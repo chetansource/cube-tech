@@ -5,8 +5,32 @@ import type { Faq } from "@/utils/types";
 import RightArrowIcon from "./icons/right-arrow"
 import { getFaqs } from "@/utils/routes/faq";
 
+// Fallback FAQs if backend data doesn't load
+const fallbackFaqs: Faq[] = [
+  {
+    question: "What services does CubeHighways offer?",
+    answer: "CubeHighways provides comprehensive highway infrastructure solutions including AI-powered traffic monitoring, smart pavement management, automated incident detection, and sustainable construction practices."
+  },
+  {
+    question: "How does CubeHighways use AI in traffic management?",
+    answer: "We integrate advanced AI-driven solutions for real-time traffic monitoring, predictive maintenance, and automated incident detection to enhance highway safety and efficiency."
+  },
+  {
+    question: "What makes CubeHighways different from other infrastructure companies?",
+    answer: "We combine cutting-edge technology with sustainable practices, offering innovative solutions like IoT-enabled pavement monitoring, AI-powered traffic systems, and eco-friendly construction methods."
+  },
+  {
+    question: "Does CubeHighways work on existing highways or only new projects?",
+    answer: "We work on both new highway construction projects and enhancement of existing infrastructure, including retrofitting smart technology systems on operational highways."
+  },
+  {
+    question: "How can I get in touch with CubeHighways for a project inquiry?",
+    answer: "You can reach us through our contact page, email us directly, or call our office. Our team will respond within 24-48 hours to discuss your project requirements."
+  }
+];
+
 export default function Faq() {
-  const [faqs, setFaqs] = useState<Faq[]>([]);
+  const [faqs, setFaqs] = useState<Faq[]>(fallbackFaqs);
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   useEffect(() => {
@@ -18,6 +42,7 @@ export default function Faq() {
         }
       } catch (error) {
         console.error("Error fetching FAQs:", error);
+        // Keep fallback FAQs on error
       }
     };
 

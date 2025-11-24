@@ -40,6 +40,14 @@ const resourceSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  companyName: {
+    type: String,
+    trim: true,
+  },
+  duration: {
+    type: String,
+    trim: true,
+  },
   tags: [String],
   featured: {
     type: Boolean,
