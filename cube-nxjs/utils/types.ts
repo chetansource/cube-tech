@@ -99,6 +99,8 @@ export interface Testimonial {
   avatar?: Media;
   position?: string;
   rating?: number;
+  order: number;
+  active: boolean;
 }
 
 export interface TestimonialsSection {

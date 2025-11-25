@@ -10,41 +10,101 @@ import { Testimonial } from "@/components/testimonial";
 import ResourceDevelopment from "@/components/resource-development";
 import Projects from "@/components/projects";
 import Stats from "@/components/stats";
+import { getHomepageData } from "@/utils/routes/Homepage";
 
-export default function Home() {
+export default async function Home() {
+  // Fetch all homepage data from backend
+  const homepageData = await getHomepageData();
+
+  // Format hero title - split by keywords and format properly
+  const formatHeroTitle = (heading: string) => {
+    // Check if heading contains the expected keywords
+    if (heading.includes("BUSINESS") && heading.includes("PLANET")) {
+      const parts = heading.split(/\s+/);
+      const businessIndex = parts.findIndex(p => p.toUpperCase().includes("BUSINESS"));
+      const planetIndex = parts.findIndex(p => p.toUpperCase().includes("PLANET"));
+
+      return (
+        <>
+          <div className="md:flex gap-4 md:pt-105">
+            {parts.slice(0, businessIndex).join(" ")}{" "}
+            <div className="text-white font-semibold italic my-5 md:my-0">
+              {parts[businessIndex]}
+            </div>
+          </div>
+          <div className="md:flex gap-4">
+            {parts.slice(businessIndex + 1, planetIndex).join(" ")}{" "}
+            <div className="text-white font-semibold italic my-5 md:my-0">
+              {parts[planetIndex]}
+            </div>
+          </div>
+        </>
+      );
+    }
+    // If format doesn't match, just return the text
+    return <div>{heading}</div>;
+  };
+
   return (
     <div className=" min-h-screen ">
       <Header />
       <Hero
-        backgroundImage="/top-view-bridge.webp"
+        backgroundImage={homepageData.hero?.backgroundImage?.url || "/top-view-bridge.webp"}
         title={
-          <>
-            <div className="md:flex gap-4 md:pt-105">
-              WE&#39;RE IN{" "}
-              <div className=" text-white font-semibold italic my-5 md:my-0">
-                BUSINESS
+          homepageData.hero?.heading ? formatHeroTitle(homepageData.hero.heading) : (
+            <>
+              <div className="md:flex gap-4 md:pt-105">
+                WE&#39;RE IN{" "}
+                <div className=" text-white font-semibold italic my-5 md:my-0">
+                  BUSINESS
+                </div>
               </div>
-            </div>
-            <div className="md:flex gap-4">
-              TO HELP OUR{" "}
-              <div className="text-white font-semibold italic my-5 md:my-0">
-                PLANET
+              <div className="md:flex gap-4">
+                TO HELP OUR{" "}
+                <div className="text-white font-semibold italic my-5 md:my-0">
+                  PLANET
+                </div>
               </div>
-            </div>
-          </>
+            </>
+          )
         }
-        subtitle="We provide consulting, planning and engineering design services."
-        ctaText="Explore Services"
-        ctaLink="services"
+        subtitle={homepageData.hero?.description || "We provide consulting, planning and engineering design services."}
+        ctaText={homepageData.hero?.ctaText || "Explore Services"}
+        ctaLink={homepageData.hero?.ctaLink || "services"}
       />
-
-      <Solutions />
-      <ServiceSection />
-      <Partners />
-      <Projects />
-      <Stats />
-      <ResourceDevelopment />
-      <Testimonial />
+      <Partners partners={homepageData.partners} />
+      <Solutions
+        solutions={homepageData.solutions}
+        sectionConfig={homepageData.solutionsSection ? {
+          backgroundImage: homepageData.solutionsSection.backgroundImage?.url,
+          heading: homepageData.solutionsSection.heading,
+          highlightedWord: homepageData.solutionsSection.highlightedWord,
+          ctaText: homepageData.solutionsSection.ctaText,
+          ctaLink: homepageData.solutionsSection.ctaLink,
+        } : undefined}
+      />
+      <ServiceSection
+        services={homepageData.services}
+        sectionConfig={homepageData.servicesSection ? {
+          bannerImage: homepageData.servicesSection.image?.url,
+          heading: homepageData.servicesSection.title?.split(' ').slice(0, -1).join(' '),
+          highlightedWord: homepageData.servicesSection.title?.split(' ').pop(),
+          description: homepageData.servicesSection.description,
+        } : undefined}
+      />
+      <Projects projects={homepageData.projects} />
+      <Stats stats={homepageData.stats} />
+      <ResourceDevelopment
+        resources={homepageData.featuredResources}
+        sectionConfig={homepageData.rdSection ? {
+          backgroundImage: homepageData.rdSection.exploreMoreBackgroundImage?.url,
+          heading: homepageData.rdSection.exploreMoreTitle?.split(' ').slice(0, -1).join(' '),
+          highlightedWord: homepageData.rdSection.exploreMoreTitle?.split(' ').pop(),
+          buttonText: homepageData.rdSection.exploreMoreDescription,
+          buttonLink: "/resources",
+        } : undefined}
+      />
+      <Testimonial testimonials={homepageData.testimonials} />
       <Awards />
       <ResourcesSection />
       <section id="faq">

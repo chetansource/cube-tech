@@ -5,7 +5,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import RightArrowIcon from './icons/right-arrow';
 import LeftArrowIcon from './icons/left-arrow';
 import Image from 'next/image';
-import type { Testimonial as TestimonialType } from '@/utils/types';
+import type { Testimonial as TestimonialType } from '@/utils/routes/Homepage';
 
 interface Testimonial {
   id: string | number;

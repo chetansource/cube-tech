@@ -118,6 +118,8 @@ export const getAboutPageContent = async (slug: string) => {
                 }
                 position
                 rating
+                order
+                active
               }
             }
           }

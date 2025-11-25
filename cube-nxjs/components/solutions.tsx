@@ -1,123 +1,169 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import RightArrowIcon from "./icons/right-arrow";
+import PolygonIcon from "./icons/polygon";
 
-export default function Solutions() {
-  const solutions = [
-    {
-      id: "01",
-      title: "Advanced Video-Based Traffic Counting & AI Vision Solutions",
-      description:
-        "CubeTech revolutionizes traffic data collection with advanced AI-driven, video-based counting solutions. Since 2010, it has set industry standards by replacing manual counts with auditable video/ATCC technology. Its innovations ensure high accuracy and NHAI compliance.",
-      image: "/long-highway-1.webp",
-    },
-    {
-      id: "02",
-      title: "Innovation in Pavement Evaluation, Material and Technology",
-      description:
-        "Our advanced pavement evaluation technologies use non-destructive testing methods to analyze road conditions with precision. We develop sustainable, durable materials that withstand heavy traffic and extreme weather conditions while reducing environmental impact.",
-      image: "/long-highway-1.webp",
-    },
-    {
-      id: "03",
-      title: "Project Management Consultancy",
-      description:
-        "Our expert consultants provide end-to-end project management services for infrastructure development. From initial planning to execution and monitoring, we ensure timely delivery, cost efficiency, and adherence to quality standards across all project phases.",
-      image: "/long-highway-1.webp",
-    },
-  ];
+interface Solution {
+  id: string;
+  idString: string;
+  title: string;
+  description: string;
+  image: {
+    url: string;
+    alt?: string;
+  };
+}
 
-  const [activeSolution, setActiveSolution] = useState<string | null>(null);
+interface SolutionsSectionConfig {
+  backgroundImage?: string;
+  heading?: string;
+  highlightedWord?: string;
+  ctaText?: string;
+  ctaLink?: string;
+}
+
+interface SolutionsProps {
+  solutions?: Solution[];
+  sectionConfig?: SolutionsSectionConfig;
+}
+
+// Fallback solutions for development
+const defaultSolutions = [
+  {
+    id: "1",
+    idString: "01",
+    title: "Advanced Video-Based Traffic Counting & AI Vision Solutions",
+    description:
+      "CubeTech revolutionizes traffic data collection with advanced AI-driven, video-based counting solutions. Since 2010, it has set industry standards by replacing manual counts with auditable video/ATCC technology. Its innovations ensure high accuracy and NHAI compliance.",
+    image: { url: "/long-highway-1.webp" },
+  },
+  {
+    id: "2",
+    idString: "02",
+    title: "Innovation in Pavement Evaluation, Material and Technology",
+    description:
+      "Our advanced pavement evaluation technologies use non-destructive testing methods to analyze road conditions with precision. We develop sustainable, durable materials that withstand heavy traffic and extreme weather conditions while reducing environmental impact.",
+    image: { url: "/long-highway-1.webp" },
+  },
+  {
+    id: "3",
+    idString: "03",
+    title: "Project Management Consultancy",
+    description:
+      "Our expert consultants provide end-to-end project management services for infrastructure development. From initial planning to execution and monitoring, we ensure timely delivery, cost efficiency, and adherence to quality standards across all project phases.",
+    image: { url: "/long-highway-1.webp" },
+  },
+];
+
+export default function Solutions({ solutions: propSolutions, sectionConfig }: SolutionsProps) {
+  // Use prop solutions or fallback to defaults if empty
+  const solutions = propSolutions && propSolutions.length > 0 ? propSolutions : defaultSolutions;
+
+  // Default section configuration
+  const config = {
+    backgroundImage: sectionConfig?.backgroundImage || "/homepage-solutions-banner.png",
+    heading: sectionConfig?.heading || "SOLUTIONS THAT",
+    highlightedWord: sectionConfig?.highlightedWord || "CHANGES",
+    ctaText: sectionConfig?.ctaText || "READ MORE",
+    ctaLink: sectionConfig?.ctaLink || "/services",
+  };
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Auto-scroll functionality
+  useEffect(() => {
+    if (solutions.length === 0) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % solutions.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [solutions.length]);
+
+  const currentSolution = solutions[currentIndex] || solutions[0];
 
   return (
-    <section className="bg-white pb-20 md:pb-[156px] relative overflow-hidden">
-      <div className="px-4 md:px-6 relative">
-        <div className="grid grid-cols-1 md:grid-cols-10">
-          {/* Left section */}
-          <div className="md:col-span-5 md:absolute md:left-12 top-0 relative">
-            <h2 className="text-2xl md:text-[46px] font-light tracking-[3.75px] leading-[31px] md:leading-[67px]">
-              SOLUTIONS THAT
+    <section className="bg-white relative overflow-hidden min-h-screen pb-16">
+      <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
+        {/* Left section - Dark teal background */}
+        <div className=" relative flex flex-col justify-start pt-24 lg:pt-32 px-8 md:px-12 lg:px-16 xl:px-24 pb-16">
+          {/* Background image */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src={config.backgroundImage}
+              alt="Solutions background"
+              fill
+              className="object-cover "
+            />
+          </div>
+
+          {/* Polygon decoration - bottom right */}
+          <div className="absolute bottom-0 right-0 hidden lg:block">
+            <PolygonIcon />
+          </div>
+
+          <div className="relative z-10">
+            <h2 className="text-white text-3xl md:text-4xl lg:text-[46px] font-light tracking-[3.75px] leading-tight lg:leading-[67px] mb-8">
+              {config.heading}
               <br />
-              MAKE
-              <span className="text-accent italic font-semibold px-2 md:px-4">
-                CHANGES
+              <span className="font-light">MAKE </span>
+              <span className="text-[#5FBA51] italic font-semibold">
+                {config.highlightedWord}
               </span>
             </h2>
 
             <Link
-              href="/services"
-              className="inline-flex items-center text-accent mt-6 group gap-[40px]"
+              href={config.ctaLink}
+              className="inline-flex items-center bg-[#5FBA51] text-white group gap-3 hover:gap-6 transition-all duration-300 px-6 py-3 rounded"
             >
-              <span className="mr-2">READ MORE</span>
-              <RightArrowIcon color={"#5FBA51"} />
+              <span className="text-sm tracking-wider">{config.ctaText}</span>
+              <RightArrowIcon color={"#FFFFFF"} />
             </Link>
           </div>
+        </div>
 
-          {/* Right section */}
-          <div className="md:col-start-6 md:col-span-5 cursor-pointer">
+        {/* Right section - White background with content */}
+        <div className="bg-white relative flex flex-col justify-between px-8 md:px-12 lg:px-16 xl:px-24 py-16 lg:py-20">
+          {/* Content area */}
+          <div className="flex-1 flex flex-col justify-center relative z-10">
+            {/* Solution title */}
+            <h3 className="text-xl md:text-2xl lg:text-[28px] font-normal leading-tight tracking-wide mb-6 text-black">
+              {currentSolution.title}
+            </h3>
+
+            {/* Solution description */}
+            <p className="text-base md:text-lg text-black/60 leading-relaxed tracking-wide mb-8 max-w-2xl">
+              {currentSolution.description}
+            </p>
+
+            {/* Solution image */}
+            <div className="relative h-64 md:h-80 lg:h-96 w-full overflow-hidden rounded-sm mb-8">
+              <Image
+                src={currentSolution.image?.url || "/placeholder.svg"}
+                alt={currentSolution.image?.alt || currentSolution.title}
+                fill
+                className="object-cover transition-transform duration-700"
+              />
+            </div>
+          </div>
+
+          {/* Navigation dots - positioned on right side */}
+          <div className="flex flex-col items-end gap-3 absolute right-8 md:right-12 lg:right-16 top-1/2 -translate-y-1/2 z-20">
             {solutions.map((solution, index) => (
-              <div
+              <button
                 key={solution.id}
-                className="relative group"
-                onMouseEnter={() => setActiveSolution(solution.id)}
-                onMouseLeave={() => setActiveSolution(null)}
-              >
-                <div
-                  className={`${index !== 0 ? "border-t border-gray-100" : ""}`}
-                >
-                  <div className="flex flex-col items-start mb-4">
-                    <div className="text-gray-100 text-[94px] font-medium">
-                      {solution.id}.
-                    </div>
-
-                    <div className="flex flex-row w-full justify-between">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-['Glacier_Indifference'] font-normal leading-[24px] tracking-[0.25px]">
-                          {solution.title}
-                        </h3>
-                      </div>
-
-                      {solution.id !== activeSolution && (
-                        <Link
-                          href={`/solutions/${solution.id}`}
-                          className="text-accent md:mr-25"
-                        >
-                          <RightArrowIcon color={"#5FBA51"} />
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Expand content smoothly */}
-                  <div
-                    className={`transition-all duration-900 ease-in-out overflow-hidden ${
-                      solution.id === activeSolution
-                        ? "max-h-[1000px] opacity-100"
-                        : "max-h-0 opacity-0"
-                    }`}
-                  >
-                    <div className="w-[90%] space-y-6">
-                      <p className="text-base text-black/50 leading-[24px] tracking-[0.25px]">
-                        {solution.description}
-                      </p>
-                      <div className="relative h-64 w-full overflow-hidden">
-                        <Image
-                          src={solution.image || "/placeholder.svg"}
-                          alt={solution.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Divider */}
-                <div className="relative w-screen md:-mx-[57vw] h-[1px] bg-[#5FBA51]"></div>
-              </div>
+                onClick={() => setCurrentIndex(index)}
+                className={`transition-all duration-300 ${
+                  index === currentIndex
+                    ? "h-20 w-1 bg-[#5FBA51]"
+                    : "h-12 w-1 bg-gray-300 hover:bg-gray-400"
+                }`}
+                aria-label={`Go to solution ${index + 1}`}
+              />
             ))}
           </div>
         </div>

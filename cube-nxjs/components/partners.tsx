@@ -3,33 +3,56 @@
 import { useRef, useEffect } from "react";
 import Image from "next/image";
 
-const partners = [
-  { name: "Partner 1", logo: "/our-partner-1.webp" },
-  { name: "Partner 2", logo: "/our-partner-2.webp" },
-  { name: "Partner 3", logo: "/our-partner-3.webp" },
-  { name: "Partner 4", logo: "/our-partner-1.webp" },
-  { name: "Partner 5", logo: "/our-partner-2.webp" },
-  { name: "Partner 6", logo: "/our-partner-3.webp" },
-  { name: "Partner 7", logo: "/our-partner-1.webp" },
-  { name: "Partner 8", logo: "/our-partner-3.webp" },
+interface Partner {
+  id: string;
+  name: string;
+  logo: {
+    url: string;
+    alt?: string;
+  };
+  website?: string;
+}
+
+interface PartnersProps {
+  partners?: Partner[];
+}
+
+// Fallback partners for development
+const defaultPartners = [
+  { id: "1", name: "Partner 1", logo: { url: "/our-partner-1.webp" } },
+  { id: "2", name: "Partner 2", logo: { url: "/our-partner-2.webp" } },
+  { id: "3", name: "Partner 3", logo: { url: "/our-partner-3.webp" } },
+  { id: "4", name: "Partner 4", logo: { url: "/our-partner-1.webp" } },
+  { id: "5", name: "Partner 5", logo: { url: "/our-partner-2.webp" } },
+  { id: "6", name: "Partner 6", logo: { url: "/our-partner-3.webp" } },
+  { id: "7", name: "Partner 7", logo: { url: "/our-partner-1.webp" } },
+  { id: "8", name: "Partner 8", logo: { url: "/our-partner-3.webp" } },
 ];
 
-export default function Partners() {
+export default function Partners({ partners: propPartners }: PartnersProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Use prop partners or fallback to defaults
+  const partners = propPartners && propPartners.length > 0 ? propPartners : defaultPartners;
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
 
+    // Start with logos visible on screen (from right edge with padding)
+    const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
     let scrollPosition = 0;
     let animationId: number;
-    const speed = 0.5;
+    const speed = 1; // Increased speed for smoother visible movement
 
     const scroll = () => {
       scrollPosition += speed;
-      if (scrollPosition >= el.scrollWidth / 2) {
+
+      // Reset when first set of logos goes off screen (since we duplicate 3x)
+      if (scrollPosition >= el.scrollWidth / 3) {
         scrollPosition = 0;
       }
+
       el.style.transform = `translateX(-${scrollPosition}px)`;
       animationId = requestAnimationFrame(scroll);
     };
@@ -40,8 +63,8 @@ export default function Partners() {
   }, []);
 
   return (
-    <section className="bg-white py-10 overflow-hidden pb-17 md:pb-[230px]">
-      <div className="flex items-center w-full whitespace-nowrap overflow-hidden">
+    <section className="bg-white py-10 overflow-hidden pb-17 md:pb-[60px]">
+      <div className="flex items-center w-full whitespace-nowrap overflow-hidden pr-16">
         {/* Heading */}
         <div className="pl-4 md:pl-[61px] pr-8 flex-shrink-0 text-2xl md:text-4xl font-light tracking-wide">
           OUR <span className="text-accent font-medium pl-2">PARTNERS</span>
@@ -51,17 +74,17 @@ export default function Partners() {
         <div className="overflow-hidden w-full">
           <div
             ref={scrollRef}
-            className="flex items-center gap-16 px-8"
-            style={{ willChange: "transform", transform: "translateX(0)" }}
+            className="flex items-center gap-16 px-8 justify-end"
+            style={{ willChange: "transform" }}
           >
-            {[...partners, ...partners].map((partner, index) => (
+            {[...partners, ...partners, ...partners].map((partner, index) => (
               <div
-                key={index}
+                key={`${partner.id}-${index}`}
                 className="flex-shrink-0 h-20 flex items-center justify-center"
               >
                 <Image
-                  src={partner.logo || "/placeholder.svg"}
-                  alt={partner.name}
+                  src={partner.logo?.url || "/placeholder.svg"}
+                  alt={partner.logo?.alt || partner.name}
                   width={120}
                   height={60}
                   className="object-contain h-full"
