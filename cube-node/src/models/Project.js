@@ -71,6 +71,14 @@ const projectSchema = new mongoose.Schema({
     default: false,
     index: true,
   },
+  mapPosition: {
+    x: { type: Number, min: 0, max: 100 },
+    y: { type: Number, min: 0, max: 100 },
+  },
+  showOnMap: {
+    type: Boolean,
+    default: false,
+  },
   status: {
     type: String,
     enum: ['draft', 'published'],

@@ -45,6 +45,7 @@ const Solution = require('../models/Solution');
 const Stat = require('../models/Stat');
 const Timeline = require('../models/Timeline');
 const SiteSettings = require('../models/SiteSettings');
+const PopularSearch = require('../models/PopularSearch');
 
 // Register adapter
 AdminJS.registerAdapter(AdminJSMongoose);
@@ -416,7 +417,7 @@ const createAdminJS = () => {
               size: 'fileSize',
             },
             validation: {
-              mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg', 'application/pdf'],
+              mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg', 'image/svg+xml', 'application/pdf'],
             },
             uploadPath: (record, filename) => `media/${Date.now()}-${filename}`,
           }),
@@ -461,6 +462,11 @@ const createAdminJS = () => {
           navigation: { name: 'Site Elements', icon: 'Lightbulb' },
           properties: {
             image: { type: 'reference', reference: 'Media' },
+            projects: {
+              type: 'reference',
+              reference: 'Project',
+              isArray: true,
+            },
           },
           listProperties: ['idString', 'title', 'order', 'active', 'updatedAt'],
           filterProperties: ['title', 'active'],
@@ -483,6 +489,14 @@ const createAdminJS = () => {
           },
           listProperties: ['year', 'title', 'order', 'active', 'updatedAt'],
           filterProperties: ['year', 'active'],
+        },
+      },
+      {
+        resource: PopularSearch,
+        options: {
+          navigation: { name: 'Site Elements', icon: 'Search' },
+          listProperties: ['term', 'order', 'active', 'updatedAt'],
+          filterProperties: ['term', 'active'],
         },
       },
       {

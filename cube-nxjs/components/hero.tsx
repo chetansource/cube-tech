@@ -5,6 +5,16 @@ import PolygonIcon from "./icons/polygon";
 import { usePathname } from "next/navigation";
 import RightArrowIcon from "./icons/right-arrow";
 
+type FeaturedResource = {
+  id: string;
+  title: string;
+  slug: string;
+  image?: {
+    url: string;
+    alt?: string;
+  };
+};
+
 type HeroProps = {
   backgroundImage: string;
   overlayOpacity?: string;
@@ -13,6 +23,7 @@ type HeroProps = {
   ctaText?: string;
   ctaLink?: string;
   height?: string;
+  featuredResources?: FeaturedResource[];
 };
 
 export default function Hero({
@@ -22,6 +33,7 @@ export default function Hero({
   subtitle,
   ctaText,
   ctaLink,
+  featuredResources = [],
 }: HeroProps) {
   const pathname = usePathname();
   const showTopSection = pathname === "/resources" || pathname === "/services";
@@ -65,36 +77,65 @@ export default function Hero({
         </div>
         {showTopSection && (
           <div className="absolute left-0 bottom-0 p-4 md:py-18 md:grid  md:grid-cols-3 gap-4 ">
-            {/* First Blurred Container */}
-            <div className="relative bg-white/5 backdrop-blur-sm rounded-lg p-2 md:p-4 mb-8 md:mb-0 ">
-              <div className="relative w-[200px] h-[100px] md:w-full md:h-[181px]">
-                <Image src="/long-highway-2.webp" alt="Placeholder" fill />
-              </div>
-              <div className="flex flex-row items-start justify-between w-full mt-2">
-                <div className="text-[14px] md:text-[18px] font-normal text-white leading-[22px] md:leading-[28px] tracking-[1px] md:tracking-[0.75px] w-[170px] md:w-[323px] max-w-full ">
-                  CubeHighways Sets a New Record in Highway Construction
+            {/* Featured Resources Cards */}
+            {featuredResources.length > 0 ? (
+              featuredResources.slice(0, 2).map((resource, index) => (
+                <Link
+                  key={resource.id}
+                  href={`/resources/details?slug=${resource.slug}`}
+                  className="relative bg-white/5 backdrop-blur-sm rounded-lg p-2 md:p-4 mb-8 md:mb-0 hover:bg-white/10 transition-colors cursor-pointer"
+                >
+                  <div className="relative w-[200px] h-[100px] md:w-full md:h-[181px]">
+                    <Image
+                      src={resource.image?.url || "/long-highway-2.webp"}
+                      alt={resource.image?.alt || resource.title}
+                      fill
+                      className="object-cover"
+                      priority={index === 0}
+                    />
+                  </div>
+                  <div className="flex flex-row items-start justify-between w-full mt-2">
+                    <div className="text-[14px] md:text-[18px] font-normal text-white leading-[22px] md:leading-[28px] tracking-[1px] md:tracking-[0.75px] w-[170px] md:w-[323px] max-w-full ">
+                      {resource.title}
+                    </div>
+                    <RightArrowIcon color={"#5FBA51"} />
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <>
+                {/* Fallback - First Blurred Container */}
+                <div className="relative bg-white/5 backdrop-blur-sm rounded-lg p-2 md:p-4 mb-8 md:mb-0 ">
+                  <div className="relative w-[200px] h-[100px] md:w-full md:h-[181px]">
+                    <Image src="/long-highway-2.webp" alt="Placeholder" fill />
+                  </div>
+                  <div className="flex flex-row items-start justify-between w-full mt-2">
+                    <div className="text-[14px] md:text-[18px] font-normal text-white leading-[22px] md:leading-[28px] tracking-[1px] md:tracking-[0.75px] w-[170px] md:w-[323px] max-w-full ">
+                      CubeHighways Sets a New Record in Highway Construction
+                    </div>
+                    <RightArrowIcon color={"#5FBA51"} />
+                  </div>
                 </div>
-                <RightArrowIcon color={"#5FBA51"} />
-              </div>
-            </div>
 
-            {/* Second Blurred Container */}
-            <div className="relative bg-white/5 backdrop-blur-sm rounded-lg p-2 md:p-4 ">
-              <div className="relative w-[200px] h-[100px] md:w-full md:h-[181px]">
-                <Image
-                  src="/long-highway-2.webp"
-                  alt="Placeholder"
-                  fill
-                  priority
-                />
-              </div>
-              <div className="flex flex-row items-start justify-between w-full mt-2">
-                <div className="text-[14px] md:text-[18px] font-normal text-white leading-[22px] md:leading-[28px] tracking-[1px] md:tracking-[0.75px] w-[170px] md:w-[323px] max-w-full ">
-                  CubeHighways Sets a New Record in Highway Construction
+                {/* Fallback - Second Blurred Container */}
+                <div className="relative bg-white/5 backdrop-blur-sm rounded-lg p-2 md:p-4 ">
+                  <div className="relative w-[200px] h-[100px] md:w-full md:h-[181px]">
+                    <Image
+                      src="/long-highway-2.webp"
+                      alt="Placeholder"
+                      fill
+                      priority
+                    />
+                  </div>
+                  <div className="flex flex-row items-start justify-between w-full mt-2">
+                    <div className="text-[14px] md:text-[18px] font-normal text-white leading-[22px] md:leading-[28px] tracking-[1px] md:tracking-[0.75px] w-[170px] md:w-[323px] max-w-full ">
+                      CubeHighways Sets a New Record in Highway Construction
+                    </div>
+                    <RightArrowIcon color={"#5FBA51"} />
+                  </div>
                 </div>
-                <RightArrowIcon color={"#5FBA51"} />
-              </div>
-            </div>
+              </>
+            )}
             {/* Title Block (only for /resources) */}
             {pathname === "/resources" && (
               <div className="text-white md:ml-8  col-start-4 self-end ">

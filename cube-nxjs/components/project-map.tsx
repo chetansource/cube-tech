@@ -5,68 +5,89 @@ import Image from "next/image";
 
 // Project data structure
 interface Project {
-  id: number;
-  name: string;
-  description: string;
-  position: { x: number; y: number };
-  image?: string;
+  id: string;
+  title: string;
+  slug: string;
+  shortDescription?: string;
+  mainImage?: {
+    url: string;
+    alt?: string;
+  };
+  mapPosition?: {
+    x: number;
+    y: number;
+  };
 }
 
-// Sample project data
-const projects: Project[] = [
+interface ProjectMapProps {
+  projects?: Project[];
+}
+
+// Fallback project data
+const defaultProjects: Project[] = [
   {
-    id: 1,
-    name: "Parking Study",
-    description: "Traffic analysis and count study for highway development",
-    position: { x: 68, y: 53 },
-    image: "/long-highway-2.webp",
+    id: "1",
+    title: "Parking Study",
+    slug: "parking-study",
+    shortDescription: "Traffic analysis and count study for highway development",
+    mapPosition: { x: 68, y: 53 },
+    mainImage: { url: "/long-highway-2.webp", alt: "Parking Study" },
   },
   {
-    id: 2,
-    name: "Parking Demand Analysis",
-    description:
+    id: "2",
+    title: "Parking Demand Analysis",
+    slug: "parking-demand-analysis",
+    shortDescription:
       "Comprehensive analysis of parking requirements and usage patterns",
-    position: { x: 43, y: 44 },
-    image: "/long-highway-2.webp",
+    mapPosition: { x: 43, y: 44 },
+    mainImage: { url: "/long-highway-2.webp", alt: "Parking Demand Analysis" },
   },
   {
-    id: 3,
-    name: "Choice of Parking System",
-    description: "Evaluation and selection of optimal parking systems",
-    position: { x: 40, y: 28 },
-    image: "/long-highway-2.webp",
+    id: "3",
+    title: "Choice of Parking System",
+    slug: "choice-of-parking-system",
+    shortDescription: "Evaluation and selection of optimal parking systems",
+    mapPosition: { x: 40, y: 28 },
+    mainImage: { url: "/long-highway-2.webp", alt: "Choice of Parking System" },
   },
   {
-    id: 4,
-    name: "Development of Concept Plan",
-    description: "Creating conceptual frameworks for parking solutions",
-    position: { x: 42, y: 61 },
-    image: "/long-highway-2.webp",
+    id: "4",
+    title: "Development of Concept Plan",
+    slug: "development-of-concept-plan",
+    shortDescription: "Creating conceptual frameworks for parking solutions",
+    mapPosition: { x: 42, y: 61 },
+    mainImage: { url: "/long-highway-2.webp", alt: "Development of Concept Plan" },
   },
   {
-    id: 5,
-    name: "Parking Project Structuring",
-    description: "Organizing and planning parking project implementation",
-    position: { x: 40, y: 64 },
-    image: "/long-highway-2.webp",
+    id: "5",
+    title: "Parking Project Structuring",
+    slug: "parking-project-structuring",
+    shortDescription: "Organizing and planning parking project implementation",
+    mapPosition: { x: 40, y: 64 },
+    mainImage: { url: "/long-highway-2.webp", alt: "Parking Project Structuring" },
   },
   {
-    id: 6,
-    name: "Simulation of Parking System",
-    description: "Computer modeling to optimize parking efficiency",
-    position: { x: 78, y: 73 },
-    image: "/long-highway-2.webp",
+    id: "6",
+    title: "Simulation of Parking System",
+    slug: "simulation-of-parking-system",
+    shortDescription: "Computer modeling to optimize parking efficiency",
+    mapPosition: { x: 78, y: 73 },
+    mainImage: { url: "/long-highway-2.webp", alt: "Simulation of Parking System" },
   },
   {
-    id: 7,
-    name: "Traffic Impact Assessment",
-    description: "Evaluating traffic flow changes from infrastructure projects",
-    position: { x: 65, y: 27 },
-    image: "/long-highway-2.webp",
+    id: "7",
+    title: "Traffic Impact Assessment",
+    slug: "traffic-impact-assessment",
+    shortDescription: "Evaluating traffic flow changes from infrastructure projects",
+    mapPosition: { x: 65, y: 27 },
+    mainImage: { url: "/long-highway-2.webp", alt: "Traffic Impact Assessment" },
   },
 ];
 
-export default function ProjectMap() {
+export default function ProjectMap({ projects: propProjects }: ProjectMapProps) {
+  // Use prop projects or fallback to defaults if empty
+  const projects = propProjects && propProjects.length > 0 ? propProjects : defaultProjects;
+
   const [activeProject, setActiveProject] = useState<Project | null>(null);
 
   return (
@@ -98,16 +119,18 @@ export default function ProjectMap() {
 
             {/* Project dots */}
             {projects.map((project) => (
-              <circle
-                key={project.id}
-                cx={project.position.x}
-                cy={project.position.y}
-                r={activeProject?.id === project.id ? "1.5" : "1"}
-                fill={activeProject?.id === project.id ? "#4ade80" : "#22c55e"}
-                className="cursor-pointer transition-all duration-400"
-                onMouseEnter={() => setActiveProject(project)}
-                onMouseLeave={() => setActiveProject(null)}
-              />
+              project.mapPosition && (
+                <circle
+                  key={project.id}
+                  cx={project.mapPosition.x}
+                  cy={project.mapPosition.y}
+                  r={activeProject?.id === project.id ? "1.5" : "1"}
+                  fill={activeProject?.id === project.id ? "#4ade80" : "#22c55e"}
+                  className="cursor-pointer transition-all duration-400"
+                  onMouseEnter={() => setActiveProject(project)}
+                  onMouseLeave={() => setActiveProject(null)}
+                />
+              )
             ))}
           </svg>
         </div>
@@ -151,7 +174,7 @@ export default function ProjectMap() {
                     : "text-white/60"
                 }`}
               >
-                {project.name}
+                {project.title}
               </div>
             </div>
           ))}
@@ -163,15 +186,15 @@ export default function ProjectMap() {
         <div className="absolute right-5 md:right-20 top-24 md:top-28 z-50 bg-black/30 backdrop-blur-sm p-4 md:p-6 border border-primary/20 transition-all duration-300 w-[60vw] md:w-[347px] ">
           <div className="relative w-full h-[120px] md:h-[181px] mb-4 bg-black/30">
             <Image
-              src={activeProject.image ?? "/placeholder.jpg"}
-              alt={activeProject.name ?? "Project image"}
+              src={activeProject.mainImage?.url ?? "/placeholder.jpg"}
+              alt={activeProject.mainImage?.alt ?? activeProject.title}
               fill
               className="object-cover"
             />
           </div>
           <div className="flex flex-row items-start justify-between w-full mt-2">
             <h3 className="text-[18px] font-normal text-white  leading-[27x] tracking-[0.75px] w-[323px] max-w-full">
-              {activeProject.name}
+              {activeProject.title}
             </h3>
             <RightArrowIcon color={"#5FBA51"} />
           </div>

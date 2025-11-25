@@ -4,6 +4,7 @@ const jobResolvers = require('./jobResolvers');
 const projectResolvers = require('./projectResolvers');
 const resourceResolvers = require('./resourceResolvers');
 const generalResolvers = require('./generalResolvers');
+const popularSearchResolvers = require('./popularSearchResolvers');
 
 // Merge all resolvers
 const resolvers = {
@@ -15,6 +16,7 @@ const resolvers = {
     ...projectResolvers.Query,
     ...resourceResolvers.Query,
     ...generalResolvers.Query,
+    ...popularSearchResolvers.Query,
   },
 
   Section: pageResolvers.Section,

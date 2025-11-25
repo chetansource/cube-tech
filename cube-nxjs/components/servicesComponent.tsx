@@ -21,6 +21,7 @@ interface ServicesSectionConfig {
 interface ServiceSectionProps {
   services?: Service[];
   sectionConfig?: ServicesSectionConfig;
+  reverse?: boolean;
 }
 
 // Fallback services for development
@@ -48,7 +49,7 @@ const defaultServices = [
   },
 ];
 
-export default function ServiceSection({ services: propServices, sectionConfig }: ServiceSectionProps) {
+export default function ServiceSection({ services: propServices, sectionConfig, reverse = false }: ServiceSectionProps) {
   // Use prop services or fallback to defaults if empty
   const services = propServices && propServices.length > 0 ? propServices : defaultServices;
 
@@ -113,7 +114,7 @@ export default function ServiceSection({ services: propServices, sectionConfig }
   }, []);
 
   return (
-    <section className="flex flex-col md:flex-row w-full min-h-[911px] max-h-[911px] overflow-hidden mb-[60px]">
+    <section className={`flex flex-col md:flex-row w-full min-h-[911px] max-h-[911px] overflow-hidden mb-[60px] ${reverse ? 'md:flex-row-reverse' : ''}`}>
       {/* Left side - Service descriptions with smooth scrolling */}
       <div className="relative w-full md:w-1/2 bg-[#FAFAFA] overflow-hidden h-[911px]">
         <div

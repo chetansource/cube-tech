@@ -225,7 +225,43 @@ const typeDefs = gql`
     exploreMoreBackgroundImage: Media
   }
 
-  union Section = FaqSection | ContactInfo | CareerTitle | JobListSection | HeroSection | ExploreCardsSection | GenericSection | AboutHeroSection | LeadershipSection | TimelineSection | CorporateResponsibilitySection | StatsSection | TestimonialsSection | ResourcesHeroSection | InsightsImpactSection | ResourceGallerySection | NewsEventsSection | ExploreMoreSection
+  type ServicesHeroSection {
+    blockType: String!
+    heading: String
+    highlightedWord: String
+    backgroundImage: Media
+    featuredResources: [Resource!]
+  }
+
+  type ServicesOfferedSection {
+    blockType: String!
+    heading: String
+    highlightedWord: String
+    description: String
+    bannerImage: Media
+    services: [Service!]
+  }
+
+  type ServicesSolutionsSection {
+    blockType: String!
+    heading: String
+    highlightedWord: String
+    description: String
+    ctaText: String
+    ctaLink: String
+    backgroundImage: Media
+    solutions: [Solution!]
+  }
+
+  type ContactBannerSection {
+    blockType: String!
+    heading: String
+    ctaText: String
+    ctaLink: String
+    backgroundImage: Media
+  }
+
+  union Section = FaqSection | ContactInfo | CareerTitle | JobListSection | HeroSection | ExploreCardsSection | GenericSection | AboutHeroSection | LeadershipSection | TimelineSection | CorporateResponsibilitySection | StatsSection | TestimonialsSection | ResourcesHeroSection | InsightsImpactSection | ResourceGallerySection | NewsEventsSection | ExploreMoreSection | ServicesHeroSection | ServicesOfferedSection | ServicesSolutionsSection | ContactBannerSection
 
   # Page Type
   type Page {
@@ -300,6 +336,11 @@ const typeDefs = gql`
     description: String
   }
 
+  type MapPosition {
+    x: Float
+    y: Float
+  }
+
   type Project {
     id: ID!
     title: String!
@@ -318,6 +359,8 @@ const typeDefs = gql`
     impact: ProjectImpact
     policyCards: [PolicyCard!]
     featured: Boolean
+    mapPosition: MapPosition
+    showOnMap: Boolean
     status: String!
     createdAt: DateTime!
     updatedAt: DateTime!
@@ -426,6 +469,7 @@ const typeDefs = gql`
     title: String!
     description: String!
     image: Media
+    projects: [Project!]
     order: Int
     active: Boolean!
     createdAt: DateTime!
@@ -456,6 +500,16 @@ const typeDefs = gql`
     image: Media
     link: String
     icon: String
+    order: Int
+    active: Boolean!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  # PopularSearch Type
+  type PopularSearch {
+    id: ID!
+    term: String!
     order: Int
     active: Boolean!
     createdAt: DateTime!
@@ -595,6 +649,9 @@ const typeDefs = gql`
 
     # Timeline
     Timeline(limit: Int): [TimelineItem!]!
+
+    # Popular Searches
+    PopularSearches(limit: Int): [PopularSearch!]!
 
     # Site Settings
     SiteSettings: SiteSettings

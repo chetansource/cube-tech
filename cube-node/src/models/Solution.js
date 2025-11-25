@@ -18,6 +18,10 @@ const solutionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Media',
   },
+  projects: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project',
+  }],
   order: {
     type: Number,
     default: 0,

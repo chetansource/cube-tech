@@ -33,6 +33,18 @@ const pageResolvers = {
         .populate('sections.galleryBackgroundImage')
         .populate('sections.newsEventsBackgroundImage')
         .populate('sections.exploreMoreBackgroundImage')
+        .populate('sections.featuredResources')
+        .populate('sections.bannerImage')
+        .populate('sections.services')
+        .populate({
+          path: 'sections.solutions',
+          populate: {
+            path: 'projects',
+            populate: {
+              path: 'mainImage'
+            }
+          }
+        })
         .limit(limit)
         .skip(skip)
         .sort({ createdAt: -1 });
@@ -60,7 +72,19 @@ const pageResolvers = {
         .populate('sections.insightsBackgroundImage')
         .populate('sections.galleryBackgroundImage')
         .populate('sections.newsEventsBackgroundImage')
-        .populate('sections.exploreMoreBackgroundImage');
+        .populate('sections.exploreMoreBackgroundImage')
+        .populate('sections.featuredResources')
+        .populate('sections.bannerImage')
+        .populate('sections.services')
+        .populate({
+          path: 'sections.solutions',
+          populate: {
+            path: 'projects',
+            populate: {
+              path: 'mainImage'
+            }
+          }
+        });
     },
   },
 
@@ -101,6 +125,14 @@ const pageResolvers = {
           return 'NewsEventsSection';
         case 'exploreMoreSection':
           return 'ExploreMoreSection';
+        case 'servicesHeroSection':
+          return 'ServicesHeroSection';
+        case 'servicesOfferedSection':
+          return 'ServicesOfferedSection';
+        case 'servicesSolutionsSection':
+          return 'ServicesSolutionsSection';
+        case 'contactBannerSection':
+          return 'ContactBannerSection';
         default:
           return 'GenericSection';
       }

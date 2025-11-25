@@ -2,7 +2,16 @@
 
 import React from 'react';
 
-const searches = [
+interface PopularSearchProps {
+  searches?: Array<{
+    id: string;
+    term: string;
+    order: number;
+  }>;
+}
+
+// Fallback searches for development
+const defaultSearches = [
   "Digital Transformation",
   "Cloud Migration",
   "Mobile App Development",
@@ -17,9 +26,14 @@ const searches = [
   "Smart City Infrastructure"
 ];
 
-export default function PopularSearch() {
-  // Double the projects array to ensure continuous scrolling
-  const allSearches = [...searches, ...searches];
+export default function PopularSearch({ searches: propSearches }: PopularSearchProps) {
+  // Use prop searches or fallback to defaults if empty
+  const searchTerms = propSearches && propSearches.length > 0
+    ? propSearches.map(s => s.term)
+    : defaultSearches;
+
+  // Double the searches array to ensure continuous scrolling
+  const allSearches = [...searchTerms, ...searchTerms];
   
   return (
     <div className="w-full relative overflow-hidden pb-[97px] ">

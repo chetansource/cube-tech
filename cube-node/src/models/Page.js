@@ -51,7 +51,11 @@ const sectionSchema = new mongoose.Schema({
       'insightsImpactSection',
       'resourceGallerySection',
       'newsEventsSection',
-      'exploreMoreSection'
+      'exploreMoreSection',
+      'servicesHeroSection',
+      'servicesOfferedSection',
+      'servicesSolutionsSection',
+      'contactBannerSection'
     ]
   },
   // FAQ Section fields
@@ -181,6 +185,29 @@ const sectionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Media'
   },
+
+  // Services Hero Section fields
+  highlightedWord: String,
+  featuredResources: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Resource'
+  }],
+
+  // Services Offered Section fields
+  bannerImage: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Media'
+  },
+  services: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Service'
+  }],
+
+  // Services Solutions Section fields
+  solutions: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Solution'
+  }],
 
   // Generic content fields
   title: String,
