@@ -6,7 +6,6 @@ import ServiceSection from "@/components/servicesComponent";
 import ProjectMap from "@/components/project-map";
 import PopularSearch from "@/components/popular-searche";
 import ServicesSolutions from "@/components/servcies-solutions";
-import SvgImage from "@/components/SvgImage";
 import Link from "next/link";
 import Image from "next/image";
 import { getServicesPageContent, getServices, getPopularSearches, getMapProjects } from "@/utils/routes/Services";
@@ -18,6 +17,7 @@ const Services = async () => {
     servicesOfferedSection,
     solutionsSection,
     contactBannerSection,
+    projectMapSection,
   } = await getServicesPageContent("services");
 
   // Fetch services directly from Services collection
@@ -28,9 +28,6 @@ const Services = async () => {
 
   // Fetch projects for map
   const mapProjects = await getMapProjects();
-
-  // Debug: Log solutions data
-  console.log("Solutions Section Data:", JSON.stringify(solutionsSection, null, 2));
 
   return (
     <div className="min-h-screen">
@@ -76,7 +73,13 @@ const Services = async () => {
       {/* Popular Searches */}
       <PopularSearch searches={popularSearches} />
       {/* Project Map */}
-      <ProjectMap projects={mapProjects} />
+      <ProjectMap
+        projects={mapProjects}
+        title={projectMapSection?.title}
+        highlightedWord={projectMapSection?.highlightedWord}
+        description={projectMapSection?.description}
+        showCta={false}
+      />
       {/* know more about our services */}
       <ServicesSolutions
         heading={solutionsSection?.heading}

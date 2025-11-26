@@ -31,7 +31,7 @@ interface SolutionsProps {
 }
 
 // Fallback solutions for development
-const defaultSolutions = [
+const defaultSolutions: Solution[] = [
   {
     id: "1",
     idString: "01",

@@ -18,7 +18,7 @@ interface PartnersProps {
 }
 
 // Fallback partners for development
-const defaultPartners = [
+const defaultPartners: Partner[] = [
   { id: "1", name: "Partner 1", logo: { url: "/our-partner-1.webp" } },
   { id: "2", name: "Partner 2", logo: { url: "/our-partner-2.webp" } },
   { id: "3", name: "Partner 3", logo: { url: "/our-partner-3.webp" } },
@@ -39,8 +39,6 @@ export default function Partners({ partners: propPartners }: PartnersProps) {
     const el = scrollRef.current;
     if (!el) return;
 
-    // Start with logos visible on screen (from right edge with padding)
-    const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
     let scrollPosition = 0;
     let animationId: number;
     const speed = 1; // Increased speed for smoother visible movement

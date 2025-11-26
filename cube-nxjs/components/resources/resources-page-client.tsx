@@ -22,9 +22,6 @@ const ResourcesPageClient: React.FC<ResourcesPageClientProps> = ({ allResources,
     }
   };
 
-  // Use the function to avoid unused variable warning
-  console.log('Category filter available:', handleCategoryClick);
-
   return (
     <>
       {/* Resource Gallery start */}

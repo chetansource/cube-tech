@@ -118,7 +118,6 @@ export const getCareerPageContent = async (slug: string) => {
   );
 
   const page = data.Pages.docs[0];
-  console.log("Career Page Data:", page);
 
   if (!page || !page.sections) return {
     careerHeading: null,

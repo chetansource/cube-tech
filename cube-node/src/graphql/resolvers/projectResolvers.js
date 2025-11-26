@@ -24,6 +24,7 @@ const projectResolvers = {
       const docs = await Project.find(query)
         .populate('mainImage')
         .populate('gallery')
+        .populate('policyCards.iconImage')
         .limit(limit)
         .skip(skip)
         .sort({ createdAt: -1 });
@@ -43,7 +44,8 @@ const projectResolvers = {
       const query = id ? { _id: id } : { slug };
       return await Project.findOne(query)
         .populate('mainImage')
-        .populate('gallery');
+        .populate('gallery')
+        .populate('policyCards.iconImage');
     },
   },
 };

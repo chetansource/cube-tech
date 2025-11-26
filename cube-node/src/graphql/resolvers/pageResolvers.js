@@ -133,6 +133,10 @@ const pageResolvers = {
           return 'ServicesSolutionsSection';
         case 'contactBannerSection':
           return 'ContactBannerSection';
+        case 'projectMapSection':
+          return 'ProjectMapSection';
+        case 'projectsHeroSection':
+          return 'ProjectsHeroSection';
         default:
           return 'GenericSection';
       }
@@ -149,6 +153,15 @@ const pageResolvers = {
   TestimonialsSection: {
     testimonials: async () => {
       return await Testimonial.find({ active: true }).populate('avatar').sort({ order: 1 });
+    },
+  },
+
+  ProjectsHeroSection: {
+    backgroundImage: async (parent) => {
+      if (parent.backgroundImage) {
+        return await Media.findById(parent.backgroundImage);
+      }
+      return null;
     },
   },
 };

@@ -136,7 +136,6 @@ export const getAboutPageContent = async (slug: string) => {
   );
 
   const page = data.Pages.docs[0];
-  console.log("About Page Data:", page);
 
   if (!page || !page.sections)
     return {

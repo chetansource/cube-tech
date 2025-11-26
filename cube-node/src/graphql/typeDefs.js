@@ -261,7 +261,23 @@ const typeDefs = gql`
     backgroundImage: Media
   }
 
-  union Section = FaqSection | ContactInfo | CareerTitle | JobListSection | HeroSection | ExploreCardsSection | GenericSection | AboutHeroSection | LeadershipSection | TimelineSection | CorporateResponsibilitySection | StatsSection | TestimonialsSection | ResourcesHeroSection | InsightsImpactSection | ResourceGallerySection | NewsEventsSection | ExploreMoreSection | ServicesHeroSection | ServicesOfferedSection | ServicesSolutionsSection | ContactBannerSection
+  type ProjectMapSection {
+    blockType: String!
+    title: String
+    highlightedWord: String
+    description: String
+    ctaText: String
+    ctaLink: String
+  }
+
+  type ProjectsHeroSection {
+    blockType: String!
+    heading: String
+    highlightedWord: String
+    backgroundImage: Media
+  }
+
+  union Section = FaqSection | ContactInfo | CareerTitle | JobListSection | HeroSection | ExploreCardsSection | GenericSection | AboutHeroSection | LeadershipSection | TimelineSection | CorporateResponsibilitySection | StatsSection | TestimonialsSection | ResourcesHeroSection | InsightsImpactSection | ResourceGallerySection | NewsEventsSection | ExploreMoreSection | ServicesHeroSection | ServicesOfferedSection | ServicesSolutionsSection | ContactBannerSection | ProjectMapSection | ProjectsHeroSection
 
   # Page Type
   type Page {
@@ -331,9 +347,9 @@ const typeDefs = gql`
   }
 
   type PolicyCard {
-    icon: String
     title: String!
     description: String
+    iconImage: Media
   }
 
   type MapPosition {
@@ -602,6 +618,7 @@ const typeDefs = gql`
     status: StringQueryInput
     category: StringQueryInput
     featured: Boolean
+    showOnMap: Boolean
   }
 
   input ResourceWhereInput {

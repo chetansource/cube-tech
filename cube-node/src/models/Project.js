@@ -13,9 +13,12 @@ const projectImpactSchema = new mongoose.Schema({
 }, { _id: false });
 
 const policyCardSchema = new mongoose.Schema({
-  icon: String,
   title: { type: String, required: true },
   description: String,
+  iconImage: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Media',
+  },
 }, { _id: false });
 
 const projectSchema = new mongoose.Schema({

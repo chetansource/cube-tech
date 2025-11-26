@@ -21,6 +21,12 @@ interface Project {
 
 interface ProjectMapProps {
   projects?: Project[];
+  title?: string;
+  highlightedWord?: string;
+  description?: string;
+  showCta?: boolean;
+  ctaText?: string;
+  ctaLink?: string;
 }
 
 // Fallback project data
@@ -84,7 +90,15 @@ const defaultProjects: Project[] = [
   },
 ];
 
-export default function ProjectMap({ projects: propProjects }: ProjectMapProps) {
+export default function ProjectMap({
+  projects: propProjects,
+  title = "Our",
+  highlightedWord = "Projects",
+  description = "Cubehighways Tech had a comprehensive role in overseeing the project management consultant from planning to execution.",
+  showCta = false,
+  ctaText = "See all services",
+  ctaLink = "/services"
+}: ProjectMapProps) {
   // Use prop projects or fallback to defaults if empty
   const projects = propProjects && propProjects.length > 0 ? propProjects : defaultProjects;
 
@@ -139,12 +153,18 @@ export default function ProjectMap({ projects: propProjects }: ProjectMapProps) 
       {/* Header */}
       <div className="absolute top-5 md:top-20 left-5 md:left-20 max-w-md z-10">
         <h1 className="text-2xl md:text-[65px] font-light mb-2 text-white leading-[97.5px]">
-          Our <span className="italic font-semibold">Projects</span>
+          {title} <span className="italic font-semibold">{highlightedWord}</span>
         </h1>
         <p className="text-white/60 mt-4 text-lg leading-[24px]">
-          Cubehighways Tech had a comprehensive role in overseeing the project
-          management consultant from planning to execution.
+          {description}
         </p>
+        {showCta && ctaText && ctaLink && (
+          <a href={ctaLink}>
+            <button className="mt-6 bg-accent hover:bg-accent/90 text-white px-6 py-3 text-sm font-bold uppercase tracking-wider transition-colors">
+              {ctaText}
+            </button>
+          </a>
+        )}
       </div>
 
       {/* Project List */}

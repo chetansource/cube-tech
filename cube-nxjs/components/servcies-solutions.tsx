@@ -3,7 +3,6 @@
 import { useRef, useEffect } from "react";
 import Link from "next/link";
 import RightArrowIcon from "./icons/right-arrow";
-import LeftArrowIcon from "./icons/left-arrow";
 import PolygonIcon from "./icons/polygon";
 import Image from "next/image";
 
@@ -276,16 +275,6 @@ function ServiceSolutionItem({
       scrollContainer.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, [solution.projects]);
-
-  const scroll = (direction: "left" | "right") => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = direction === "left" ? -380 : 380;
-      scrollContainerRef.current.scrollBy({
-        left: scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  };
 
   // Use idString if available, otherwise format from index
   const displayNumber = solution.idString || String(index + 1).padStart(2, "0");

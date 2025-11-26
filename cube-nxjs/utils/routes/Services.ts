@@ -114,11 +114,21 @@ export interface ContactBannerSection {
   };
 }
 
+export interface ProjectMapSection {
+  blockType: "projectMapSection";
+  title?: string;
+  highlightedWord?: string;
+  description?: string;
+  ctaText?: string;
+  ctaLink?: string;
+}
+
 export interface ServicesPageData {
   heroSection?: ServicesHeroSection;
   servicesOfferedSection?: ServicesOfferedSection;
   solutionsSection?: ServicesSolutionsSection;
   contactBannerSection?: ContactBannerSection;
+  projectMapSection?: ProjectMapSection;
 }
 
 /**
@@ -199,6 +209,14 @@ export async function getServicesPageContent(slug: string = "services"): Promise
                 alt
               }
             }
+            ... on ProjectMapSection {
+              blockType
+              title
+              highlightedWord
+              description
+              ctaText
+              ctaLink
+            }
           }
         }
       }
@@ -210,8 +228,6 @@ export async function getServicesPageContent(slug: string = "services"): Promise
   try {
     const data: any = await graphQLClient.request(query, variables);
     const page = data.Pages?.docs?.[0];
-
-    console.log("Services Page Data:", page);
 
     if (!page || !page.sections) {
       return {
@@ -238,11 +254,16 @@ export async function getServicesPageContent(slug: string = "services"): Promise
       (section: any) => section.blockType === "contactBannerSection"
     ) as ContactBannerSection | undefined;
 
+    const projectMapSection = page.sections.find(
+      (section: any) => section.blockType === "projectMapSection"
+    ) as ProjectMapSection | undefined;
+
     return {
       heroSection,
       servicesOfferedSection,
       solutionsSection,
       contactBannerSection,
+      projectMapSection,
     };
   } catch (error) {
     console.error("Error fetching services page data:", error);
@@ -251,6 +272,7 @@ export async function getServicesPageContent(slug: string = "services"): Promise
       servicesOfferedSection: undefined,
       solutionsSection: undefined,
       contactBannerSection: undefined,
+      projectMapSection: undefined,
     };
   }
 }

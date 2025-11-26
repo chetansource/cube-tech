@@ -47,13 +47,14 @@ function useIntersection(
       }
     );
 
-    if (element.current) {
-      observer.observe(element.current);
+    const currentElement = element.current;
+    if (currentElement) {
+      observer.observe(currentElement);
     }
 
     return () => {
-      if (element.current) {
-        observer.unobserve(element.current);
+      if (currentElement) {
+        observer.unobserve(currentElement);
       }
     };
   }, [element, rootMargin]);

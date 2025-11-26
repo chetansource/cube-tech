@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import { CheckCircle, LifeBuoy } from "lucide-react";
 import RightArrowIcon from "../icons/right-arrow";
@@ -76,7 +78,6 @@ export function ProjectImpact() {
 
   const totalCards = cards.length;
   const visibleCards = 3;
-  console.log(currentIndex)
 
   // Auto-scroll for web view only
   useEffect(() => {

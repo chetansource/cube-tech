@@ -51,12 +51,6 @@ interface InsightsImpactProps {
 export default function InsightsImpact({ resources, pageContent }: InsightsImpactProps) {
   const ITEMS_PER_SLIDE = 2;
 
-  // Debug: Log the resources received
-  console.log('=== InsightsImpact Debug ===');
-  console.log('Resources received:', resources);
-  console.log('Resources length:', resources?.length || 0);
-  console.log('Using fallback?', !resources || resources.length === 0);
-
   // Use dynamic resources or fallback to static data
   const caseStudies = resources && resources.length > 0
     ? resources.map((resource, index) => ({
@@ -66,9 +60,6 @@ export default function InsightsImpact({ resources, pageContent }: InsightsImpac
         slug: resource.slug,
       }))
     : fallbackCaseStudies;
-
-  console.log('Case studies to display:', caseStudies.length);
-  console.log('First case study:', caseStudies[0]);
 
   const slides = [];
   for (let i = 0; i < caseStudies.length; i += ITEMS_PER_SLIDE) {

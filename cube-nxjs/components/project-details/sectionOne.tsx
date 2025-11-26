@@ -1,5 +1,8 @@
+"use client";
+
 import React, { useState } from "react";
 import UpArrowIcon from "../icons/up-arrow";
+import PolygonIcon from "../icons/polygon";
 import Image from "next/image";
 
 interface ParkingStudyProps {
@@ -31,17 +34,35 @@ export const SectionOne: React.FC<ParkingStudyProps> = ({
   return (
     <div className="max-w-8xl mx-auto p-4 mb-43 ">
       <div className="grid grid-cols-1 md:grid-cols-2 md:px-16">
-        {/* Left side - Title */}
-        <div className="pt-8 md:w-[50%] py-8 md:py-0">
-          <h1 className="text-2xl md:text-4xl md:text-[46px]  text-black/60 uppercase md:leading-[64px] md:tracking-[3.75px] ">
-            {title}{" "}
-            <span className="block md:inline">
-              <span className="">G.K-I</span>{" "}
-              <span className="text-accent italic font-semibold">
-                {location}
+        {/* Left side - Title with Background */}
+        <div className="relative pt-8 md:w-[90%] py-8 md:py-0 min-h-[400px] overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0 w-full h-full z-0">
+            <Image
+              src="/homepage-solutions-banner.png"
+              alt="Background"
+              fill
+              className="object-cover"
+            />
+          </div>
+          {/* Overlay */}
+          {/* <div className="absolute inset-0 bg-black/10 z-10" /> */}
+          {/* Content */}
+          <div className="relative z-20 pt-8 md:pt-12 pl-4 md:pl-8">
+            <h1 className="text-2xl md:text-4xl md:text-[46px] text-white uppercase md:leading-[64px] md:tracking-[3.75px]">
+              {title}{" "}
+              <span className="block md:inline">
+                <span className="">G.K-I</span>{" "}
+                <span className="text-accent italic font-semibold">
+                  {location}
+                </span>
               </span>
-            </span>
-          </h1>
+            </h1>
+          </div>
+          {/* Polygon Corner */}
+          <div className="absolute -bottom-px right-[-1] z-30 pointer-events-none">
+            <PolygonIcon />
+          </div>
         </div>
 
         {/* Right side - Content */}
