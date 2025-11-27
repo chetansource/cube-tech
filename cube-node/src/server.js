@@ -62,6 +62,15 @@ const startServer = async () => {
     // AdminJS - Must come BEFORE body-parser middleware
     const adminJs = createAdminJS();
     const adminRouter = createAdminRouter(adminJs);
+
+    // Remove CSP headers for admin routes
+    app.use(adminJs.options.rootPath, (_req, res, next) => {
+      res.removeHeader('Content-Security-Policy');
+      res.removeHeader('Content-Security-Policy-Report-Only');
+      res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; form-action *;");
+      next();
+    });
+
     app.use(adminJs.options.rootPath, adminRouter);
 
     // Body parsing - AFTER AdminJS
@@ -75,7 +84,7 @@ const startServer = async () => {
     app.use('/api/sitemap.xml', sitemapRoutes);
 
     // Robots.txt for SEO
-    app.get('/robots.txt', (req, res) => {
+    app.get('/robots.txt', (_req, res) => {
       res.type('text/plain');
       res.send(`User-agent: *
 Allow: /

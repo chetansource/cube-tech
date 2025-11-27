@@ -576,12 +576,23 @@ const createAdminRouter = (adminJs) => {
       secret: process.env.JWT_SECRET || 'some-secret-password-at-least-32-characters-long',
       cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production' && process.env.HTTPS_ENABLED === 'true',
+        secure: false, // Disable secure cookie to allow HTTP/IP access
         sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
       },
+    },
+    // Custom form override to disable CSP
+    {
+      formidable: {},
     }
   );
+
+  // Add middleware to remove CSP headers for AdminJS routes
+  router.use((_req, res, next) => {
+    res.removeHeader('Content-Security-Policy');
+    res.removeHeader('Content-Security-Policy-Report-Only');
+    next();
+  });
 
   return router;
 };
