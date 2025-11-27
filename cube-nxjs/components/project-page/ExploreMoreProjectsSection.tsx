@@ -3,10 +3,6 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
-interface ProjectTag {
-  name: string;
-}
-
 interface Project {
   id: string;
   title: string;

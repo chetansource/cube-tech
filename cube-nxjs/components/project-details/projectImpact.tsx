@@ -44,7 +44,6 @@ const ImpactCard: React.FC<ImpactCardProps> = ({
 
 export function ProjectImpact() {
   const carouselRef = useRef<HTMLDivElement>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
 
   const cards: ImpactCardProps[] = [
     {
@@ -84,24 +83,21 @@ export function ProjectImpact() {
     const isWeb = window.innerWidth >= 768;
     if (!isWeb) return;
 
+    let currentIndex = 0;
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => {
-        const nextIndex = (prevIndex + 1) % (totalCards - visibleCards + 1);
+      currentIndex = (currentIndex + 1) % (totalCards - visibleCards + 1);
 
-        if (carouselRef.current) {
-          const scrollAmount = carouselRef.current.offsetWidth * 0.4; // ~40% width per card
-          carouselRef.current.scrollTo({
-            left: nextIndex * scrollAmount,
-            behavior: "smooth",
-          });
-        }
-
-        return nextIndex;
-      });
+      if (carouselRef.current) {
+        const scrollAmount = carouselRef.current.offsetWidth * 0.4; // ~40% width per card
+        carouselRef.current.scrollTo({
+          left: currentIndex * scrollAmount,
+          behavior: "smooth",
+        });
+      }
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [totalCards]);
+  }, [totalCards, visibleCards]);
 
   return (
     <div className="flex flex-col md:flex-row w-full gap-8 md:py-12">

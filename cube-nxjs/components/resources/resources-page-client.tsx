@@ -11,16 +11,16 @@ interface ResourcesPageClientProps {
 }
 
 const ResourcesPageClient: React.FC<ResourcesPageClientProps> = ({ allResources, gallerySection }) => {
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory] = useState<string | null>(null);
 
-  const handleCategoryClick = (category: string) => {
-    // Toggle category filter
-    if (activeCategory === category) {
-      setActiveCategory(null);
-    } else {
-      setActiveCategory(category);
-    }
-  };
+  // Category filtering is currently disabled (see commented code below)
+  // const handleCategoryClick = (category: string) => {
+  //   if (activeCategory === category) {
+  //     setActiveCategory(null);
+  //   } else {
+  //     setActiveCategory(category);
+  //   }
+  // };
 
   return (
     <>
