@@ -574,6 +574,12 @@ const createAdminRouter = (adminJs) => {
       resave: false,
       saveUninitialized: true,
       secret: process.env.JWT_SECRET || 'some-secret-password-at-least-32-characters-long',
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production' && process.env.HTTPS_ENABLED === 'true',
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      },
     }
   );
 
