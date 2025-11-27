@@ -6,6 +6,9 @@ import Header from "@/components/header";
 import PolygonIcon from "@/components/icons/polygon";
 import Image from "next/image";
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
 interface Props {
   params: Promise<{ id: string }>;
 }

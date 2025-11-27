@@ -9,6 +9,9 @@ import LeftArrowIcon from "@/components/icons/left-arrow";
 import Timeline from "@/components/about-us/Timeline";
 import { getAboutPageContent } from "@/utils/routes/AboutUs";
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
 const AboutUsPage = async () => {
   const {
     heroSection,

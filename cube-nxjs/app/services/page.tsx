@@ -10,6 +10,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { getServicesPageContent, getServices, getPopularSearches, getMapProjects } from "@/utils/routes/Services";
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
 const Services = async () => {
   // Fetch services page data
   const {

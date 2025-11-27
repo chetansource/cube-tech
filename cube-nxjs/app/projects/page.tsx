@@ -12,6 +12,9 @@ import Link from "next/link";
 import { getTestimonials } from "@/utils/routes/Homepage";
 import { getProjectsPageContent, getMapProjects, getFeaturedProjects } from "@/utils/routes/Projects";
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
 const ProjectsPage = async () => {
   // Fetch dynamic data from backend
   const testimonials = await getTestimonials(10);

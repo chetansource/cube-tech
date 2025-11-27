@@ -12,6 +12,9 @@ import Projects from "@/components/projects";
 import Stats from "@/components/stats";
 import { getHomepageData } from "@/utils/routes/Homepage";
 
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   // Fetch all homepage data from backend
   const homepageData = await getHomepageData();

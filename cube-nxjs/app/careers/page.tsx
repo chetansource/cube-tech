@@ -6,8 +6,8 @@ import CareerHero from '@/components/career-hero';
 import { getCareerPageContent } from '@/utils/routes/Careers';
 import React from 'react';
 
-// Disable caching for this page to always fetch fresh data
-export const revalidate = 0;
+// Force dynamic rendering - don't pre-render at build time
+export const dynamic = 'force-dynamic';
 
 export default async function CareerPage() {
   const { heroSection, exploreCards } = await getCareerPageContent("careerpage");
