@@ -22,6 +22,7 @@ const ContactUsPage = () => {
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
   const [isSelectOpen, setIsSelectOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,8 +31,12 @@ const ContactUsPage = () => {
         if (getContactData) {
           setContactInfo(getContactData);
         }
+        // If no data, fallback will be used automatically
       } catch (error) {
         console.error("Error fetching Contact Info:", error);
+        // If error, fallback will be used automatically
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -69,7 +74,26 @@ const ContactUsPage = () => {
   };
   
 
-  if (!contactInfo) return <p>Loading...</p>;
+  // Fallback contact info if API fails
+  const fallbackContactInfo: ContactSection = {
+    blockType: "contact-info",
+    phone: "+91-123-456-7890",
+    email: "info@cubehighways.com",
+    locations: [
+      {
+        label: "Head Office",
+        address: "123 Main Street, City, State, Country"
+      }
+    ],
+    socials: [
+      { platform: "LinkedIn", url: "https://linkedin.com" },
+      { platform: "Twitter", url: "https://twitter.com" }
+    ]
+  };
+
+  const displayInfo = contactInfo || fallbackContactInfo;
+
+  if (isLoading) return <p>Loading...</p>;
 
   return (
     <section className="min-h-screen">
@@ -104,7 +128,7 @@ const ContactUsPage = () => {
                       PHONE
                     </h3>
                     <p className="text-xs md:text-[13px] font-normal leading-[20px] tracking-[0.26px]">
-                      {contactInfo.phone}
+                      {displayInfo.phone}
                     </p>
                   </div>
                 </div>
@@ -119,12 +143,12 @@ const ContactUsPage = () => {
                       EMAIL
                     </h3>
                     <p className="text-xs md:text-[13px] font-normal leading-[20px] tracking-[0.26px]">
-                      {contactInfo.email}
+                      {displayInfo.email}
                     </p>
                   </div>
                 </div>
 
-                {contactInfo.locations.map((location, index) => (
+                {displayInfo.locations.map((location, index) => (
                   <div
                     key={index}
                     className={`${
@@ -155,7 +179,7 @@ const ContactUsPage = () => {
                       FOLLOW US:
                     </h3>
                     <div className="flex space-x-2 mt-2">
-                      {contactInfo.socials.map((social, index) => {
+                      {displayInfo.socials.map((social, index) => {
                         const getIcon = (platform: string) => {
                           switch (platform.toLowerCase()) {
                             case "linkedin":
