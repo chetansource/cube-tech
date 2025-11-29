@@ -46,6 +46,8 @@ jobs:
           context: ./cube-nxjs
           file: ./cube-nxjs/Dockerfile
           push: true
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/cube-highways-frontend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/cube-highways-frontend:${{ github.sha }}
