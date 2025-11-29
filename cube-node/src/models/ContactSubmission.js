@@ -23,6 +23,14 @@ const contactSubmissionSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
+    enum: [
+      'Project Development',
+      'Investment Opportunities',
+      'Partnership',
+      'General Inquiry',
+      'Media Relations',
+      'Other',
+    ],
   },
   message: {
     type: String,

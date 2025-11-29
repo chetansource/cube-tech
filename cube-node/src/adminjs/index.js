@@ -239,12 +239,32 @@ const createAdminJS = () => {
         resource: ContactSubmission,
         options: {
           navigation: { name: 'Forms', icon: 'Mail' },
+          properties: {
+            interestedField: {
+              availableValues: [
+                { value: 'Project Development', label: 'Project Development' },
+                { value: 'Investment Opportunities', label: 'Investment Opportunities' },
+                { value: 'Partnership', label: 'Partnership' },
+                { value: 'General Inquiry', label: 'General Inquiry' },
+                { value: 'Media Relations', label: 'Media Relations' },
+                { value: 'Other', label: 'Other' },
+              ],
+            },
+            status: {
+              availableValues: [
+                { value: 'new', label: 'New' },
+                { value: 'read', label: 'Read' },
+                { value: 'responded', label: 'Responded' },
+                { value: 'archived', label: 'Archived' },
+              ],
+            },
+          },
           actions: {
             new: { isVisible: false }, // Disable creating submissions from admin
             edit: { isVisible: false }, // Disable editing submissions
           },
           listProperties: ['name', 'email', 'phone', 'interestedField', 'status', 'submittedAt'],
-          filterProperties: ['name', 'email', 'status', 'submittedAt'],
+          filterProperties: ['name', 'email', 'interestedField', 'status', 'submittedAt'],
         },
       },
       {

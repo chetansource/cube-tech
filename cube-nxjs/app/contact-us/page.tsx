@@ -262,10 +262,10 @@ const ContactUsPage = () => {
                 </div>
 
                 <div className="text-xs md:text-sm font-normal uppercase pb-4">
-                  {/* <label htmlFor="field" className="block mb-1 font-bold">
+                  <label htmlFor="field" className="block mb-1 md:font-bold">
                     Interested Field <span className="text-red-500">*</span>
-                  </label> */}
-                  <div className="relative  w-full mt-4">
+                  </label>
+                  <div className="relative w-full">
                     <select
                       id="field"
                       value={interestedField}
@@ -275,16 +275,21 @@ const ContactUsPage = () => {
                       }}
                       onMouseDown={() => setIsSelectOpen((prev) => !prev)}
                       onBlur={() => setIsSelectOpen(false)} // when user clicks elsewhere
-                      className="min-w-0 w-full border-b border-black pb-6 pr-8 bg-transparent focus:outline-none cursor-pointer appearance-none mb-2 md:font-bold "
+                      className="w-full border-b border-black py-2 pr-10 pl-0 bg-transparent focus:outline-none cursor-pointer appearance-none text-xs md:text-sm uppercase tracking-wide"
+                      required
                     >
-                      <option value="" disabled hidden>
-                        Interested Field *
+                      <option value="" disabled>
+                        Select an option
                       </option>
-                      <option value="Option 1">Option 1</option>
-                      <option value="Option 2">Option 2</option>
+                      <option value="Project Development">Project Development</option>
+                      <option value="Investment Opportunities">Investment Opportunities</option>
+                      <option value="Partnership">Partnership</option>
+                      <option value="General Inquiry">General Inquiry</option>
+                      <option value="Media Relations">Media Relations</option>
+                      <option value="Other">Other</option>
                     </select>
                     <div
-                      className={`absolute right-0 top-0 pointer-events-none transition-transform duration-200 mt-2 ${
+                      className={`absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none transition-transform duration-200 ${
                         isSelectOpen ? "rotate-180" : "rotate-0"
                       }`}
                     >
