@@ -36,6 +36,7 @@ const startServer = async () => {
     app.use(helmet({
       contentSecurityPolicy: false,
       crossOriginEmbedderPolicy: false,
+      crossOriginOpenerPolicy: false, // Disable COOP for HTTP access
     }));
 
     // CORS
