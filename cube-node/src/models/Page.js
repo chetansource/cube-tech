@@ -74,12 +74,6 @@ const sectionSchema = new mongoose.Schema({
   headingLine2: String,
   description: String,
 
-  // Job List Section
-  jobs: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Job'
-  }],
-
   // Hero Section fields
   heading: String,
   subheading: String,
@@ -101,6 +95,10 @@ const sectionSchema = new mongoose.Schema({
     image: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Media'
+    },
+    order: {
+      type: Number,
+      default: 1
     }
   }],
 

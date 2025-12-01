@@ -22,7 +22,6 @@ export interface CareerPageSection {
 
 export interface JobListSection {
   blockType: string;
-  jobs: Job[];
 }
 
 export interface HeroSection {
@@ -46,6 +45,7 @@ export interface ExploreCard {
     url: string;
     alt?: string;
   };
+  order?: number;
 }
 
 export interface ExploreCardsSection {
@@ -73,12 +73,6 @@ export const getCareerPageContent = async (slug: string) => {
             }
             ... on JobListSection {
               blockType
-              jobs {
-                id
-                title
-                location
-                description
-              }
             }
             ... on HeroSection {
               blockType
@@ -102,9 +96,18 @@ export const getCareerPageContent = async (slug: string) => {
                   url
                   alt
                 }
+                order
               }
             }
           }
+        }
+      }
+      Jobs(where: { status: { equals: "active" } }, limit: 100) {
+        docs {
+          id
+          title
+          location
+          description
         }
       }
     }
@@ -112,7 +115,7 @@ export const getCareerPageContent = async (slug: string) => {
 
   const variables = { slug };
 
-  const data = await graphQLClient.request<PageResponse<CareerPageResponse>>(
+  const data = await graphQLClient.request<PageResponse<CareerPageResponse> & { Jobs: { docs: Job[] } }>(
     query,
     variables
   );
@@ -130,23 +133,19 @@ export const getCareerPageContent = async (slug: string) => {
     (section: any) => section.blockType === "careerTitle"
   ) as CareerPageSection | undefined;
 
-  const jobList =
-    (
-      page.sections.find(
-        (section: any) => section.blockType === "jobListSection"
-      ) as JobListSection | undefined
-    )?.jobs || [];
+  // Get jobs directly from Jobs query, not from page sections
+  const jobList = data.Jobs?.docs || [];
 
   const heroSection = page.sections.find(
     (section: any) => section.blockType === "heroSection"
   ) as HeroSection | undefined;
 
-  const exploreCards =
-    (
-      page.sections.find(
-        (section: any) => section.blockType === "exploreCardsSection"
-      ) as ExploreCardsSection | undefined
-    )?.cards || [];
+  const exploreCardsSection = page.sections.find(
+    (section: any) => section.blockType === "exploreCardsSection"
+  ) as ExploreCardsSection | undefined;
+
+  // Don't sort - order field is used for layout position (1-9), not sequence
+  const exploreCards = exploreCardsSection?.cards || [];
 
   return { careerHeading, jobList, heroSection, exploreCards };
 };

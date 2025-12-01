@@ -101,20 +101,6 @@ const CareerExploreMore: React.FC<CareerExploreMoreProps> = ({ cards: dynamicCar
     },
   ];
 
-  // Merge dynamic cards with fallbacks - always have 9 sections
-  const allSections: CardType[] = [];
-
-  if (dynamicCards && dynamicCards.length > 0) {
-    // Add dynamic cards first
-    allSections.push(...dynamicCards);
-  }
-
-  // Fill remaining slots with fallback sections to ensure we always have 9
-  const remainingSlots = 9 - allSections.length;
-  if (remainingSlots > 0) {
-    allSections.push(...fallbackSections.slice(allSections.length, 9));
-  }
-
   // Helper functions
   const getCardImage = (card: CardType) => {
     if ('image' in card) {
@@ -125,16 +111,36 @@ const CareerExploreMore: React.FC<CareerExploreMoreProps> = ({ cards: dynamicCar
     return "/career-explore-img1.webp";
   };
 
-  // Extract sections by position for the layout
-  const section1 = allSections[0] || fallbackSections[0];
-  const section2 = allSections[1] || fallbackSections[1];
-  const section3 = allSections[2] || fallbackSections[2];
-  const section4 = allSections[3] || fallbackSections[3]; // Featured
-  const section5 = allSections[4] || fallbackSections[4]; // Image overlay
-  const section6 = allSections[5] || fallbackSections[5]; // Tall image
-  const section7 = allSections[6] || fallbackSections[6]; // Large text
-  const section8 = allSections[7] || fallbackSections[7];
-  const section9 = allSections[8] || fallbackSections[8];
+  // Create a map of position (order) to card
+  const cardsByPosition = new Map<number, CardType>();
+
+  if (dynamicCards && dynamicCards.length > 0) {
+    dynamicCards.forEach(card => {
+      const position = card.order || 1;
+      cardsByPosition.set(position, card);
+    });
+  }
+
+  // Get card for each position (1-9), use fallback if not set
+  const getCardForPosition = (position: number): CardType => {
+    return cardsByPosition.get(position) || fallbackSections[position - 1];
+  };
+
+  // Extract sections by position for the layout using order field
+  const section1 = getCardForPosition(1); // Top-left square
+  const section2 = getCardForPosition(2); // Top-center square
+  const section3 = getCardForPosition(3); // Top-right square
+  const section4 = getCardForPosition(4); // Featured horizontal rectangle
+  const section5 = getCardForPosition(5); // Image overlay square
+  const section6 = getCardForPosition(6); // Tall vertical rectangle
+  const section7 = getCardForPosition(7); // Large text horizontal rectangle
+  const section8 = getCardForPosition(8); // Bottom-left square
+  const section9 = getCardForPosition(9); // Bottom-right square
+
+  // For mobile horizontal scrolling, sort cards by order
+  const allSections = dynamicCards && dynamicCards.length > 0
+    ? [...dynamicCards].sort((a, b) => (a.order || 1) - (b.order || 1))
+    : fallbackSections;
 
   return (
     <div className="container mx-auto p-4 mb-19">

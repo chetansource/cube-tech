@@ -77,7 +77,6 @@ const typeDefs = gql`
 
   type JobListSection {
     blockType: String!
-    jobs: [JobRef!]
   }
 
   type HeroSection {
@@ -98,6 +97,7 @@ const typeDefs = gql`
     bgColor: String
     textColor: String
     image: Media
+    order: Int
   }
 
   type ExploreCardsSection {

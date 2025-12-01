@@ -24,7 +24,6 @@ const pageResolvers = {
       const docs = await Page.find(query)
         .populate('sections.backgroundImage')
         .populate('sections.image')
-        .populate('sections.jobs')
         .populate('sections.leaders.image')
         .populate('sections.timelineItems.podcastImage')
         .populate('sections.cards.image')
@@ -64,7 +63,6 @@ const pageResolvers = {
       return await Page.findById(id)
         .populate('sections.backgroundImage')
         .populate('sections.image')
-        .populate('sections.jobs')
         .populate('sections.leaders.image')
         .populate('sections.timelineItems.podcastImage')
         .populate('sections.cards.image')
@@ -162,6 +160,13 @@ const pageResolvers = {
         return await Media.findById(parent.backgroundImage);
       }
       return null;
+    },
+  },
+
+  ExploreCardsSection: {
+    cards: (parent) => {
+      // Return cards as-is - order field is used for layout position (1-9), not sorting
+      return parent.cards || [];
     },
   },
 };
