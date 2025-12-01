@@ -287,28 +287,48 @@ const createAdminJS = () => {
         resource: Media,
         options: {
           navigation: { name: 'Media', icon: 'Image' },
+          sort: {
+            sortBy: 'createdAt',
+            direction: 'desc',
+          },
           actions: {
+            list: {
+              isAccessible: true,
+            },
             delete: {
               actionType: 'record',
+              isVisible: true,
+              isAccessible: true,
+              guard: 'Are you sure you want to delete this media file?',
               handler: async (request, response, context) => {
-                const { record, resource, h } = context;
+                const { record, resource, h, currentAdmin } = context;
 
                 if (request.method === 'post') {
                   try {
-                    // Use findByIdAndDelete instead of findOneAndRemove
-                    await Media.findByIdAndDelete(record.id());
+                    const recordId = record.id();
+                    console.log(`Deleting media record: ${recordId}`);
+
+                    // Delete from database
+                    const deletedRecord = await Media.findByIdAndDelete(recordId);
+
+                    if (!deletedRecord) {
+                      throw new Error('Record not found');
+                    }
+
+                    console.log(`Successfully deleted media: ${deletedRecord.originalFilename}`);
 
                     return {
-                      record: record.toJSON(context.currentAdmin),
-                      redirectUrl: h.resourceUrl({ resourceId: resource._name }),
+                      record: record.toJSON(currentAdmin),
+                      redirectUrl: h.resourceUrl({ resourceId: 'Media' }),
                       notice: {
-                        message: 'Successfully deleted',
+                        message: `Successfully deleted "${deletedRecord.originalFilename}"`,
                         type: 'success',
                       },
                     };
                   } catch (error) {
+                    console.error('Delete error:', error);
                     return {
-                      record: record.toJSON(context.currentAdmin),
+                      record: record.toJSON(currentAdmin),
                       notice: {
                         message: `Error: ${error.message}`,
                         type: 'error',
@@ -317,33 +337,42 @@ const createAdminJS = () => {
                   }
                 }
 
-                return { record: record.toJSON(context.currentAdmin) };
+                // Show confirmation dialog
+                return { record: record.toJSON(currentAdmin) };
               },
             },
             bulkDelete: {
               actionType: 'bulk',
+              isVisible: true,
+              isAccessible: true,
+              guard: 'Are you sure you want to delete the selected media files?',
               handler: async (request, response, context) => {
-                const { records, resource, h } = context;
+                const { records, resource, h, currentAdmin } = context;
 
                 if (request.method === 'post') {
                   try {
                     const ids = records.map(record => record.id());
                     const count = ids.length;
 
+                    console.log(`Bulk deleting ${count} media records:`, ids);
+
                     // Delete the records
-                    await Media.deleteMany({ _id: { $in: ids } });
+                    const result = await Media.deleteMany({ _id: { $in: ids } });
+
+                    console.log(`Successfully deleted ${result.deletedCount} media files`);
 
                     return {
                       records: [],
-                      redirectUrl: h.resourceUrl({ resourceId: resource._name }),
+                      redirectUrl: h.resourceUrl({ resourceId: 'Media' }),
                       notice: {
                         message: `Successfully deleted ${count} file${count > 1 ? 's' : ''}`,
                         type: 'success',
                       },
                     };
                   } catch (error) {
+                    console.error('Bulk delete error:', error);
                     return {
-                      records: records.map(record => record.toJSON(context.currentAdmin)),
+                      records: records.map(record => record.toJSON(currentAdmin)),
                       notice: {
                         message: `Error: ${error.message}`,
                         type: 'error',
@@ -352,7 +381,8 @@ const createAdminJS = () => {
                   }
                 }
 
-                return { records: records.map(record => record.toJSON(context.currentAdmin)) };
+                // Show confirmation dialog
+                return { records: records.map(record => record.toJSON(currentAdmin)) };
               },
             },
           },
@@ -375,15 +405,21 @@ const createAdminJS = () => {
             },
             originalFilename: {
               isVisible: { list: true, filter: true, show: true, edit: true },
+              type: 'string',
+              props: {
+                isSortable: true,
+              },
             },
             mimeType: {
               isVisible: { list: true, filter: true, show: true, edit: false },
+              type: 'string',
             },
             fileSize: {
               isVisible: { list: true, filter: false, show: true, edit: false },
             },
             alt: {
-              isVisible: { list: false, filter: false, show: true, edit: true },
+              isVisible: { list: false, filter: true, show: true, edit: true },
+              type: 'string',
             },
             caption: {
               isVisible: { list: false, filter: false, show: true, edit: true },
@@ -396,6 +432,7 @@ const createAdminJS = () => {
             },
             folder: {
               isVisible: { list: true, filter: true, show: true, edit: true },
+              type: 'string',
             },
             uploadedBy: {
               isVisible: { list: false, filter: false, show: true, edit: true },
@@ -408,9 +445,10 @@ const createAdminJS = () => {
             },
           },
           listProperties: ['originalFilename', 'mimeType', 'fileSize', 'folder', 'createdAt'],
-          filterProperties: ['originalFilename', 'mimeType', 'folder'],
+          filterProperties: ['originalFilename', 'alt', 'mimeType', 'folder'],
           titleProperty: 'originalFilename', // Show originalFilename in selection dropdowns
           showProperties: ['originalFilename', 'filename', 'url', 's3Key', 'mimeType', 'fileSize', 'alt', 'caption', 'width', 'height', 'folder', 'uploadedBy', 'createdAt', 'updatedAt'],
+          id: 'Media', // Explicitly set resource ID
         },
         features: [
           uploadFeature({

@@ -566,6 +566,7 @@ const typeDefs = gql`
   type FooterSocial {
     platform: String!
     url: String!
+    icon: Media
   }
 
   type Footer {

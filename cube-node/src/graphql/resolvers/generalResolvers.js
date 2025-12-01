@@ -87,7 +87,26 @@ const generalResolvers = {
     },
 
     SiteSettings: async () => {
-      return await SiteSettings.getInstance();
+      const settings = await SiteSettings.getInstance();
+
+      // Manually populate nested icon references
+      if (settings && settings.footer && settings.footer.socials) {
+        await SiteSettings.populate(settings, {
+          path: 'logo favicon',
+        });
+
+        // Populate each social icon manually since it's deeply nested
+        for (let i = 0; i < settings.footer.socials.length; i++) {
+          if (settings.footer.socials[i].icon) {
+            await SiteSettings.populate(settings, {
+              path: `footer.socials.${i}.icon`,
+              model: 'Media',
+            });
+          }
+        }
+      }
+
+      return settings;
     },
   },
 };

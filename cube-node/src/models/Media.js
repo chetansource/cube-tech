@@ -7,7 +7,7 @@ const mediaSchema = new mongoose.Schema({
   },
   originalFilename: {
     type: String,
-    required: true,
+    required: false, // Auto-generated from filename, but can be manually edited
   },
   mimeType: {
     type: String,
@@ -43,9 +43,11 @@ const mediaSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// Index for searching
-mediaSchema.index({ originalFilename: 'text', alt: 'text' });
-mediaSchema.index({ folder: 1, createdAt: -1 });
+// Index for searching and filtering
+mediaSchema.index({ originalFilename: 1 });
+mediaSchema.index({ folder: 1 });
+mediaSchema.index({ alt: 1 });
+mediaSchema.index({ createdAt: -1 });
 
 // Add toString method for AdminJS display
 mediaSchema.methods.toString = function() {
@@ -69,9 +71,21 @@ mediaSchema.pre('save', function(next) {
     }
   }
 
-  // If originalFilename is not set, use the filename as fallback
-  if (!this.originalFilename && this.filename) {
-    this.originalFilename = this.filename;
+  // Extract original filename from the timestamped filename
+  // AdminJS upload adds timestamp like: "1764570272950-telegram.png"
+  // We want to extract just "telegram.png" for originalFilename
+  // ONLY auto-set if originalFilename is empty or if filename was just set by upload
+  const wasFilenameModified = this.isModified('filename');
+  const isOriginalFilenameEmpty = !this.originalFilename || this.originalFilename.trim() === '';
+
+  if (isOriginalFilenameEmpty && this.filename && wasFilenameModified) {
+    // Remove timestamp prefix (format: timestamp-filename)
+    const match = this.filename.match(/^\d+-(.+)$/);
+    if (match) {
+      this.originalFilename = match[1]; // Extract just the original name
+    } else {
+      this.originalFilename = this.filename; // No timestamp found, use as-is
+    }
   }
 
   // Set s3Bucket from env if not provided
@@ -82,19 +96,26 @@ mediaSchema.pre('save', function(next) {
   next();
 });
 
-// Helper function to process s3Key and generate url/filename
+// Helper function to process s3Key and generate url/filename/originalFilename
 function processS3KeyUpdate(update) {
   if (update.s3Key || update.$set?.s3Key) {
     const s3Key = update.s3Key || update.$set?.s3Key;
     const keyParts = s3Key.split('/');
     const filename = keyParts[keyParts.length - 1];
 
+    // Extract original filename from timestamped filename
+    let originalFilename = filename;
+    const match = filename.match(/^\d+-(.+)$/);
+    if (match) {
+      originalFilename = match[1]; // Remove timestamp prefix
+    }
+
     // Generate URL from s3Key
     const bucket = (update.s3Bucket || update.$set?.s3Bucket) || process.env.AWS_S3_BUCKET || 'cube-highways-media';
     const region = process.env.AWS_REGION || 'ap-south-1';
     const url = `https://${bucket}.s3.${region}.amazonaws.com/${s3Key}`;
 
-    return { filename, url };
+    return { filename, url, originalFilename };
   }
   return null;
 }
@@ -108,8 +129,17 @@ mediaSchema.pre('findOneAndUpdate', function(next) {
     if (update.$set) {
       update.$set.filename = processed.filename;
       update.$set.url = processed.url;
+      // Only auto-set originalFilename if it's not already provided in the update
+      // This allows manual editing in AdminJS to be preserved
+      if (update.$set.originalFilename === undefined) {
+        update.$set.originalFilename = processed.originalFilename;
+      }
     } else {
-      this.set({ filename: processed.filename, url: processed.url });
+      this.set({
+        filename: processed.filename,
+        url: processed.url,
+        ...((!update.originalFilename) && { originalFilename: processed.originalFilename })
+      });
     }
   }
 
@@ -124,8 +154,16 @@ mediaSchema.pre('updateOne', function(next) {
     if (update.$set) {
       update.$set.filename = processed.filename;
       update.$set.url = processed.url;
+      // Only auto-set if not explicitly provided
+      if (update.$set.originalFilename === undefined) {
+        update.$set.originalFilename = processed.originalFilename;
+      }
     } else {
-      this.set({ filename: processed.filename, url: processed.url });
+      this.set({
+        filename: processed.filename,
+        url: processed.url,
+        ...((!update.originalFilename) && { originalFilename: processed.originalFilename })
+      });
     }
   }
 
@@ -140,8 +178,16 @@ mediaSchema.pre('updateMany', function(next) {
     if (update.$set) {
       update.$set.filename = processed.filename;
       update.$set.url = processed.url;
+      // Only auto-set if not explicitly provided
+      if (update.$set.originalFilename === undefined) {
+        update.$set.originalFilename = processed.originalFilename;
+      }
     } else {
-      this.set({ filename: processed.filename, url: processed.url });
+      this.set({
+        filename: processed.filename,
+        url: processed.url,
+        ...((!update.originalFilename) && { originalFilename: processed.originalFilename })
+      });
     }
   }
 

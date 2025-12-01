@@ -37,6 +37,10 @@ const footerContactSchema = new mongoose.Schema({
 const footerSocialSchema = new mongoose.Schema({
   platform: { type: String, required: true },
   url: { type: String, required: true },
+  icon: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Media',
+  },
 }, { _id: false });
 
 const footerSchema = new mongoose.Schema({

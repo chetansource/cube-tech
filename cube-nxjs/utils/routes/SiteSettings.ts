@@ -17,6 +17,10 @@ export interface FooterContact {
 export interface FooterSocial {
   platform: string;
   url: string;
+  icon?: {
+    url: string;
+    alt?: string;
+  };
 }
 
 export interface Footer {
@@ -56,6 +60,10 @@ export const getSiteSettings = async (): Promise<SiteSettings | null> => {
           socials {
             platform
             url
+            icon {
+              url
+              alt
+            }
           }
           newsletterEnabled
           copyrightText

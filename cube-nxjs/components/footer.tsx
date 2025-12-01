@@ -335,7 +335,17 @@ export default function Footer() {
                       rel="noopener noreferrer"
                       className="text-gray-400 hover:text-white transition-colors duration-300"
                     >
-                      {getSocialIcon(social.platform)}
+                      {social.icon?.url ? (
+                        <Image
+                          src={social.icon.url}
+                          alt={social.icon.alt || social.platform}
+                          width={24}
+                          height={24}
+                          className="h-6 w-6"
+                        />
+                      ) : (
+                        getSocialIcon(social.platform)
+                      )}
                     </a>
                   );
                 })
