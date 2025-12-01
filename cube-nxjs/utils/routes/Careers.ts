@@ -58,8 +58,9 @@ interface CareerPageResponse {
 }
 
 export const getCareerPageContent = async (slug: string) => {
-  const query = gql`
-    query GetCareerPage($slug: String!) {
+  try {
+    const query = gql`
+      query GetCareerPage($slug: String!) {
       Pages(where: { slug: { equals: $slug } }, limit: 1) {
         docs {
           title
@@ -113,39 +114,55 @@ export const getCareerPageContent = async (slug: string) => {
     }
   `;
 
-  const variables = { slug };
+    const variables = { slug };
 
-  const data = await graphQLClient.request<PageResponse<CareerPageResponse> & { Jobs: { docs: Job[] } }>(
-    query,
-    variables
-  );
+    const data = await graphQLClient.request<PageResponse<CareerPageResponse> & { Jobs: { docs: Job[] } }>(
+      query,
+      variables
+    );
 
-  const page = data.Pages.docs[0];
+    console.log('🔍 getCareerPageContent: GraphQL Response received');
+    console.log('📊 Jobs from GraphQL:', data.Jobs?.docs?.length || 0);
 
-  if (!page || !page.sections) return {
-    careerHeading: null,
-    jobList: [],
-    heroSection: null,
-    exploreCards: []
-  };
+    const page = data.Pages.docs[0];
 
-  const careerHeading = page.sections.find(
-    (section: any) => section.blockType === "careerTitle"
-  ) as CareerPageSection | undefined;
+    if (!page || !page.sections) {
+      console.warn('⚠️ getCareerPageContent: No page or sections found');
+      return {
+        careerHeading: null,
+        jobList: [],
+        heroSection: null,
+        exploreCards: []
+      };
+    }
 
-  // Get jobs directly from Jobs query, not from page sections
-  const jobList = data.Jobs?.docs || [];
+    const careerHeading = page.sections.find(
+      (section: any) => section.blockType === "careerTitle"
+    ) as CareerPageSection | undefined;
 
-  const heroSection = page.sections.find(
-    (section: any) => section.blockType === "heroSection"
-  ) as HeroSection | undefined;
+    // Get jobs directly from Jobs query, not from page sections
+    const jobList = data.Jobs?.docs || [];
+    console.log('✅ getCareerPageContent: Returning jobs:', jobList.length);
 
-  const exploreCardsSection = page.sections.find(
-    (section: any) => section.blockType === "exploreCardsSection"
-  ) as ExploreCardsSection | undefined;
+    const heroSection = page.sections.find(
+      (section: any) => section.blockType === "heroSection"
+    ) as HeroSection | undefined;
 
-  // Don't sort - order field is used for layout position (1-9), not sequence
-  const exploreCards = exploreCardsSection?.cards || [];
+    const exploreCardsSection = page.sections.find(
+      (section: any) => section.blockType === "exploreCardsSection"
+    ) as ExploreCardsSection | undefined;
 
-  return { careerHeading, jobList, heroSection, exploreCards };
+    // Don't sort - order field is used for layout position (1-9), not sequence
+    const exploreCards = exploreCardsSection?.cards || [];
+
+    return { careerHeading, jobList, heroSection, exploreCards };
+  } catch (error) {
+    console.error('❌ getCareerPageContent: Error fetching career page:', error);
+    return {
+      careerHeading: null,
+      jobList: [],
+      heroSection: null,
+      exploreCards: []
+    };
+  }
 };

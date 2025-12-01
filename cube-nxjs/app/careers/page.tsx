@@ -10,7 +10,7 @@ import React from 'react';
 export const dynamic = 'force-dynamic';
 
 export default async function CareerPage() {
-  const { heroSection, exploreCards } = await getCareerPageContent("careerpage");
+  const { careerHeading, jobList, heroSection, exploreCards } = await getCareerPageContent("careerpage");
 
   return (
     <div className="min-h-screen">
@@ -20,7 +20,10 @@ export default async function CareerPage() {
         subheading={heroSection?.subheading}
         backgroundImage={heroSection?.backgroundImage?.url}
       />
-      <CareerOpportunities />
+      <CareerOpportunities
+        initialCareerHeading={careerHeading}
+        initialJobList={jobList}
+      />
       <CareerExploreMore cards={exploreCards} />
       <ResumeUpload />
     </div>

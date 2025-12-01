@@ -11,25 +11,43 @@ interface CareerHeading {
   description: string;
 }
 
-export default function CareerOpportunities() {
+interface CareerOpportunitiesProps {
+  initialCareerHeading?: CareerHeading | null;
+  initialJobList?: Job[];
+}
+
+export default function CareerOpportunities({
+  initialCareerHeading = null,
+  initialJobList = [],
+}: CareerOpportunitiesProps) {
   const [careerHeading, setCareerHeading] = useState<CareerHeading | null>(
-    null
+    initialCareerHeading
   );
-  const [jobList, setJobList] = useState<Job[]>([]);
+  const [jobList, setJobList] = useState<Job[]>(initialJobList);
   const [showScrollIndicator, setShowScrollIndicator] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const { careerHeading, jobList } = await getCareerPageContent("careerpage");
-      setCareerHeading(careerHeading ?? null);
-      setJobList(jobList);
-    };
+    // Only fetch if no initial data provided
+    if (!initialCareerHeading && initialJobList.length === 0) {
+      console.log('🔍 CareerOpportunities: Fetching jobs from API...');
+      const fetchData = async () => {
+        const { careerHeading, jobList } = await getCareerPageContent("careerpage");
+        console.log('✅ CareerOpportunities: Jobs fetched:', jobList.length);
+        setCareerHeading(careerHeading ?? null);
+        setJobList(jobList);
+      };
 
-    fetchData();
-  }, []);
+      fetchData();
+    } else {
+      console.log('✅ CareerOpportunities: Using initial props:', {
+        jobCount: initialJobList.length,
+        hasHeading: !!initialCareerHeading
+      });
+    }
+  }, [initialCareerHeading, initialJobList]);
 
   // Check if scrolling is possible
   useEffect(() => {
