@@ -6,6 +6,13 @@ import type { PageResponse } from "../types";
 const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/graphql`;
 const graphQLClient = new GraphQLClient(baseUrl);
 
+// Log the API URL being used (helps debug EC2 vs localhost)
+if (typeof window === 'undefined') {
+  console.log('🌐 Careers GraphQL API URL (Server):', baseUrl);
+} else {
+  console.log('🌐 Careers GraphQL API URL (Client):', baseUrl);
+}
+
 export interface Job {
   id: string;
   title: string;
