@@ -33,11 +33,10 @@ jobs:
           context: ./cube-node
           file: ./cube-node/Dockerfile
           push: true
+          no-cache: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/cube-highways-backend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/cube-highways-backend:${{ github.sha }}
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/cube-highways-backend:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/cube-highways-backend:buildcache,mode=max
 
       # Build and push frontend image
       - name: Build and push frontend Docker image
@@ -46,13 +45,12 @@ jobs:
           context: ./cube-nxjs
           file: ./cube-nxjs/Dockerfile
           push: true
+          no-cache: true
           build-args: |
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/cube-highways-frontend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/cube-highways-frontend:${{ github.sha }}
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/cube-highways-frontend:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/cube-highways-frontend:buildcache,mode=max
 
       # Deploy to EC2
       - name: Deploy to EC2

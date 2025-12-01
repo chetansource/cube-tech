@@ -478,7 +478,7 @@ export async function getSolutionsSection(): Promise<SolutionsSection | null> {
       Pages(where: { slug: { equals: "homepage" } }, limit: 1) {
         docs {
           sections {
-            ... on SolutionsSection {
+            ... on ServicesSolutionsSection {
               blockType
               backgroundImage {
                 url
@@ -500,7 +500,7 @@ export async function getSolutionsSection(): Promise<SolutionsSection | null> {
     const page = data.Pages?.docs?.[0];
     if (page?.sections) {
       const solutionsSection = page.sections.find(
-        (section: any) => section.blockType === "solutionsSection"
+        (section: any) => section.blockType === "servicesSolutionsSection"
       );
       return solutionsSection || null;
     }
