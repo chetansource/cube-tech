@@ -204,10 +204,6 @@ const typeDefs = gql`
   type ResourceGallerySection {
     blockType: String!
     galleryBackgroundImage: Media
-    showNewsLink: Boolean
-    showCasestudiesLink: Boolean
-    showBlogsLink: Boolean
-    showPodcastsLink: Boolean
   }
 
   type NewsEventsSection {

@@ -38,10 +38,6 @@ export interface ResourceGallerySection {
     url: string;
     alt?: string;
   };
-  showNewsLink?: boolean;
-  showCasestudiesLink?: boolean;
-  showBlogsLink?: boolean;
-  showPodcastsLink?: boolean;
 }
 
 export interface ExploreMoreSection {
@@ -104,10 +100,6 @@ export async function getResourcesPageContent(slug: string = 'resources'): Promi
                 url
                 alt
               }
-              showNewsLink
-              showCasestudiesLink
-              showBlogsLink
-              showPodcastsLink
             }
             ... on ExploreMoreSection {
               blockType

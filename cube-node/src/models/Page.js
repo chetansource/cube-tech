@@ -166,10 +166,6 @@ const sectionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Media'
   },
-  showNewsLink: { type: Boolean, default: true },
-  showCasestudiesLink: { type: Boolean, default: true },
-  showBlogsLink: { type: Boolean, default: true },
-  showPodcastsLink: { type: Boolean, default: true },
 
   // News & Events Section fields
   newsEventsTitle: String,
