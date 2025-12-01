@@ -7,7 +7,8 @@ const corsOptions = {
       process.env.FRONTEND_URL || 'http://localhost:3000',
       'http://localhost:3000',
       'http://localhost:3001', // For GraphQL playground and AdminJS
-    ];
+      process.env.BACKEND_URL, // Allow backend's own URL (for AdminJS on EC2)
+    ].filter(Boolean); // Remove undefined values
 
     // Allow requests with no origin (like mobile apps, curl requests, or same-origin requests)
     if (!origin || origin === 'null') return callback(null, true);
