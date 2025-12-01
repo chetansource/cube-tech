@@ -22,6 +22,8 @@ const resolvers = {
   Section: pageResolvers.Section,
   StatsSection: pageResolvers.StatsSection,
   TestimonialsSection: pageResolvers.TestimonialsSection,
+  ExploreCardsSection: pageResolvers.ExploreCardsSection,
+  ProjectsHeroSection: pageResolvers.ProjectsHeroSection,
 };
 
 module.exports = resolvers;
