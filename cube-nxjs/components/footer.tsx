@@ -9,6 +9,7 @@ import UpArrowIcon from "./icons/up-arrow";
 import DownArrow from "./icons/mobile-icons/DownArrow";
 import Image from "next/image";
 import { getSiteSettings, type SiteSettings } from "@/utils/routes/SiteSettings";
+import { submitNewsletter } from "@/utils/routes/SubmitNewsletter";
 
 export default function Footer() {
   const [isCompanyOpen, setCompanyOpen] = useState(false);
@@ -17,6 +18,9 @@ export default function Footer() {
   const [isNewsLetterOpen, setNewsLetterOpen] = useState(false);
   const [footerData, setFooterData] = useState<SiteSettings | null>(null);
   const [loading, setLoading] = useState(true);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [newsletterError, setNewsletterError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchFooterData = async () => {
@@ -32,6 +36,46 @@ export default function Footer() {
 
     fetchFooterData();
   }, []);
+
+  // Email validation function
+  const validateEmail = (email: string) => {
+    if (!email.trim()) return "Email is required";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return "Please enter a valid email address";
+    }
+    return "";
+  };
+
+  // Newsletter submission handler
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validate email
+    const emailError = validateEmail(newsletterEmail);
+    if (emailError) {
+      setNewsletterError(emailError);
+      return;
+    }
+
+    setIsSubmitting(true);
+    setNewsletterError("");
+
+    try {
+      await submitNewsletter(newsletterEmail);
+      alert("Successfully subscribed to our newsletter!");
+      setNewsletterEmail("");
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to subscribe. Please try again later.";
+      setNewsletterError(errorMessage);
+      alert(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <footer className="w-full bg-footer text-white">
       <div className=" flex flex-col md:flex-row  justify-between pt-12 pr-8 pl-2 md:p-12 md:gap-y-12">
@@ -269,23 +313,38 @@ export default function Footer() {
               </span>
             </div>
             <form
+              onSubmit={handleNewsletterSubmit}
               className={`text-base space-y-2 transition-all duration-500 ease-in-out transform py-3 ${
                 isNewsLetterOpen
-                  ? "flex  opacity-100 translate-y-0 max-h-[500px]"
+                  ? "flex flex-col opacity-100 translate-y-0 max-h-[500px]"
                   : "opacity-0 -translate-y-2 max-h-0 overflow-hidden"
               }`}
             >
-              <input
-                type="email"
-                placeholder="Email"
-                className="px-4 py-2 border-b-1 border-white  focus:outline-none text-white  w-full"
-              />
-              <button
-                type="submit"
-                className=" hover:bg-green-600 px-4 py-2 rounded-r-md transition-colors duration-300 hover:cursor-pointer"
-              >
-                <RightArrowIcon color="white" />
-              </button>
+              <div className="flex">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  className={`px-4 py-2 border-b-1 focus:outline-none text-white w-full bg-transparent ${
+                    newsletterError ? "border-red-500" : "border-white"
+                  }`}
+                  value={newsletterEmail}
+                  onChange={(e) => {
+                    setNewsletterEmail(e.target.value);
+                    setNewsletterError("");
+                  }}
+                  disabled={isSubmitting}
+                />
+                <button
+                  type="submit"
+                  className="hover:bg-green-600 px-4 py-2 rounded-r-md transition-colors duration-300 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
+                >
+                  <RightArrowIcon color="white" />
+                </button>
+              </div>
+              {newsletterError && (
+                <p className="text-red-500 text-xs">{newsletterError}</p>
+              )}
             </form>
           </div>
         </div>
@@ -295,18 +354,32 @@ export default function Footer() {
             <h4 className="text-lg font-medium mb-2">
               Sign up to our Newsletter{" "}
             </h4>
-            <form className="flex ">
-              <input
-                type="email"
-                placeholder="Email"
-                className="px-4 py-2 border-b-1 border-white  focus:outline-none text-white  w-full"
-              />
-              <button
-                type="submit"
-                className=" hover:bg-green-600 px-4 py-2 rounded-r-md transition-colors duration-300 hover:cursor-pointer"
-              >
-                <RightArrowIcon color="white" />
-              </button>
+            <form onSubmit={handleNewsletterSubmit} className="flex flex-col">
+              <div className="flex">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  className={`px-4 py-2 border-b-1 focus:outline-none text-white w-full bg-transparent ${
+                    newsletterError ? "border-red-500" : "border-white"
+                  }`}
+                  value={newsletterEmail}
+                  onChange={(e) => {
+                    setNewsletterEmail(e.target.value);
+                    setNewsletterError("");
+                  }}
+                  disabled={isSubmitting}
+                />
+                <button
+                  type="submit"
+                  className="hover:bg-green-600 px-4 py-2 rounded-r-md transition-colors duration-300 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
+                >
+                  <RightArrowIcon color="white" />
+                </button>
+              </div>
+              {newsletterError && (
+                <p className="text-red-500 text-xs mt-2">{newsletterError}</p>
+              )}
             </form>
           </div>
           <div>

@@ -21,6 +21,7 @@ const contactRoutes = require('./routes/contact');
 const resumeRoutes = require('./routes/resume');
 const mediaRoutes = require('./routes/media');
 const sitemapRoutes = require('./routes/sitemap');
+const newsletterRoutes = require('./routes/newsletter');
 
 // Initialize Express app
 const app = express();
@@ -83,6 +84,7 @@ const startServer = async () => {
     app.use('/api/resumes', resumeRoutes);
     app.use('/api/media', mediaRoutes);
     app.use('/api/sitemap.xml', sitemapRoutes);
+    app.use('/api/newsletter', newsletterRoutes);
 
     // Robots.txt for SEO
     app.get('/robots.txt', (_req, res) => {

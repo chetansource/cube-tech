@@ -36,6 +36,7 @@ const Project = require('../models/Project');
 const Resource = require('../models/Resource');
 const ContactSubmission = require('../models/ContactSubmission');
 const Resume = require('../models/Resume');
+const Newsletter = require('../models/Newsletter');
 const Media = require('../models/Media');
 const Service = require('../models/Service');
 const Partner = require('../models/Partner');
@@ -281,6 +282,38 @@ const createAdminJS = () => {
           },
           listProperties: ['fullName', 'number', 'jobId', 'status', 'submittedAt'],
           filterProperties: ['fullName', 'status', 'submittedAt'],
+        },
+      },
+      {
+        resource: Newsletter,
+        options: {
+          navigation: { name: 'Forms', icon: 'Send' },
+          properties: {
+            status: {
+              availableValues: [
+                { value: 'subscribed', label: 'Subscribed' },
+                { value: 'unsubscribed', label: 'Unsubscribed' },
+              ],
+            },
+            subscribedAt: {
+              isVisible: { list: true, filter: true, show: true, edit: false },
+            },
+            unsubscribedAt: {
+              isVisible: { list: false, filter: false, show: true, edit: false },
+            },
+            createdAt: {
+              isVisible: { list: false, filter: false, show: true, edit: false },
+            },
+            updatedAt: {
+              isVisible: { list: false, filter: false, show: true, edit: false },
+            },
+          },
+          actions: {
+            new: { isVisible: false }, // Disable creating subscriptions from admin
+            edit: { isVisible: true }, // Allow editing for status updates
+          },
+          listProperties: ['email', 'status', 'subscribedAt'],
+          filterProperties: ['email', 'status', 'subscribedAt'],
         },
       },
       {

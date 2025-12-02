@@ -22,6 +22,10 @@ const schemas = {
     caption: Joi.string().max(500).optional().allow('').trim(),
     folder: Joi.string().max(50).optional().default('general').trim(),
   }),
+
+  newsletterSubscription: Joi.object({
+    email: Joi.string().email().required().trim().lowercase(),
+  }),
 };
 
 /**

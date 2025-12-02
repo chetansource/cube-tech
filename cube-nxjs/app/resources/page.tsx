@@ -29,7 +29,7 @@ const ResourcesPage = async () => {
       <Hero
         backgroundImage={heroSection?.heroBackgroundImage?.url || "/top-view-bridge.webp"}
         title={
-          <div className="flex md:flex-col md:gap-8 my-8">
+          <div className="flex md:flex-col  md:gap-8 my-8">
             {heroSection?.heroTitle || "Explore"}{" "}
             <span className="text-white font-semibold italic pl-4 md:py-2">
               {heroSection?.heroTitleItalic || "Latest"}
