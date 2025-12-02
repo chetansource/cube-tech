@@ -103,12 +103,12 @@ export default function CareerOpportunities({
               "Grow your career with opportunities in research, data analytics, and infrastructure development."}
           </p>
 
-          <div className="pt-4">
+          {/* <div className="pt-4">
             <button className="flex text-base font-bold items-center text-accent gap-8">
               READ MORE
               <RightArrowIcon color="#5FBA51" />
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Right Column - 65% with Horizontal Scroll */}

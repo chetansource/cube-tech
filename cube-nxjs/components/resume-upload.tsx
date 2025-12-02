@@ -101,7 +101,7 @@ export default function ResumeUpload() {
       await submitResume({
         fullName,
         number: contactNo,
-        file,
+        file: file!, // Assert non-null since we validated above
         jobId: isDetailsPage ? pathname.split("/").pop() : undefined,
       });
 
