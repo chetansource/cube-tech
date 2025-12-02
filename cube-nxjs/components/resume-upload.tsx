@@ -8,6 +8,11 @@ export default function ResumeUpload() {
   const [contactNo, setContactNo] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [errors, setErrors] = useState({
+    fullName: "",
+    contactNo: "",
+    file: "",
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const pathname = usePathname();
@@ -42,11 +47,53 @@ export default function ResumeUpload() {
     fileInputRef.current?.click();
   };
 
+  // Validation functions
+  const validateFullName = (name: string) => {
+    if (!name.trim()) return "Full name is required";
+    if (name.trim().length < 2) return "Name must be at least 2 characters";
+    if (!/^[a-zA-Z\s]+$/.test(name))
+      return "Name can only contain letters and spaces";
+    return "";
+  };
+
+  const validatePhone = (phone: string) => {
+    if (!phone.trim()) return "Contact number is required";
+    const phoneDigits = phone.replace(/[\s+\-]/g, "");
+    if (!/^(\+?91)?[6-9]\d{9}$/.test(phoneDigits)) {
+      return "Please enter a valid 10-digit phone number";
+    }
+    return "";
+  };
+
+  const validateFile = (file: File | null) => {
+    if (!file) return "Please upload a resume file";
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+    if (!allowedTypes.includes(file.type)) {
+      return "Resume must be a PDF, DOC, or DOCX file";
+    }
+    return "";
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!file) {
-      alert("Please upload a resume file.");
+    // Validate all fields
+    const fullNameError = validateFullName(fullName);
+    const contactNoError = validatePhone(contactNo);
+    const fileError = validateFile(file);
+
+    setErrors({
+      fullName: fullNameError,
+      contactNo: contactNoError,
+      file: fileError,
+    });
+
+    // Stop if there are errors
+    if (fullNameError || contactNoError || fileError) {
       return;
     }
 
@@ -63,6 +110,7 @@ export default function ResumeUpload() {
       setFullName("");
       setContactNo("");
       setFile(null);
+      setErrors({ fullName: "", contactNo: "", file: "" });
     } catch (err) {
       console.error("Error submitting resume:", err);
       alert("Something went wrong. Please try again.");
@@ -102,31 +150,51 @@ export default function ResumeUpload() {
               <input
                 type="text"
                 placeholder="Full Name"
-                className="w-full p-4 border border-[#EAEAEA] bg-white focus:bg-white 
-             focus:outline-none placeholder:text-[#1C1B1F] placeholder:text-lg 
-             focus:placeholder-transparent"
+                className={`w-full p-4 border bg-white focus:bg-white
+             focus:outline-none placeholder:text-[#1C1B1F] placeholder:text-lg
+             focus:placeholder-transparent ${
+               errors.fullName ? "border-red-500" : "border-[#EAEAEA]"
+             }`}
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
+                onBlur={() =>
+                  setErrors({ ...errors, fullName: validateFullName(fullName) })
+                }
                 required
               />
+              {errors.fullName && (
+                <p className="text-red-500 text-sm mt-2">{errors.fullName}</p>
+              )}
             </div>
 
             <div className="mb-6">
               <input
                 type="tel"
                 placeholder="Contact No."
-                className="w-full p-4 border border-[#EAEAEA] bg-white focus:bg-white 
+                className={`w-full p-4 border bg-white focus:bg-white
              focus:outline-none placeholder:text-[#1C1B1F] placeholder:text-lg
-             focus:placeholder-transparent"
+             focus:placeholder-transparent ${
+               errors.contactNo ? "border-red-500" : "border-[#EAEAEA]"
+             }`}
                 value={contactNo}
                 onChange={(e) => setContactNo(e.target.value)}
+                onBlur={() =>
+                  setErrors({ ...errors, contactNo: validatePhone(contactNo) })
+                }
                 required
               />
+              {errors.contactNo && (
+                <p className="text-red-500 text-sm mt-2">{errors.contactNo}</p>
+              )}
             </div>
 
             <div
-              className={`mb-6 border border-gray-200 p-8 text-center cursor-pointer ${
-                isDragging ? "border-[#EAEAEA]" : "bg-white"
+              className={`mb-6 border p-8 text-center cursor-pointer ${
+                errors.file
+                  ? "border-red-500"
+                  : isDragging
+                  ? "border-[#EAEAEA]"
+                  : "border-gray-200 bg-white"
               }`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
@@ -153,6 +221,11 @@ export default function ResumeUpload() {
                 onChange={handleFileChange}
               />
             </div>
+            {errors.file && (
+              <p className="text-red-500 text-sm mt-2 -mt-4 mb-4">
+                {errors.file}
+              </p>
+            )}
 
             <button
               type="submit"

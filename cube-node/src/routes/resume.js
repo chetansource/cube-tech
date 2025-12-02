@@ -3,7 +3,7 @@ const router = express.Router();
 const Resume = require('../models/Resume');
 const Media = require('../models/Media');
 const Job = require('../models/Job');
-const emailService = require('../services/emailService');
+// const emailService = require('../services/emailService'); // Disabled
 const { validate } = require('../middleware/validation');
 const { formLimiter } = require('../middleware/rateLimiter');
 
@@ -68,13 +68,13 @@ router.post(
       // Populate the resume upload for response
       await resume.populate('resumeUpload');
 
-      // Send email notification (non-blocking)
-      emailService.sendResumeNotification({
-        fullName,
-        number,
-        jobId,
-        resumeUrl: media.url,
-      }).catch(err => console.error('Email notification error:', err));
+      // Email notifications disabled
+      // emailService.sendResumeNotification({
+      //   fullName,
+      //   number,
+      //   jobId,
+      //   resumeUrl: media.url,
+      // }).catch(err => console.error('Email notification error:', err));
 
       res.status(201).json({
         success: true,

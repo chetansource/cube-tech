@@ -63,6 +63,28 @@ jobs:
             # Login to Docker Hub
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
+            # Clean up Docker storage BEFORE pulling new images
+            echo "🧹 Cleaning up Docker storage..."
+
+            # Remove all dangling images (untagged)
+            docker image prune -af
+
+            # Remove all dangling build cache
+            docker builder prune -af
+
+            # Remove stopped containers
+            docker container prune -f
+
+            # Remove unused volumes
+            docker volume prune -f
+
+            # Remove unused networks
+            docker network prune -f
+
+            # Show disk usage after cleanup
+            echo "📊 Docker disk usage after cleanup:"
+            docker system df
+
             # Pull latest images
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/cube-highways-backend:latest
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/cube-highways-frontend:latest
@@ -98,8 +120,14 @@ jobs:
               -e NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" \
               ${{ secrets.DOCKERHUB_USERNAME }}/cube-highways-frontend:latest
 
-            # Clean up old images
-            docker image prune -af --filter "until=24h"
+            # Final cleanup - remove only old/untagged images (keep current running images)
+            echo "🧹 Final cleanup - removing untagged images..."
+            docker image prune -f
 
             # Show running containers
+            echo "✅ Deployment complete! Running containers:"
             docker ps
+
+            # Show final disk usage
+            echo "📊 Final Docker disk usage:"
+            docker system df

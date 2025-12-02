@@ -23,6 +23,12 @@ const ContactUsPage = () => {
   const [message, setMessage] = useState("");
   const [isSelectOpen, setIsSelectOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,8 +56,56 @@ const ContactUsPage = () => {
     setInterestedField(event.target.value);
   };
 
+  // Validation functions
+  const validateName = (name: string) => {
+    if (!name.trim()) return "Name is required";
+    if (name.trim().length < 2) return "Name must be at least 2 characters";
+    if (!/^[a-zA-Z\s]+$/.test(name))
+      return "Name can only contain letters and spaces";
+    return "";
+  };
+
+  const validateEmail = (email: string) => {
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return "Please enter a valid email address";
+    }
+    return "";
+  };
+
+  const validatePhone = (phone: string) => {
+    if (!phone.trim()) return "Phone number is required";
+    const phoneDigits = phone.replace(/[\s+\-]/g, "");
+    if (!/^(\+?91)?[6-9]\d{9}$/.test(phoneDigits)) {
+      return "Please enter a valid 10-digit phone number";
+    }
+    return "";
+  };
+
+  const validateMessage = (message: string) => {
+    if (message.length > 500) return "Message cannot exceed 500 characters";
+    return "";
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate all fields
+    const nameError = validateName(name);
+    const emailError = validateEmail(email);
+    const phoneError = validatePhone(phone);
+    const messageError = validateMessage(message);
+
+    setErrors({
+      name: nameError,
+      email: emailError,
+      phone: phoneError,
+      message: messageError,
+    });
+
+    // Stop if there are errors
+    if (nameError || emailError || phoneError || messageError) {
+      return;
+    }
 
     try {
       await submitContactForm({
@@ -67,6 +121,7 @@ const ContactUsPage = () => {
       setPhone("");
       setInterestedField("");
       setMessage("");
+      setErrors({ name: "", email: "", phone: "", message: "" });
     } catch (error) {
       console.error("Form submission error:", error);
       alert("Failed to submit. Please try again later.");
@@ -229,10 +284,20 @@ const ContactUsPage = () => {
                   <input
                     type="text"
                     id="name"
-                    className="w-full border-b border-black pb-2 focus:outline-none bg-transparent"
+                    className={`w-full border-b pb-2 focus:outline-none bg-transparent ${
+                      errors.name ? "border-red-500" : "border-black"
+                    }`}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    onBlur={() =>
+                      setErrors({ ...errors, name: validateName(name) })
+                    }
                   />
+                  {errors.name && (
+                    <p className="text-red-500 text-xs mt-1 normal-case">
+                      {errors.name}
+                    </p>
+                  )}
                 </div>
 
                 <div className="text-xs md:text-sm font-normal uppercase pb-4">
@@ -242,10 +307,20 @@ const ContactUsPage = () => {
                   <input
                     type="email"
                     id="email"
-                    className="w-full border-b border-black pb-2 focus:outline-none bg-transparent"
+                    className={`w-full border-b pb-2 focus:outline-none bg-transparent ${
+                      errors.email ? "border-red-500" : "border-black"
+                    }`}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    onBlur={() =>
+                      setErrors({ ...errors, email: validateEmail(email) })
+                    }
                   />
+                  {errors.email && (
+                    <p className="text-red-500 text-xs mt-1 normal-case">
+                      {errors.email}
+                    </p>
+                  )}
                 </div>
 
                 <div className="text-xs md:text-sm font-normal uppercase pb-4">
@@ -255,10 +330,20 @@ const ContactUsPage = () => {
                   <input
                     type="tel"
                     id="phone"
-                    className="w-full border-b border-black pb-2 focus:outline-none bg-transparent"
+                    className={`w-full border-b pb-2 focus:outline-none bg-transparent ${
+                      errors.phone ? "border-red-500" : "border-black"
+                    }`}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
+                    onBlur={() =>
+                      setErrors({ ...errors, phone: validatePhone(phone) })
+                    }
                   />
+                  {errors.phone && (
+                    <p className="text-red-500 text-xs mt-1 normal-case">
+                      {errors.phone}
+                    </p>
+                  )}
                 </div>
 
                 <div className="text-xs md:text-sm font-normal uppercase pb-4">
@@ -316,10 +401,31 @@ const ContactUsPage = () => {
                   <textarea
                     id="message"
                     rows={3}
-                    className="w-full border-b border-black pb-2 focus:outline-none resize-none bg-transparent"
+                    className={`w-full border-b pb-2 focus:outline-none resize-none bg-transparent ${
+                      errors.message ? "border-red-500" : "border-black"
+                    }`}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
+                    onBlur={() =>
+                      setErrors({ ...errors, message: validateMessage(message) })
+                    }
                   ></textarea>
+                  <div className="flex justify-between items-center mt-1">
+                    {errors.message && (
+                      <p className="text-red-500 text-xs normal-case">
+                        {errors.message}
+                      </p>
+                    )}
+                    <p
+                      className={`text-xs ml-auto ${
+                        message.length > 500
+                          ? "text-red-500"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      {message.length}/500 characters
+                    </p>
+                  </div>
                 </div>
 
                 <button

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ContactSubmission = require('../models/ContactSubmission');
-const emailService = require('../services/emailService');
+// const emailService = require('../services/emailService'); // Disabled
 const { validate } = require('../middleware/validation');
 const { formLimiter } = require('../middleware/rateLimiter');
 
@@ -28,11 +28,11 @@ router.post(
         userAgent: req.get('user-agent'),
       });
 
-      // Send email notifications (non-blocking)
-      Promise.all([
-        emailService.sendContactNotification(submission),
-        emailService.sendContactConfirmation(email, name),
-      ]).catch(err => console.error('Email notification error:', err));
+      // Email notifications disabled
+      // Promise.all([
+      //   emailService.sendContactNotification(submission),
+      //   emailService.sendContactConfirmation(email, name),
+      // ]).catch(err => console.error('Email notification error:', err));
 
       res.status(201).json({
         success: true,
