@@ -426,6 +426,14 @@ const createAdminJS = () => {
             },
             url: {
               isVisible: { list: false, filter: false, show: true, edit: false },
+              type: 'string',
+            },
+            preview: {
+              isVisible: { list: true, filter: false, show: false, edit: false },
+              type: 'string',
+              components: {
+                list: AdminJS.bundle('./components/ImagePreview'),
+              },
             },
             s3Key: {
               isVisible: { list: false, filter: false, show: true, edit: false },
@@ -477,7 +485,7 @@ const createAdminJS = () => {
               isVisible: { list: false, filter: false, show: true, edit: false },
             },
           },
-          listProperties: ['originalFilename', 'mimeType', 'fileSize', 'folder', 'createdAt'],
+          listProperties: ['preview', 'originalFilename', 'mimeType', 'fileSize', 'folder', 'createdAt'],
           filterProperties: ['originalFilename', 'alt', 'mimeType', 'folder'],
           titleProperty: 'originalFilename', // Show originalFilename in selection dropdowns
           showProperties: ['originalFilename', 'filename', 'url', 's3Key', 'mimeType', 'fileSize', 'alt', 'caption', 'width', 'height', 'folder', 'uploadedBy', 'createdAt', 'updatedAt'],
