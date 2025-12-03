@@ -7,6 +7,15 @@ import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const pathname = usePathname();
+  const isHomepage = pathname === "/";
+
+  const handleRndClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const rndSection = document.getElementById("rnd");
+    if (rndSection) {
+      rndSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <div className="flex flex-col py-12 md:p-12">
@@ -46,18 +55,30 @@ const Navbar = () => {
           const isActive = pathname === path;
 
           return (
-            <Link
-              href={path}
-              key={item}
-              className={`text-white font-medium tracking-[3px] px-4 py-2 mx-1 my-1 border transition-all duration-100
-                ${
-                  isActive
-                    ? "bg-white/30 backdrop-blur-sm border-white border-opacity-50"
-                    : "border-transparent hover:bg-white/30 hover:backdrop-blur-sm hover:border-white hover:border-opacity-50"
-                }`}
-            >
-              {label}
-            </Link>
+            <React.Fragment key={item}>
+              <Link
+                href={path}
+                className={`text-white font-medium tracking-[3px] px-4 py-2 mx-1 my-1 border transition-all duration-100
+                  ${
+                    isActive
+                      ? "bg-white/30 backdrop-blur-sm border-white border-opacity-50"
+                      : "border-transparent hover:bg-white/30 hover:backdrop-blur-sm hover:border-white hover:border-opacity-50"
+                  }`}
+              >
+                {label}
+              </Link>
+
+              {/* R&D Link - Only visible on homepage, right after KNOWLEDGE CENTER */}
+              {item === "RESOURCES" && isHomepage && (
+                <a
+                  href="#rnd"
+                  onClick={handleRndClick}
+                  className="text-white font-medium tracking-[3px] px-4 py-2 mx-1 my-1 border border-transparent hover:bg-white/30 hover:backdrop-blur-sm hover:border-white hover:border-opacity-50 transition-all duration-100 cursor-pointer"
+                >
+                  R&D
+                </a>
+              )}
+            </React.Fragment>
           );
         })}
       </div>

@@ -61,7 +61,7 @@ export default function Partners({ partners: propPartners }: PartnersProps) {
   }, []);
 
   return (
-    <section className="bg-white py-10 overflow-hidden pb-17 md:pb-[60px]">
+    <section className="bg-white py-4 overflow-hidden pb-17 md:pb-[60px]">
       <div className="flex items-center w-full whitespace-nowrap overflow-hidden pr-16">
         {/* Heading */}
         <div className="pl-4 md:pl-[61px] pr-8 flex-shrink-0 text-2xl md:text-4xl font-light tracking-wide">

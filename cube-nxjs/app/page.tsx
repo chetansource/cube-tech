@@ -97,16 +97,18 @@ export default async function Home() {
       />
       <Projects projects={homepageData.projects} />
       <Stats stats={homepageData.stats} />
-      <ResourceDevelopment
-        resources={homepageData.featuredResources}
-        sectionConfig={homepageData.rdSection ? {
-          backgroundImage: homepageData.rdSection.exploreMoreBackgroundImage?.url,
-          heading: homepageData.rdSection.exploreMoreTitle?.split(' ').slice(0, -1).join(' '),
-          highlightedWord: homepageData.rdSection.exploreMoreTitle?.split(' ').pop(),
-          buttonText: homepageData.rdSection.exploreMoreDescription,
-          buttonLink: "/resources",
-        } : undefined}
-      />
+      <section id="rnd">
+        <ResourceDevelopment
+          resources={homepageData.featuredResources}
+          sectionConfig={homepageData.rdSection ? {
+            backgroundImage: homepageData.rdSection.exploreMoreBackgroundImage?.url,
+            heading: homepageData.rdSection.exploreMoreTitle?.split(' ').slice(0, -1).join(' '),
+            highlightedWord: homepageData.rdSection.exploreMoreTitle?.split(' ').pop(),
+            buttonText: homepageData.rdSection.exploreMoreDescription,
+            buttonLink: "/resources",
+          } : undefined}
+        />
+      </section>
       <Testimonial testimonials={homepageData.testimonials} />
       <Awards />
       <ResourcesSection />

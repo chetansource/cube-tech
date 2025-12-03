@@ -39,7 +39,7 @@ export default function Hero({
   const showTopSection = pathname === "/resources" || pathname === "/services";
   return (
     <section
-      className={`relative w-full bg-white mb-15 md:mb-[97px] overflow-hidden h-[768px]`}
+      className={`relative w-full bg-white mb-8 md:mb-[31px] overflow-hidden h-[768px]`}
     >
       <div className="absolute top-0 bottom-0 left-0 right-0 md:right-[57px] z-0">
         <div className="relative h-full md:pr-[57px]">
