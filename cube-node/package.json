@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
+    "build": "node -e \"console.log('\\n🔍 Validating JavaScript syntax...\\n'); const { execSync } = require('child_process'); const fs = require('fs'); const path = require('path'); let hasError = false; function checkSyntax(dir) { const files = fs.readdirSync(dir); files.forEach(file => { const filePath = path.join(dir, file); const stat = fs.statSync(filePath); if (stat.isDirectory() && file !== 'node_modules') { checkSyntax(filePath); } else if (file.endsWith('.js')) { try { execSync('node --check ' + filePath, { stdio: 'pipe' }); console.log('✅', filePath); } catch (err) { console.error('❌', filePath); console.error(err.stderr.toString()); hasError = true; } } }); } checkSyntax('./src'); if (hasError) { console.error('\\n❌ Build validation failed! Syntax errors found.\\n'); process.exit(1); } console.log('\\n✅ Build validation passed! No syntax errors found.\\n');\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
