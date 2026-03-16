@@ -102,6 +102,13 @@ export default function ServiceSection({ services: propServices, sectionConfig, 
       animationFrameId = requestAnimationFrame(smoothScroll);
     };
 
+    // Prevent the container from capturing wheel events — let the page scroll
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      window.scrollBy(0, e.deltaY);
+    };
+    scrollContainer.addEventListener('wheel', handleWheel, { passive: false });
+
     // Start the smooth scroll animation
     animationFrameId = requestAnimationFrame(smoothScroll);
 
@@ -110,6 +117,7 @@ export default function ServiceSection({ services: propServices, sectionConfig, 
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
+      scrollContainer.removeEventListener('wheel', handleWheel);
     };
   }, []);
 

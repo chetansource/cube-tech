@@ -1,5 +1,5 @@
-'use client'
-import React,{useEffect} from "react";
+"use client";
+import React, { useEffect } from "react";
 import RightArrowIcon from "./icons/right-arrow";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,7 +22,7 @@ interface ProjectsProps {
 }
 
 // Fallback projects for development
-const defaultProjects = [
+const defaultProjects: Project[] = [
   {
     id: "1",
     title: "2 Days Traffic Counts of Commercial Traffic Entering Delhi",
@@ -45,7 +45,9 @@ const defaultProjects = [
   },
 ];
 
-const Projects = ({ projects = defaultProjects }: ProjectsProps) => {
+const Projects = ({ projects: propProjects }: ProjectsProps) => {
+  const projects =
+    propProjects && propProjects.length > 0 ? propProjects : defaultProjects;
   useEffect(() => {
     const container = document.getElementById("project-scroll-container");
 
@@ -81,11 +83,10 @@ const Projects = ({ projects = defaultProjects }: ProjectsProps) => {
     }
   }, []);
 
-
   return (
     <section
       id="project-scroll-container"
-      className="group md:flex md:px-[63px] pb-[130px] pl-4 overflow-x-auto md:overflow-visible cursor-grab active:cursor-grabbing select-none hide-scrollbar"
+      className="group md:flex md:px-[63px] pb-[60px] pl-4 overflow-x-auto md:overflow-visible cursor-grab active:cursor-grabbing select-none hide-scrollbar"
     >
       <div
         id="project-scroll-inner"
@@ -99,7 +100,7 @@ const Projects = ({ projects = defaultProjects }: ProjectsProps) => {
           >
             <div className="relative w-full h-[392px]">
               <Image
-                className=" object-cover"
+                className="object-cover"
                 src={project.mainImage?.url || "/placeholder.svg"}
                 alt={project.mainImage?.alt || project.title}
                 fill
@@ -119,7 +120,10 @@ const Projects = ({ projects = defaultProjects }: ProjectsProps) => {
             {project.tags && project.tags.length > 0 && (
               <div className="flex flex-row gap-10 py-4 text-black/60">
                 {project.tags.slice(0, 3).map((tag, index) => (
-                  <span key={index} className=" border-b-2 border-[#5FBA51] pb-1">
+                  <span
+                    key={index}
+                    className=" border-b-2 border-[#5FBA51] pb-1"
+                  >
                     {tag}
                   </span>
                 ))}
