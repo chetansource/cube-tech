@@ -103,7 +103,7 @@ export default function Solutions({ solutions: propSolutions, sectionConfig }: S
           </div>
 
           {/* Polygon decoration - bottom right */}
-          <div className="absolute bottom-0 right-0 hidden lg:block">
+          <div className="absolute bottom-[-1] right-[-1] hidden lg:block">
             <PolygonIcon />
           </div>
 

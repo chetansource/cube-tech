@@ -150,7 +150,7 @@ export default function Hero({
           </div>
         )}
       </div>
-      <div className="absolute bottom-0 md:-bottom-px right-0 z-20 md:w-31 pointer-events-none">
+      <div className="absolute bottom-[-1px] right-[-1px] z-20 hidden lg:block pointer-events-none">
         <PolygonIcon />
       </div>
     </section>
