@@ -32,20 +32,13 @@ export default function CareerOpportunities({
   useEffect(() => {
     // Only fetch if no initial data provided
     if (!initialCareerHeading && initialJobList.length === 0) {
-      console.log('🔍 CareerOpportunities: Fetching jobs from API...');
       const fetchData = async () => {
         const { careerHeading, jobList } = await getCareerPageContent("careerpage");
-        console.log('✅ CareerOpportunities: Jobs fetched:', jobList.length);
         setCareerHeading(careerHeading ?? null);
         setJobList(jobList);
       };
 
       fetchData();
-    } else {
-      console.log('✅ CareerOpportunities: Using initial props:', {
-        jobCount: initialJobList.length,
-        hasHeading: !!initialCareerHeading
-      });
     }
   }, [initialCareerHeading, initialJobList]);
 

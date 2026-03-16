@@ -175,8 +175,9 @@ export default function ServiceSection({ services: propServices, sectionConfig, 
             src={config.bannerImage}
             alt="Services banner"
             fill
+            sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover"
-            priority
+            loading="lazy"
           />
         </div>
         <div className="absolute top-0 left-0 px-8 md:px-12 lg:px-16 pt-24 lg:pt-32 z-20">

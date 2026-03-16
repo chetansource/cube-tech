@@ -214,6 +214,7 @@ const CaseStudyGrid: React.FC<CaseStudyGridProps> = ({ resources, activeCategory
                     src={resource.image?.url || layout.imageUrl || '/top-view-bridge.webp'}
                     alt={resource.image?.alt || resource.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover"
                   />
                   {layout.overlay && (
@@ -318,6 +319,7 @@ const CaseStudyGrid: React.FC<CaseStudyGridProps> = ({ resources, activeCategory
                             src={resource.image.url}
                             alt={resource.image.alt || resource.title}
                             fill
+                            sizes="100vw"
                             className="object-cover"
                           />
                         </div>

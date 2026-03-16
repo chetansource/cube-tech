@@ -95,6 +95,7 @@ const AboutUsPage = async () => {
                         src={leader.image?.url || "/leadership-banner-1.webp"}
                         alt={leader.image?.alt || leader.name}
                         fill
+                        sizes="(max-width: 768px) 160px, (max-width: 1024px) 50vw, 33vw"
                         className="object-cover"
                       />
                       <div className="text-white p-4 absolute bottom-0 left-0 right-0 bg-black/40">
@@ -118,6 +119,7 @@ const AboutUsPage = async () => {
                         src="/leadership-banner-1.webp"
                         alt="Leadership Image"
                         fill
+                        sizes="(max-width: 768px) 160px, (max-width: 1024px) 50vw, 33vw"
                         className="object-cover"
                       />
                       <div className="text-white p-4 absolute bottom-0 left-0 right-0 bg-black/40">

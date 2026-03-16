@@ -97,7 +97,8 @@ export default function Solutions({ solutions: propSolutions, sectionConfig }: S
               src={config.backgroundImage}
               alt="Solutions background"
               fill
-              className="object-cover "
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover"
             />
           </div>
 
@@ -143,9 +144,10 @@ export default function Solutions({ solutions: propSolutions, sectionConfig }: S
             {/* Solution image */}
             <div className="relative h-64 md:h-80 lg:h-96 w-full overflow-hidden rounded-sm mb-8">
               <Image
-                src={currentSolution.image?.url || "/placeholder.svg"}
+                src={currentSolution.image?.url || "/long-highway-2.webp"}
                 alt={currentSolution.image?.alt || currentSolution.title}
                 fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover transition-transform duration-700"
               />
             </div>

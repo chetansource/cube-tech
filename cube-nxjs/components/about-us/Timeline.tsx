@@ -131,6 +131,7 @@ export default function Timeline({
                         src={item.podcastImage?.url || "/timeline-image.webp"}
                         alt={item.podcastImage?.alt || "Podcast image"}
                         fill
+                        sizes="(max-width: 768px) 80vw, 50vw"
                         className="rounded-lg object-cover"
                       />
                     </div>

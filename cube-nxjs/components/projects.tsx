@@ -103,6 +103,7 @@ const Projects = ({ projects = defaultProjects }: ProjectsProps) => {
                 src={project.mainImage?.url || "/placeholder.svg"}
                 alt={project.mainImage?.alt || project.title}
                 fill
+                sizes="(max-width: 768px) 85vw, 33vw"
               />
             </div>
 

@@ -98,7 +98,13 @@ const createAdminJS = () => {
         options: {
           navigation: { name: 'Content', icon: 'FileText' },
           properties: {
-            sections: { type: 'mixed' },
+            sections: {
+              type: 'mixed',
+              components: {
+                edit: AdminJS.bundle('./components/SectionEdit'),
+                show: AdminJS.bundle('./components/SectionShow'),
+              },
+            },
             seo: { type: 'mixed' },
             createdAt: { isVisible: { list: true, filter: true, show: true, edit: false } },
             updatedAt: { isVisible: { list: true, filter: true, show: true, edit: false } },

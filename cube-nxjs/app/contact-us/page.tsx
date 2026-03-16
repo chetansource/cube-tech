@@ -1,5 +1,6 @@
 "use client";
 import Header from "@/components/header";
+import Image from "next/image";
 import type React from "react";
 import { useEffect, useState } from "react";
 import PhoneIcon from "@/components/icons/Phone";
@@ -153,9 +154,17 @@ const ContactUsPage = () => {
   return (
     <section className="min-h-screen">
       <div
-        className="relative flex justify-start items-center w-full min-h-screen bg-cover bg-center"
-        style={{ backgroundImage: "url('/contact-us-banner.webp')" }}
+        className="relative flex justify-start items-center w-full min-h-screen"
       >
+        <Image
+          src="/contact-us-banner.webp"
+          alt="Contact us background"
+          fill
+          sizes="100vw"
+          className="object-cover"
+          priority
+        />
+        <div className="relative z-10 flex flex-col justify-start items-center w-full min-h-screen">
         <Header />
 
         {/* Contact Form Container */}
@@ -437,6 +446,7 @@ const ContactUsPage = () => {
               </form>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </section>

@@ -153,6 +153,7 @@ export default function ServicesSolutions({
             src={backgroundImage}
             alt="Services background"
             fill
+            sizes="(max-width: 768px) 100vw, 45vw"
             className="object-cover"
             priority
           />
@@ -323,6 +324,7 @@ function ServiceSolutionItem({
                     src={project.mainImage?.url || "/long-highway-2.webp"}
                     alt={project.mainImage?.alt || project.title}
                     fill
+                    sizes="(max-width: 768px) 280px, 347px"
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/20" />

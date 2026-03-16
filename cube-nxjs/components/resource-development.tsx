@@ -71,9 +71,10 @@ const ResourceDevelopment = ({ resources = defaultResources, sectionConfig }: Re
           >
             <div className="relative w-[200px] h-[100px] md:w-full md:h-[181px]">
               <Image
-                src={resource.image?.url || "/placeholder.svg"}
+                src={resource.image?.url || "/long-highway-2.webp"}
                 alt={resource.image?.alt || resource.title}
                 fill
+                sizes="(max-width: 768px) 200px, 50vw"
                 priority
               />
             </div>

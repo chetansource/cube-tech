@@ -81,11 +81,12 @@ export default function Partners({ partners: propPartners }: PartnersProps) {
                 className="flex-shrink-0 h-20 flex items-center justify-center"
               >
                 <Image
-                  src={partner.logo?.url || "/placeholder.svg"}
+                  src={partner.logo?.url || "/long-highway-2.webp"}
                   alt={partner.logo?.alt || partner.name}
                   width={120}
                   height={60}
-                  className="object-contain h-full"
+                  style={{ width: 'auto', height: 'auto', maxWidth: 120, maxHeight: 60 }}
+                  className="object-contain"
                 />
               </div>
             ))}

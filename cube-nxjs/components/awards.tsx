@@ -30,6 +30,7 @@ const AwardItem: React.FC<AwardItemProps> = ({ logo, name, date, description }) 
                 src={logo}
                 alt={name}
                 fill
+                sizes="64px"
                 className="object-contain"
               />
             ) : (
@@ -37,6 +38,7 @@ const AwardItem: React.FC<AwardItemProps> = ({ logo, name, date, description }) 
                 src="/awards-image.webp"
                 alt="Award"
                 fill
+                sizes="64px"
                 className="object-contain"
               />
             )}

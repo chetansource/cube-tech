@@ -37,6 +37,7 @@ const ResourceCard = ({
           }
           alt={title}
           fill
+          sizes="(max-width: 768px) 100vw, 33vw"
           className="object-cover"
         />
         <div
@@ -88,6 +89,7 @@ const LeftPanel = ({
           src={backgroundImage}
           alt={title}
           fill
+          sizes="(max-width: 768px) 100vw, 443px"
           className="object-cover"
           priority
         />

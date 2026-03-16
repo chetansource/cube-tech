@@ -170,9 +170,10 @@ function ProjectCard({ project }: { project: Project }) {
       <div className="relative h-64 md:h-[392px] w-full mb-4 overflow-hidden ">
         <div className="absolute inset-0 bg-black/20 z-10"></div>
         <Image
-          src={project.image || "/placeholder.svg"}
+          src={project.image || "/long-highway-2.webp"}
           alt={project.heading}
           fill
+          sizes="(max-width: 768px) 90vw, 50vw"
           className="object-cover"
         />
         <h3 className="absolute top-4 left-4 text-xl font-light text-white z-20">

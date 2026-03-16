@@ -217,6 +217,7 @@ const CareerExploreMore: React.FC<CareerExploreMoreProps> = ({ cards: dynamicCar
                 src={getCardImage(section4)}
                 alt={section4.title}
                 fill
+                sizes="(max-width: 768px) 100vw, 33vw"
                 className="w-full h-full object-cover"
               />
             )}
@@ -232,6 +233,7 @@ const CareerExploreMore: React.FC<CareerExploreMoreProps> = ({ cards: dynamicCar
                 src={getCardImage(section5)}
                 alt={section5.title}
                 fill
+                sizes="(max-width: 768px) 100vw, 33vw"
                 className="w-full h-full object-cover"
               />
             )}
@@ -252,6 +254,7 @@ const CareerExploreMore: React.FC<CareerExploreMoreProps> = ({ cards: dynamicCar
                 src={getCardImage(section6)}
                 alt={section6.title}
                 fill
+                sizes="(max-width: 768px) 100vw, 33vw"
                 className="w-full h-full object-cover"
               />
             )}

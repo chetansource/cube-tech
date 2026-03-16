@@ -42,6 +42,7 @@ export const SectionOne: React.FC<ParkingStudyProps> = ({
               src="/homepage-solutions-banner.png"
               alt="Background"
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover"
             />
           </div>
@@ -93,7 +94,8 @@ export const SectionOne: React.FC<ParkingStudyProps> = ({
               src={mainImage}
               alt="Aerial view of highway"
               fill
-              className=" object-cover rounded-sm"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover rounded-sm"
             />
             {/* <div className="absolute top-4 right-4 bg-white/80 p-2 rounded-sm flex gap-2">
               {thumbnails.map((thumb, index) => (

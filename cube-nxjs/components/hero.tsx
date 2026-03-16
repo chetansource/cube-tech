@@ -47,6 +47,8 @@ export default function Hero({
             src={backgroundImage}
             alt="Hero background"
             fill
+            sizes="100vw"
+            priority
             className="object-cover"
           />
         </div>
@@ -90,6 +92,7 @@ export default function Hero({
                       src={resource.image?.url || "/long-highway-2.webp"}
                       alt={resource.image?.alt || resource.title}
                       fill
+                      sizes="(max-width: 768px) 200px, 33vw"
                       className="object-cover"
                       priority={index === 0}
                     />
@@ -107,7 +110,7 @@ export default function Hero({
                 {/* Fallback - First Blurred Container */}
                 <div className="relative bg-white/5 backdrop-blur-sm rounded-lg p-2 md:p-4 mb-8 md:mb-0 ">
                   <div className="relative w-[200px] h-[100px] md:w-full md:h-[181px]">
-                    <Image src="/long-highway-2.webp" alt="Placeholder" fill />
+                    <Image src="/long-highway-2.webp" alt="Placeholder" fill sizes="(max-width: 768px) 200px, 33vw" />
                   </div>
                   <div className="flex flex-row items-start justify-between w-full mt-2">
                     <div className="text-[14px] md:text-[18px] font-normal text-white leading-[22px] md:leading-[28px] tracking-[1px] md:tracking-[0.75px] w-[170px] md:w-[323px] max-w-full ">
@@ -124,7 +127,7 @@ export default function Hero({
                       src="/long-highway-2.webp"
                       alt="Placeholder"
                       fill
-                      priority
+                      sizes="(max-width: 768px) 200px, 33vw"
                     />
                   </div>
                   <div className="flex flex-row items-start justify-between w-full mt-2">

@@ -471,6 +471,7 @@ export default function Footer() {
               src="/Group-Footer2.svg"
               alt="Footer Icon2"
               fill
+              sizes="(max-width: 768px) 90vw, 400px"
               className="object-contain"
             />
           </div>
