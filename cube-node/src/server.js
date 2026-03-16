@@ -22,6 +22,7 @@ const resumeRoutes = require('./routes/resume');
 const mediaRoutes = require('./routes/media');
 const sitemapRoutes = require('./routes/sitemap');
 const newsletterRoutes = require('./routes/newsletter');
+const exportRoutes = require('./routes/export');
 
 // Initialize Express app
 const app = express();
@@ -75,6 +76,29 @@ const startServer = async () => {
 
     app.use(adminJs.options.rootPath, adminRouter);
 
+    // CSV Export routes for admin (placed after admin auth)
+    app.get('/admin/export/contacts', async (req, res) => {
+      const ContactSubmission = require('./models/ContactSubmission');
+      const records = await ContactSubmission.find({}).sort({ submittedAt: -1 }).lean();
+      const escCsv = (val) => { const s = String(val == null ? '' : val).replace(/"/g, '""').replace(/\n/g, ' '); return `"${s}"`; };
+      const header = 'Name,Email,Phone,Interested Field,Message,Status,Submitted At';
+      const rows = records.map((r) => [r.name, r.email, r.phone, r.interestedField, r.message, r.status, r.submittedAt ? new Date(r.submittedAt).toISOString() : ''].map(escCsv).join(','));
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="contacts.csv"');
+      res.send([header, ...rows].join('\n'));
+    });
+
+    app.get('/admin/export/job-applicants', async (req, res) => {
+      const Resume = require('./models/Resume');
+      const records = await Resume.find({}).populate('jobId', 'title').populate('resumeUpload', 'url originalFilename').sort({ submittedAt: -1 }).lean();
+      const escCsv = (val) => { const s = String(val == null ? '' : val).replace(/"/g, '""').replace(/\n/g, ' '); return `"${s}"`; };
+      const header = 'Full Name,Phone,Job Title,Resume File,Resume URL,Status,Notes,Submitted At';
+      const rows = records.map((r) => [r.fullName, r.number, r.jobId?.title || 'General Application', r.resumeUpload?.originalFilename || '', r.resumeUpload?.url || '', r.status, r.notes, r.submittedAt ? new Date(r.submittedAt).toISOString() : ''].map(escCsv).join(','));
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="job-applicants.csv"');
+      res.send([header, ...rows].join('\n'));
+    });
+
     // Body parsing - AFTER AdminJS
     app.use(json({ limit: '10mb' }));
     app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -85,6 +109,7 @@ const startServer = async () => {
     app.use('/api/media', mediaRoutes);
     app.use('/api/sitemap.xml', sitemapRoutes);
     app.use('/api/newsletter', newsletterRoutes);
+    app.use('/api/export', exportRoutes);
 
     // Robots.txt for SEO
     app.get('/robots.txt', (_req, res) => {

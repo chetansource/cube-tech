@@ -83,13 +83,18 @@ export default function Faq() {
                 />
               </button>
 
-              {openIndex === index && (
-                <div className="p-4 bg-white border-b border-accent font-['Glacier_Indifference'] ">
-                  <p className="text-base md:text-lg leading-[24px] tracking-[0.25px] text-black/60">
-                    {faq.answer}
-                  </p>
+              <div
+                className="grid transition-[grid-template-rows] duration-300 ease-in-out"
+                style={{ gridTemplateRows: openIndex === index ? '1fr' : '0fr' }}
+              >
+                <div className="overflow-hidden">
+                  <div className={`p-4 bg-white font-['Glacier_Indifference'] ${openIndex === index ? 'border-b border-accent' : ''}`}>
+                    <p className="text-base md:text-lg leading-[24px] tracking-[0.25px] text-black/60">
+                      {faq.answer}
+                    </p>
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>

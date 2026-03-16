@@ -245,6 +245,7 @@ const createAdminJS = () => {
       {
         resource: ContactSubmission,
         options: {
+          id: 'Contacts',
           navigation: { name: 'Forms', icon: 'Mail' },
           properties: {
             interestedField: {
@@ -267,8 +268,17 @@ const createAdminJS = () => {
             },
           },
           actions: {
-            new: { isVisible: false }, // Disable creating submissions from admin
-            edit: { isVisible: false }, // Disable editing submissions
+            new: { isVisible: false },
+            edit: { isVisible: false },
+            exportCsv: {
+              actionType: 'resource',
+              icon: 'Download',
+              label: 'Export CSV',
+              component: AdminJS.bundle('./components/ExportCsvButton'),
+              handler: (request, response, context) => {
+                return { redirectUrl: context.resource.href(), record: {} };
+              },
+            },
           },
           listProperties: ['name', 'email', 'phone', 'interestedField', 'status', 'submittedAt'],
           filterProperties: ['name', 'email', 'interestedField', 'status', 'submittedAt'],
@@ -277,14 +287,24 @@ const createAdminJS = () => {
       {
         resource: Resume,
         options: {
+          id: 'JobApplicants',
           navigation: { name: 'Forms', icon: 'FileText' },
           properties: {
             jobId: { type: 'reference', reference: 'Job' },
             resumeUpload: { type: 'reference', reference: 'Media' },
           },
           actions: {
-            new: { isVisible: false }, // Disable creating resumes from admin
-            edit: { isVisible: true }, // Allow editing for status updates
+            new: { isVisible: false },
+            edit: { isVisible: true },
+            exportCsv: {
+              actionType: 'resource',
+              icon: 'Download',
+              label: 'Export CSV',
+              component: AdminJS.bundle('./components/ExportCsvButton'),
+              handler: (request, response, context) => {
+                return { redirectUrl: context.resource.href(), record: {} };
+              },
+            },
           },
           listProperties: ['fullName', 'number', 'jobId', 'status', 'submittedAt'],
           filterProperties: ['fullName', 'status', 'submittedAt'],
