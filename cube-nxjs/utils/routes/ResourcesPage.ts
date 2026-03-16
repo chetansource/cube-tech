@@ -121,7 +121,6 @@ export async function getResourcesPageContent(slug: string = 'resources'): Promi
     const page = data.Pages.docs[0];
 
     if (!page) {
-      console.warn(`Resources page with slug "${slug}" not found`);
       return {};
     }
 

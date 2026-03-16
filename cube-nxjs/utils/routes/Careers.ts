@@ -6,12 +6,6 @@ import type { PageResponse } from "../types";
 const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/graphql`;
 const graphQLClient = new GraphQLClient(baseUrl);
 
-// Log the API URL being used (helps debug EC2 vs localhost)
-if (typeof window === 'undefined') {
-  console.log('🌐 Careers GraphQL API URL (Server):', baseUrl);
-} else {
-  console.log('🌐 Careers GraphQL API URL (Client):', baseUrl);
-}
 
 export interface Job {
   id: string;
@@ -128,13 +122,9 @@ export const getCareerPageContent = async (slug: string) => {
       variables
     );
 
-    console.log('🔍 getCareerPageContent: GraphQL Response received');
-    console.log('📊 Jobs from GraphQL:', data.Jobs?.docs?.length || 0);
-
     const page = data.Pages.docs[0];
 
     if (!page || !page.sections) {
-      console.warn('⚠️ getCareerPageContent: No page or sections found');
       return {
         careerHeading: null,
         jobList: [],
@@ -149,7 +139,6 @@ export const getCareerPageContent = async (slug: string) => {
 
     // Get jobs directly from Jobs query, not from page sections
     const jobList = data.Jobs?.docs || [];
-    console.log('✅ getCareerPageContent: Returning jobs:', jobList.length);
 
     const heroSection = page.sections.find(
       (section: any) => section.blockType === "heroSection"

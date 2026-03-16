@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Label, Input, Button, Text, Select, CheckBox } from '@adminjs/design-system';
 
 // ─── BLOCK TYPE FIELD MAPPINGS ───────────────────────────────────────
@@ -367,6 +367,22 @@ const SectionEdit = (props) => {
   const params = record.params || {};
   const [newItems, setNewItems] = useState({});
   const [tagInputs, setTagInputs] = useState({});
+  const [mediaOptions, setMediaOptions] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/media?limit=200')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.docs) {
+          setMediaOptions(data.docs.map((m) => ({
+            value: m._id,
+            label: m.originalFilename || m.filename,
+            url: m.url,
+          })));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Get section indices
   const getSectionIndices = () => {
@@ -441,8 +457,19 @@ const SectionEdit = (props) => {
           renderBooleanField(fullPath, value, (val) => onChange(fullPath, val))
         ) : type === 'media' ? (
           <Box style={styles.mediaBox}>
-            <Text fontSize="xs" color="grey60" mb="sm">Media ID (from Media collection)</Text>
-            {renderTextInput(fullPath, value, (e) => onChange(fullPath, e.target.value))}
+            <Select
+              value={value ? mediaOptions.find((o) => o.value === value) || { value, label: value } : null}
+              options={mediaOptions}
+              onChange={(selected) => onChange(fullPath, selected?.value || '')}
+            />
+            {value && (() => {
+              const selected = mediaOptions.find((o) => o.value === value);
+              return selected?.url ? (
+                <Box mt="sm">
+                  <img src={selected.url} alt="" style={{ maxHeight: '80px', borderRadius: '4px' }} />
+                </Box>
+              ) : null;
+            })()}
           </Box>
         ) : (
           renderTextInput(fullPath, value, (e) => onChange(fullPath, e.target.value))
