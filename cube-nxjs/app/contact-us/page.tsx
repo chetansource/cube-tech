@@ -188,7 +188,7 @@ const ContactUsPage = () => {
                     <PhoneIcon />
                   </div>
                   <div>
-                    <h3 className="text-xs md:text-sm font-semibold leading-[20px] tracking-[0.28px]">
+                    <h3 className="text-xs md:text-[13px] font-semibold leading-[20px] tracking-[0.28px]">
                       PHONE
                     </h3>
                     <p className="text-xs md:text-[13px] font-normal leading-[20px] tracking-[0.26px]">
@@ -203,10 +203,10 @@ const ContactUsPage = () => {
                     <ContactMailicon />
                   </div>
                   <div>
-                    <h3 className="text-xs md:text-sm font-semibold leading-[20px] tracking-[0.28px]">
+                    <h3 className="text-xs md:text-[14px] font-semibold leading-[20px] tracking-[0.02em]">
                       EMAIL
                     </h3>
-                    <p className="text-xs md:text-[13px] font-normal leading-[20px] tracking-[0.26px]">
+                    <p className="text-xs md:text-[14px] font-normal leading-[20px] tracking-[0.02em]">
                       {displayInfo.email}
                     </p>
                   </div>
@@ -223,7 +223,7 @@ const ContactUsPage = () => {
                       <ContactLocation />
                     </div>
                     <div>
-                      <h3 className="text-xs md:text-sm font-semibold leading-[20px] tracking-[0.28px]">
+                      <h3 className="text-xs md:text-[13px] font-semibold leading-[20px] tracking-[0.28px]">
                         {location.label.toUpperCase()}
                       </h3>
                       <p className="text-xs md:text-sm font-normal leading-[18px] tracking-[0.5px] text-black/60">
@@ -239,7 +239,7 @@ const ContactUsPage = () => {
                     <ContactFollowIcon />
                   </div>
                   <div>
-                    <h3 className="text-xs md:text-sm font-semibold leading-[20px] tracking-[0.28px]">
+                    <h3 className="text-xs md:text-[13px] font-semibold leading-[20px] tracking-[0.28px]">
                       FOLLOW US:
                     </h3>
                     <div className="flex space-x-2 mt-2">

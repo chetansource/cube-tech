@@ -2,23 +2,32 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import RightArrowIcon from "../icons/right-arrow";
 
 type Project = {
-  id: number;
+  id: number | string;
   title: string;
-  image: string;
-  heading: string;
+  slug: string;
+  image?: string;
+  mainImage?: { url: string; alt?: string };
+  heading?: string;
+  shortDescription?: string;
   description: string;
-  tags: string[];
+  tags?: string[];
 };
 
-const projects: Project[] = [
+interface ProjectsCarouselProps {
+  projects?: Project[];
+}
+
+const defaultProjects: Project[] = [
   {
     id: 1,
     title: "",
+    slug: "suratgarh-sriganganagar-nh15",
     image: "/long-highway-3.webp",
     heading:
       "3-days Traffic Count on Suratgarh - Sriganganagar Section of NH15",
@@ -33,6 +42,7 @@ const projects: Project[] = [
   {
     id: 2,
     title: "PROJECT 02",
+    slug: "bameetha-panna-nagod-satana-nh75",
     image: "/long-highway-2.webp",
     heading:
       "7-Day Traffic Survey for Bameetha-Panna-Nagod-Satana Section of NH-75 in the State of Madhya Pradesh",
@@ -43,6 +53,7 @@ const projects: Project[] = [
   {
     id: 3,
     title: "",
+    slug: "bangalore-metro-phase-2",
     image: "/long-highway-3.webp",
     heading: "Urban Mobility Study for Bangalore Metro Phase 2",
     description:
@@ -52,6 +63,7 @@ const projects: Project[] = [
   {
     id: 4,
     title: "PROJECT 04",
+    slug: "mumbai-pune-expressway-safety-audit",
     image: "/long-highway-2.webp",
     heading: "Highway Safety Audit for Mumbai-Pune Expressway",
     description:
@@ -60,7 +72,15 @@ const projects: Project[] = [
   },
 ];
 
-export default function ProjectsCarousel() {
+export default function ProjectsCarousel({ projects: propProjects }: ProjectsCarouselProps) {
+  const projects = propProjects && propProjects.length > 0 ? propProjects.map((p, i) => ({
+    ...p,
+    id: p.id || i,
+    heading: p.heading || p.title,
+    image: p.image || p.mainImage?.url || "/long-highway-3.webp",
+    description: p.description || p.shortDescription || "",
+    tags: p.tags || [],
+  })) : defaultProjects;
   const [currentIndex, setCurrentIndex] = useState(0);
   const maxIndex = Math.max(0, projects.length - 2);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -133,9 +153,9 @@ export default function ProjectsCarousel() {
           style={{ transform: `translateX(-${currentIndex * 50}%)` }}
         >
           {projects.map((project) => (
-            <div key={project.id} className="w-1/2 flex-shrink-0 px-4">
+            <Link key={project.id} href={`/projects/details/${project.slug}`} className="w-1/2 flex-shrink-0 px-4 hover:opacity-90 transition-opacity">
               <ProjectCard project={project} />
-            </div>
+            </Link>
           ))}
         </div>
       </div>
@@ -150,12 +170,13 @@ export default function ProjectsCarousel() {
             {projects
               .filter((_, idx) => idx % 2 === rowIndex)
               .map((project) => (
-                <div
+                <Link
                   key={project.id}
-                  className="snap-start flex-shrink-0 w-[90%] "
+                  href={`/projects/details/${project.slug}`}
+                  className="snap-start flex-shrink-0 w-[90%] hover:opacity-90 transition-opacity"
                 >
                   <ProjectCard project={project} />
-                </div>
+                </Link>
               ))}
           </div>
         ))}
@@ -171,7 +192,7 @@ function ProjectCard({ project }: { project: Project }) {
         <div className="absolute inset-0 bg-black/20 z-10"></div>
         <Image
           src={project.image || "/long-highway-2.webp"}
-          alt={project.heading}
+          alt={project.heading || project.title}
           fill
           sizes="(max-width: 768px) 90vw, 50vw"
           className="object-cover"
@@ -194,7 +215,7 @@ function ProjectCard({ project }: { project: Project }) {
         </div>
 
         <div className="mt-auto flex  gap-2">
-          {project.tags.map((tag, index) => (
+          {(project.tags || []).map((tag, index) => (
             <span
               key={index}
               className="px-3 py-1 border-b border-accent text-sm text-black/60"

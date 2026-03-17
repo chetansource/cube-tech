@@ -7,7 +7,7 @@ import { SectionOne } from "@/components/project-details/sectionOne";
 import { ProjectImpact } from "@/components/project-details/projectImpact";
 import ProjectsCarousel from "@/components/project-details/project-carousel";
 import Image from "next/image";
-import { getProjectBySlug, getProjectsPageContent } from "@/utils/routes/Projects";
+import { getProjectBySlug, getProjectsPageContent, getRelatedProjects } from "@/utils/routes/Projects";
 
 export const revalidate = 60;
 
@@ -28,13 +28,8 @@ const ProjectDetailPage = async ({ params }: ProjectDetailPageProps) => {
     notFound();
   }
 
-  // Fetch related projects (same category, limit to 4)
-  // TODO: Use relatedProjects for "Related Projects" section
-  // const relatedProjects = await getRelatedProjects(
-  //   project.id,
-  //   project.category,
-  //   4
-  // );
+  // Fetch related projects
+  const relatedProjects = await getRelatedProjects(project.id, undefined, 4);
 
   // Fetch projects page content to reuse the same hero section
   const projectsPageData = await getProjectsPageContent("projects");
@@ -88,7 +83,7 @@ const ProjectDetailPage = async ({ params }: ProjectDetailPageProps) => {
       <div className="pt-8 pb-16 md:pb-0 md:pt-0 md:px-16">
         <ProjectImpact />
       </div>
-      <ProjectsCarousel />
+      <ProjectsCarousel projects={relatedProjects} />
     </div>
   );
 };

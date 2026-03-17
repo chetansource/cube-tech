@@ -2,6 +2,7 @@ import React from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 
 interface Project {
   id: string;
@@ -99,9 +100,10 @@ export function ExploreMoreProjectsSection({
 
       <div className="flex md:grid overflow-x-auto md:overflow-visible gap-[42px] md:grid-cols-2 snap-x snap-mandatory scroll-smooth hide-scrollbar ">
         {projects.slice(0, 6).map((project) => (
-          <div
+          <Link
             key={project.id}
-            className="flex-shrink-0 w-[85%] sm:w-[75%] md:w-auto snap-start flex flex-col h-full"
+            href={`/projects/details/${project.slug}`}
+            className="flex-shrink-0 w-[85%] sm:w-[75%] md:w-auto snap-start flex flex-col h-full hover:opacity-90 transition-opacity"
           >
             <div className="relative overflow-hidden mb-4 h-[392px]">
               <Image
@@ -136,14 +138,16 @@ export function ExploreMoreProjectsSection({
                   : null}
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 
       <div className="mt-12 flex justify-end">
-        <Button className="inline-flex h-[45px] px-6 py-2 flex-col justify-center items-center gap-[6px] flex-shrink-0 bg-accent text-white hover:bg-accent/90 hover:cursor-pointer rounded-none font-bold uppercase tracking-wider">
-          See All Projects
-        </Button>
+        <Link href="/projects">
+          <Button className="inline-flex h-[45px] px-6 py-2 flex-col justify-center items-center gap-[6px] flex-shrink-0 bg-accent text-white hover:bg-accent/90 hover:cursor-pointer rounded-none font-bold uppercase tracking-wider">
+            See All Projects
+          </Button>
+        </Link>
       </div>
     </section>
   );

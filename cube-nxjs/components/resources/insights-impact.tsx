@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import DownTailedArrow from "../icons/DownTailedArrow";
 import RightArrowIcon from "../icons/right-arrow";
@@ -68,14 +68,38 @@ export default function InsightsImpact({ resources, pageContent }: InsightsImpac
   }
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const rightColRef = useRef<HTMLDivElement>(null);
 
-  // Auto-loop every 4 seconds
-useEffect(() => {
-  const interval = setInterval(() => {
-    setActiveIndex((prev) => (prev + 1) % slides.length);
-  }, 4000);
-  return () => clearInterval(interval);
-}, [slides.length]);
+  // Auto-loop: advances every 4 seconds, checks every 500ms so resume is near-instant
+  const tickRef = useRef(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isPaused) { tickRef.current = 0; return; }
+      tickRef.current += 500;
+      if (tickRef.current >= 4000) {
+        tickRef.current = 0;
+        setActiveIndex((prev) => (prev + 1) % slides.length);
+      }
+    }, 500);
+    return () => clearInterval(interval);
+  }, [slides.length, isPaused]);
+
+  // Allow wheel scroll through slides on the right column
+  useEffect(() => {
+    const el = rightColRef.current;
+    if (!el) return;
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (e.deltaY > 0) {
+        setActiveIndex((prev) => Math.min(prev + 1, slides.length - 1));
+      } else {
+        setActiveIndex((prev) => Math.max(prev - 1, 0));
+      }
+    };
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el.removeEventListener('wheel', handleWheel);
+  }, [slides.length]);
 
   return (
     <main className="min-h-screen bg-white pb-19">
@@ -95,9 +119,9 @@ useEffect(() => {
           {pageContent?.businessDescription || "We provide consulting, planning and engineering design services."}
         </p>
 
-        <button className="bg-accent text-white px-6 py-3 text-sm uppercase font-medium">
+        <a href="/services" className="bg-accent text-white px-6 py-3 text-sm uppercase font-medium inline-block hover:bg-green-600 transition-colors cursor-pointer">
           {pageContent?.exploreServicesButtonText || "Explore Services"}
-        </button>
+        </a>
       </section>
 
       {/* Insights + Carousel */}
@@ -130,7 +154,12 @@ useEffect(() => {
           </div>
 
           {/* RIGHT COLUMN — Vertical Carousel */}
-          <div className="relative h-[773px] overflow-hidden">
+          <div
+            ref={rightColRef}
+            className="relative h-[773px] overflow-hidden cursor-pointer"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
             {/* Sliding Wrapper */}
             <div
               className="transition-transform duration-700 ease-in-out"

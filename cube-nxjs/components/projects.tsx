@@ -95,7 +95,7 @@ const Projects = ({ projects: propProjects }: ProjectsProps) => {
         {projects.map((project) => (
           <Link
             key={project.id}
-            href={`/projects/${project.slug}`}
+            href={`/projects/details/${project.slug}`}
             className="container w-[85vw] md:w-full hover:opacity-90 transition-opacity"
           >
             <div className="relative w-full h-[392px]">
