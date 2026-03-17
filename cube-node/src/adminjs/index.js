@@ -144,6 +144,7 @@ const createAdminJS = () => {
           navigation: { name: 'Content', icon: 'BookOpen' },
           properties: {
             image: { type: 'reference', reference: 'Media' },
+            downloadFile: { type: 'reference', reference: 'Media' },
           },
           listProperties: ['title', 'category', 'status', 'featured', 'publishedAt'],
           filterProperties: ['title', 'category', 'status', 'featured'],

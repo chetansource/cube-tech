@@ -56,6 +56,7 @@ const AwardItem: React.FC<AwardItemProps> = ({ logo, name, date, description }) 
 const Awards = () => {
   const [awards, setAwards] = useState<AwardItemProps[]>(fallbackAwardData);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const fetchAwards = async () => {
@@ -86,32 +87,105 @@ const Awards = () => {
     if (!scrollContainer) return;
 
     let animationId: number;
-    const scrollSpeed = 0.5; // pixels per frame
+    let isPaused = false;
+    let resumeTimeout: ReturnType<typeof setTimeout>;
+    const scrollSpeed = 0.5;
 
     const scroll = () => {
-      if (scrollContainer) {
+      if (scrollContainer && !isPaused) {
         scrollContainer.scrollLeft += scrollSpeed;
-
-        // Reset scroll position seamlessly when reaching halfway point
-        // (since we duplicated the array, halfway = one full loop)
         const maxScroll = scrollContainer.scrollWidth / 2;
         if (scrollContainer.scrollLeft >= maxScroll) {
           scrollContainer.scrollLeft = 0;
         }
       }
-
       animationId = requestAnimationFrame(scroll);
     };
+
+    const pauseAutoScroll = () => {
+      isPaused = true;
+    };
+    const resumeAutoScroll = () => {
+      isPaused = false;
+    };
+
+    // Allow horizontal scrolling with mouse wheel
+    const handleWheel = (e: WheelEvent) => {
+      // If horizontal scroll (trackpad) or shift+wheel, scroll the carousel
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        e.preventDefault();
+        scrollContainer.scrollLeft += e.deltaX;
+        pauseAutoScroll();
+      }
+      // Vertical scroll passes through to page naturally
+    };
+
+    // Mouse drag to scroll
+    let isDragging = false;
+    let startX = 0;
+    let startScrollLeft = 0;
+
+    const handleMouseDown = (e: MouseEvent) => {
+      isDragging = true;
+      startX = e.pageX;
+      startScrollLeft = scrollContainer.scrollLeft;
+      scrollContainer.style.cursor = 'grabbing';
+      pauseAutoScroll();
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const walk = (e.pageX - startX) * 1.5;
+      scrollContainer.scrollLeft = startScrollLeft - walk;
+    };
+
+    const handleMouseUp = () => {
+      isDragging = false;
+      scrollContainer.style.cursor = 'grab';
+    };
+
+    const handleMouseLeaveSection = () => {
+      isDragging = false;
+      scrollContainer.style.cursor = 'grab';
+      resumeAutoScroll();
+    };
+
+    const handleMouseEnterSection = () => {
+      pauseAutoScroll();
+    };
+
+    scrollContainer.style.cursor = 'grab';
+    scrollContainer.addEventListener('wheel', handleWheel, { passive: false });
+    scrollContainer.addEventListener('mousedown', handleMouseDown);
+    scrollContainer.addEventListener('mousemove', handleMouseMove);
+    scrollContainer.addEventListener('mouseup', handleMouseUp);
+    scrollContainer.addEventListener('mouseleave', handleMouseUp);
+
+    const sectionEl = sectionRef.current;
+    if (sectionEl) {
+      sectionEl.addEventListener('mouseenter', handleMouseEnterSection);
+      sectionEl.addEventListener('mouseleave', handleMouseLeaveSection);
+    }
 
     animationId = requestAnimationFrame(scroll);
 
     return () => {
       cancelAnimationFrame(animationId);
+      scrollContainer.removeEventListener('wheel', handleWheel);
+      scrollContainer.removeEventListener('mousedown', handleMouseDown);
+      scrollContainer.removeEventListener('mousemove', handleMouseMove);
+      scrollContainer.removeEventListener('mouseup', handleMouseUp);
+      scrollContainer.removeEventListener('mouseleave', handleMouseUp);
+      if (sectionEl) {
+        sectionEl.removeEventListener('mouseenter', handleMouseEnterSection);
+        sectionEl.removeEventListener('mouseleave', handleMouseLeaveSection);
+      }
     };
   }, [awards]);
 
   return (
-    <section className="bg-white relative overflow-hidden pb-[300px]">
+    <section ref={sectionRef} className="bg-white relative overflow-hidden pb-[300px]">
       <div className="md:py-8 md:p-12 relative">
         <div className="absolute w-[90%] md:w-[90%] h-full">
           <p className="pl-4 md:pr-[170px] font-roboto text-[90px] md:text-[181.122px] font-normal leading-[153.5px] tracking-[-2.717px] text-black/5 select-none">
@@ -122,7 +196,7 @@ const Awards = () => {
         {/* Carousel container */}
         <div
           ref={scrollRef}
-          className="relative left-10 -bottom-45 z-10 flex items-start overflow-x-hidden py-8"
+          className="relative left-10 -bottom-45 z-10 flex items-start overflow-x-auto py-8 hide-scrollbar"
           style={{ scrollBehavior: 'auto' }}
         >
           {duplicatedAwards.map((award, index) => (

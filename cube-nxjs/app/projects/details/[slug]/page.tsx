@@ -9,8 +9,7 @@ import ProjectsCarousel from "@/components/project-details/project-carousel";
 import Image from "next/image";
 import { getProjectBySlug, getProjectsPageContent } from "@/utils/routes/Projects";
 
-// Force dynamic rendering - don't pre-render at build time
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 interface ProjectDetailPageProps {
   params: Promise<{

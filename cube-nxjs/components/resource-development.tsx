@@ -91,8 +91,8 @@ const ResourceDevelopment = ({ resources = defaultResources, sectionConfig }: Re
       {/* Bottom Left Section */}
       <div className="absolute bottom-0 left-0 p-8">
         <h1 className="text-4xl md:text-[75px] font-light  mb-4 text-white">
-          {config.heading} <br />
-          <span className="font-bold">{config.highlightedWord}</span>
+          <span dangerouslySetInnerHTML={{ __html: config.heading || '' }} /> <br />
+          <span className="font-bold" dangerouslySetInnerHTML={{ __html: config.highlightedWord || '' }} />
         </h1>
         <Link href={config.buttonLink} passHref>
           <Button className="bg-accent text-[12px] leading-[16px] tracking-[2.6px] px-[24px] py-[8px] font-bold uppercase cursor-pointer rounded-none">

@@ -6,8 +6,7 @@ import CareerHero from '@/components/career-hero';
 import { getCareerPageContent } from '@/utils/routes/Careers';
 import React from 'react';
 
-// Force dynamic rendering - don't pre-render at build time
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default async function CareerPage() {
   const { careerHeading, jobList, heroSection, exploreCards } = await getCareerPageContent("careerpage");

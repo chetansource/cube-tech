@@ -368,6 +368,21 @@ const SectionEdit = (props) => {
   const [newItems, setNewItems] = useState({});
   const [tagInputs, setTagInputs] = useState({});
   const [mediaOptions, setMediaOptions] = useState([]);
+  const [dragIdx, setDragIdx] = useState(null);
+  const [dragOverIdx, setDragOverIdx] = useState(null);
+  const [collapsedSections, setCollapsedSections] = useState(() => {
+    // Start all sections collapsed by default
+    const initial = {};
+    Object.keys(record.params || {}).forEach((key) => {
+      const match = key.match(/^sections\.(\d+)\./);
+      if (match) initial[parseInt(match[1], 10)] = true;
+    });
+    return initial;
+  });
+
+  const toggleCollapse = (idx) => {
+    setCollapsedSections((prev) => ({ ...prev, [idx]: !prev[idx] }));
+  };
 
   useEffect(() => {
     fetch('/api/media?limit=200')
@@ -411,6 +426,20 @@ const SectionEdit = (props) => {
       }
     });
     return indices.sort((a, b) => a - b);
+  };
+
+  const swapSections = (idxA, idxB) => {
+    const prefixA = `sections.${idxA}.`;
+    const prefixB = `sections.${idxB}.`;
+    const keysA = Object.keys(params).filter((k) => k.startsWith(prefixA));
+    const keysB = Object.keys(params).filter((k) => k.startsWith(prefixB));
+    const valsA = {};
+    const valsB = {};
+    keysA.forEach((k) => { valsA[k.replace(prefixA, '')] = params[k]; });
+    keysB.forEach((k) => { valsB[k.replace(prefixB, '')] = params[k]; });
+    [...keysA, ...keysB].forEach((k) => onChange(k, undefined));
+    Object.entries(valsA).forEach(([suffix, val]) => onChange(`${prefixB}${suffix}`, val));
+    Object.entries(valsB).forEach(([suffix, val]) => onChange(`${prefixA}${suffix}`, val));
   };
 
   // ── Render helpers ──
@@ -462,14 +491,40 @@ const SectionEdit = (props) => {
               options={mediaOptions}
               onChange={(selected) => onChange(fullPath, selected?.value || '')}
             />
-            {value && (() => {
-              const selected = mediaOptions.find((o) => o.value === value);
-              return selected?.url ? (
-                <Box mt="sm">
-                  <img src={selected.url} alt="" style={{ maxHeight: '80px', borderRadius: '4px' }} />
-                </Box>
-              ) : null;
-            })()}
+            <Box mt="sm" flex flexDirection="row" alignItems="center" style={{ gap: '8px' }}>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: '#3040D6', color: '#fff', borderRadius: '4px', fontSize: '12px', cursor: 'pointer' }}>
+                Upload New
+                <input
+                  type="file"
+                  accept="image/*,application/pdf,.doc,.docx"
+                  style={{ display: 'none' }}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    try {
+                      const res = await fetch('/api/media', { method: 'POST', body: formData });
+                      const data = await res.json();
+                      const uploaded = data.doc || data.media;
+                      if (uploaded?.id || uploaded?._id) {
+                        const mediaId = uploaded.id || uploaded._id;
+                        const newOption = { value: mediaId, label: uploaded.originalFilename || file.name, url: uploaded.url };
+                        setMediaOptions((prev) => [newOption, ...prev]);
+                        onChange(fullPath, mediaId);
+                      }
+                    } catch (err) { /* upload failed silently */ }
+                    e.target.value = '';
+                  }}
+                />
+              </label>
+              {value && (() => {
+                const selected = mediaOptions.find((o) => o.value === value);
+                return selected?.url ? (
+                  <img src={selected.url} alt="" style={{ maxHeight: '60px', borderRadius: '4px' }} />
+                ) : null;
+              })()}
+            </Box>
           </Box>
         ) : (
           renderTextInput(fullPath, value, (e) => onChange(fullPath, e.target.value))
@@ -746,30 +801,58 @@ const SectionEdit = (props) => {
         Page Sections
       </Label>
 
-      {sectionIndices.map((sectionIdx) => {
+      {sectionIndices.map((sectionIdx, displayIndex) => {
         const blockType = params[`sections.${sectionIdx}.blockType`] || '';
         const config = BLOCK_TYPE_FIELDS[blockType];
         const blockLabel = config ? config.label : BLOCK_TYPE_OPTIONS.find((o) => o.value === blockType)?.label || blockType;
 
         return (
-          <Box key={sectionIdx} mb="xl" style={styles.sectionBox}>
-            <Box flex flexDirection="row" justifyContent="space-between" alignItems="center" mb="lg">
-              <Text fontWeight="bold" fontSize="lg" color="primary100">Section {sectionIdx + 1}: {blockLabel}</Text>
+          <Box
+            key={sectionIdx}
+            mb="xl"
+            style={{
+              ...styles.sectionBox,
+              cursor: 'grab',
+              opacity: dragIdx === sectionIdx ? 0.5 : 1,
+              border: dragOverIdx === sectionIdx ? '2px dashed #5FBA51' : styles.sectionBox.border,
+              transition: 'border 0.2s, opacity 0.2s',
+            }}
+            draggable
+            onDragStart={() => setDragIdx(sectionIdx)}
+            onDragOver={(e) => { e.preventDefault(); setDragOverIdx(sectionIdx); }}
+            onDragLeave={() => setDragOverIdx(null)}
+            onDrop={(e) => {
+              e.preventDefault();
+              if (dragIdx !== null && dragIdx !== sectionIdx) swapSections(dragIdx, sectionIdx);
+              setDragIdx(null);
+              setDragOverIdx(null);
+            }}
+            onDragEnd={() => { setDragIdx(null); setDragOverIdx(null); }}
+          >
+            <Box flex flexDirection="row" justifyContent="space-between" alignItems="center" mb={collapsedSections[sectionIdx] ? 'none' : 'lg'}>
+              <Box flex flexDirection="row" alignItems="center" style={{ gap: '8px', cursor: 'pointer' }} onClick={() => toggleCollapse(sectionIdx)}>
+                <span style={{ fontSize: '14px', userSelect: 'none' }}>{collapsedSections[sectionIdx] ? '▶' : '▼'}</span>
+                <Text fontWeight="bold" fontSize="lg" color="primary100">Section {displayIndex + 1}: {blockLabel}</Text>
+              </Box>
               <Button type="button" size="sm" variant="danger" onClick={() => {
                 Object.keys(params).forEach((key) => { if (key.startsWith(`sections.${sectionIdx}.`)) onChange(key, undefined); });
               }}>Remove Section</Button>
             </Box>
 
-            <Box mb="lg" style={styles.fullWidth}>
-              <Label style={styles.label}>Block Type</Label>
-              <Select
-                value={blockType ? { value: blockType, label: BLOCK_TYPE_OPTIONS.find((o) => o.value === blockType)?.label || blockType } : null}
-                options={BLOCK_TYPE_OPTIONS}
-                onChange={(selected) => onChange(`sections.${sectionIdx}.blockType`, selected?.value || '')}
-              />
-            </Box>
+            {!collapsedSections[sectionIdx] && (
+              <>
+                <Box mb="lg" style={styles.fullWidth}>
+                  <Label style={styles.label}>Block Type</Label>
+                  <Select
+                    value={blockType ? { value: blockType, label: BLOCK_TYPE_OPTIONS.find((o) => o.value === blockType)?.label || blockType } : null}
+                    options={BLOCK_TYPE_OPTIONS}
+                    onChange={(selected) => onChange(`sections.${sectionIdx}.blockType`, selected?.value || '')}
+                  />
+                </Box>
 
-            {blockType && renderBlockFields(sectionIdx, blockType)}
+                {blockType && renderBlockFields(sectionIdx, blockType)}
+              </>
+            )}
           </Box>
         );
       })}

@@ -10,8 +10,7 @@ import Image from "next/image";
 import PolygonIcon from "@/components/icons/polygon";
 import { Breadcrumb } from "@/components/project-page/bread-crump";
 
-// Force dynamic rendering - don't pre-render at build time
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 interface ResourceDetailPageProps {
   params: Promise<{ slug: string }>;

@@ -23,6 +23,7 @@ const resourceResolvers = {
       const skip = (page - 1) * limit;
       const docs = await Resource.find(query)
         .populate('image')
+        .populate('downloadFile')
         .limit(limit)
         .skip(skip)
         .sort({ publishedAt: -1, createdAt: -1 });
@@ -40,7 +41,7 @@ const resourceResolvers = {
 
     Resource: async (_, { id, slug }) => {
       const query = id ? { _id: id } : { slug };
-      return await Resource.findOne(query).populate('image');
+      return await Resource.findOne(query).populate('image').populate('downloadFile');
     },
   },
 };

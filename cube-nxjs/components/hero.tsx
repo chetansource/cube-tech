@@ -64,9 +64,7 @@ export default function Hero({
             </div>
           )}
           {subtitle && (
-            <p className="font-normal text-white text-lg mb-12 max-w-xl text-[14px]">
-              {subtitle}
-            </p>
+            <p className="font-normal text-white text-lg mb-12 max-w-xl text-[14px]" dangerouslySetInnerHTML={{ __html: subtitle }} />
           )}
           {ctaText && ctaLink && (
             <Link

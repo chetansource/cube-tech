@@ -58,6 +58,7 @@ export default function InsightsImpact({ resources, pageContent }: InsightsImpac
         title: resource.title,
         description: resource.description,
         slug: resource.slug,
+        downloadFile: resource.downloadFile,
       }))
     : fallbackCaseStudies;
 
@@ -156,9 +157,21 @@ useEffect(() => {
 
                   {/* CTA */}
                   <div className="flex items-center justify-between mt-3">
-                    <span className="text-[#808080] text-base flex items-center gap-3">
-                      DOWNLOAD <DownTailedArrow />
-                    </span>
+                    {item.downloadFile?.url ? (
+                      <a
+                        href={item.downloadFile.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        download
+                        className="text-[#808080] text-base flex items-center gap-3 hover:text-accent transition-colors cursor-pointer"
+                      >
+                        DOWNLOAD <DownTailedArrow />
+                      </a>
+                    ) : (
+                      <span className="text-[#808080] text-base flex items-center gap-3 cursor-pointer">
+                        DOWNLOAD <DownTailedArrow />
+                      </span>
+                    )}
 
                     {item.slug ? (
                       <Link

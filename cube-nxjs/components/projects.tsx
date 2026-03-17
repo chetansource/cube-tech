@@ -86,7 +86,7 @@ const Projects = ({ projects: propProjects }: ProjectsProps) => {
   return (
     <section
       id="project-scroll-container"
-      className="group md:flex md:px-[63px] pb-[60px] pl-4 overflow-x-auto md:overflow-visible cursor-grab active:cursor-grabbing select-none hide-scrollbar"
+      className="group md:flex md:px-[63px]  pl-4 overflow-x-auto md:overflow-visible cursor-grab active:cursor-grabbing select-none hide-scrollbar"
     >
       <div
         id="project-scroll-inner"

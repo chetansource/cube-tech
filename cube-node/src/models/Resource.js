@@ -36,6 +36,10 @@ const resourceSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Media',
   },
+  downloadFile: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Media',
+  },
   author: {
     type: String,
     trim: true,

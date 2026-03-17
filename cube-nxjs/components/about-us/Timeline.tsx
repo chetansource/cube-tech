@@ -109,12 +109,8 @@ export default function Timeline({
                     isHovered ? "opacity-0 pointer-events-none" : "opacity-100"
                   }`}
                 >
-                  <h3 className="text-[#AFB1B6] text-sm md:text-base mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-gray-700 text-sm md:text-lg">
-                    {item.content}
-                  </p>
+                  <h3 className="text-[#AFB1B6] text-sm md:text-base mb-2" dangerouslySetInnerHTML={{ __html: item.title || '' }} />
+                  <p className="text-gray-700 text-sm md:text-lg" dangerouslySetInnerHTML={{ __html: item.content || '' }} />
                 </div>
 
                 {/* Podcast view */}
@@ -138,10 +134,7 @@ export default function Timeline({
                     <div className="text-gray-500 flex items-center text-sm py-2">
                       /PODCAST <ArrowRight className="ml-2 h-4 w-4" />
                     </div>
-                    <p className="text-gray-700 text-sm md:text-base mt-2 w-[90%]">
-                      {item.podcastContent ||
-                        "This is a podcast about traffic innovations, planning strategies, and future infrastructure designs."}
-                    </p>
+                    <p className="text-gray-700 text-sm md:text-base mt-2 w-[90%]" dangerouslySetInnerHTML={{ __html: item.podcastContent || "This is a podcast about traffic innovations, planning strategies, and future infrastructure designs." }} />
                     <a
                       href={item.podcastLink || "#"}
                       className="inline-flex items-center text-green-500 text-sm font-medium mt-1"
@@ -159,6 +152,8 @@ export default function Timeline({
                 className={`flex items-center mt-[-70] md:mt-0 ${
                   index === timelineItems.length - 1 ? "mb-0" : ""
                 }`}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
               >
                 {/* Left content */}
                 <div
@@ -172,8 +167,6 @@ export default function Timeline({
                 {/* Center node */}
                 <div
                   className="absolute left-1/2 transform -translate-x-1/2 z-20"
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
                 >
                   <div className="w-14 h-14 rounded-full bg-accent text-white flex items-center justify-center font-medium cursor-pointer shadow-md hover:scale-105 transition-transform">
                     {item.year}

@@ -12,8 +12,7 @@ import Link from "next/link";
 import { getTestimonials } from "@/utils/routes/Homepage";
 import { getProjectsPageContent, getMapProjects, getFeaturedProjects } from "@/utils/routes/Projects";
 
-// Force dynamic rendering - don't pre-render at build time
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 const ProjectsPage = async () => {
   // Fetch dynamic data from backend
@@ -55,7 +54,7 @@ const ProjectsPage = async () => {
         <div className="relative z-20 container  md:left-[57px] px-4 md:pt-60 h-full flex flex-col justify-center">
           <div className="max-w-4xl mt-4">
             <h1 className="text-white text-[52px]  md:text-[75px]   font-light mb-12 leading-[40px] flex ">
-              {heroHeading} <span className="italic pl-4">{heroHighlightedWord}</span>
+              <span dangerouslySetInnerHTML={{ __html: heroHeading }} /> <span className="italic pl-4" dangerouslySetInnerHTML={{ __html: heroHighlightedWord }} />
             </h1>
           </div>
           <Breadcrumb

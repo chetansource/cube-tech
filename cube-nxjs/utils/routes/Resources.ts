@@ -26,6 +26,9 @@ const RESOURCE_FRAGMENT = `
     image {
       ...MediaFields
     }
+    downloadFile {
+      ...MediaFields
+    }
     author
     companyName
     duration
@@ -58,6 +61,7 @@ export interface Resource {
   description: string;
   content?: string;
   image?: Media;
+  downloadFile?: Media;
   author?: string;
   companyName?: string;
   duration?: string;

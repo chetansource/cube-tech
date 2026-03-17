@@ -99,7 +99,7 @@ export function Testimonial({ testimonials: propTestimonials }: TestimonialProps
   }, []);
 
   return (
-    <div className=" w-full  px-4 md:px-8 lg:px-12 pb-20 md:pb-[184px]">
+    <div className=" w-full  px-4 md:px-8 lg:px-12 pb-20 md:pb-[60px]">
       <div className="max-w-8xl md:mr-[20%]">
         {/* Header with navigation arrows */}
         <div className="flex justify-between items-center mb-12 md:w-[70%] md:mx-auto">

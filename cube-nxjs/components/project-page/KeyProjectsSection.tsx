@@ -116,7 +116,7 @@ export default function KeyProjectsSection({
       <div className="hidden md:block mb-12 pl-[61px]">
         <h2 className="text-[46px] leading-[67px] uppercase">
           <span className="text-black font-light">KEY</span>{" "}
-          <span className="text-accent font-semibold">PROJECTS</span>
+          <span className="text-accent font-semibold italic">PROJECTS</span>
         </h2>
       </div>
 

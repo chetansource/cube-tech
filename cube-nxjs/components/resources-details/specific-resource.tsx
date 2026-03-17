@@ -38,10 +38,23 @@ export default function SpecificResource({ resource }: SpecificResourceProps) {
             </p>
           )}
 
-          <button className="mt-6 bg-accent text-white px-6 py-3 flex items-center text-xs uppercase font-bold  gap-8">
-            <span>DOWNLOAD</span>
-            <Download className=" h-4 w-4" />
-          </button>
+          {resource.downloadFile?.url ? (
+            <a
+              href={resource.downloadFile.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              download
+              className="mt-6 bg-accent text-white px-6 py-3 flex items-center text-xs uppercase font-bold gap-8 w-fit hover:bg-green-600 transition-colors cursor-pointer"
+            >
+              <span>DOWNLOAD</span>
+              <Download className="h-4 w-4" />
+            </a>
+          ) : (
+            <button className="mt-6 bg-accent text-white px-6 py-3 flex items-center text-xs uppercase font-bold gap-8 cursor-pointer hover:bg-green-600 transition-colors">
+              <span>DOWNLOAD</span>
+              <Download className="h-4 w-4" />
+            </button>
+          )}
         </div>
 
         {/* Right Column */}

@@ -12,8 +12,8 @@ import Projects from "@/components/projects";
 import Stats from "@/components/stats";
 import { getHomepageData } from "@/utils/routes/Homepage";
 
-// Force dynamic rendering - don't pre-render at build time
-export const dynamic = 'force-dynamic';
+// Revalidate every 60 seconds for fresh CMS content
+export const revalidate = 60;
 
 export default async function Home() {
   // Fetch all homepage data from backend

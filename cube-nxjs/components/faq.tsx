@@ -75,9 +75,7 @@ export default function Faq() {
                     openIndex === index ? "border-accent" : "border-[#E3E3E3]"
                   }`}
               >
-                <span className="font-normal text-base md:text-lg leading-[37px] tracking-wider text-black  ">
-                  {faq.question}
-                </span>
+                <span className="font-normal text-base md:text-lg leading-[37px] tracking-wider text-black" dangerouslySetInnerHTML={{ __html: faq.question || '' }} />
                 <RightArrowIcon
                   color={openIndex === index ? "#5FBA51" : "#E3E3E3"}
                 />
@@ -89,9 +87,7 @@ export default function Faq() {
               >
                 <div className="overflow-hidden">
                   <div className={`p-4 bg-white font-['Glacier_Indifference'] ${openIndex === index ? 'border-b border-accent' : ''}`}>
-                    <p className="text-base md:text-lg leading-[24px] tracking-[0.25px] text-black/60">
-                      {faq.answer}
-                    </p>
+                    <p className="text-base md:text-lg leading-[24px] tracking-[0.25px] text-black/60" dangerouslySetInnerHTML={{ __html: faq.answer || '' }} />
                   </div>
                 </div>
               </div>

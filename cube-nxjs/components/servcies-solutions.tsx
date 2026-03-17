@@ -164,14 +164,12 @@ export default function ServicesSolutions({
         {/* Content */}
         <div className="relative z-10 h-full flex flex-col justify-start px-8 md:px-16 py-16 pt-24 md:pt-32">
           <h2 className="text-white text-3xl md:text-[46px] font-light tracking-[3.75px] leading-tight mb-6">
-            {heading}
+            <span dangerouslySetInnerHTML={{ __html: heading || '' }} />
             <br />
-            <span className="text-accent italic font-semibold">{highlightedWord}</span>
+            <span className="text-accent italic font-semibold" dangerouslySetInnerHTML={{ __html: highlightedWord || '' }} />
           </h2>
 
-          <p className="text-white text-sm md:text-base mb-8 max-w-md">
-            {description}
-          </p>
+          <p className="text-white text-sm md:text-base mb-8 max-w-md" dangerouslySetInnerHTML={{ __html: description || '' }} />
 
           <Link
             href={ctaLink}
@@ -293,9 +291,7 @@ function ServiceSolutionItem({
       </div>
 
       {/* Description */}
-      <p className="text-base text-black/60 leading-relaxed mb-8 max-w-2xl">
-        {solution.description}
-      </p>
+      <p className="text-base text-black/60 leading-relaxed mb-8 max-w-2xl" dangerouslySetInnerHTML={{ __html: solution.description || '' }} />
 
       {/* Projects carousel */}
       {solution.projects && solution.projects.length > 0 && (

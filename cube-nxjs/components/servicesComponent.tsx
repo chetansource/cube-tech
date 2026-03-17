@@ -156,9 +156,7 @@ export default function ServiceSection({ services: propServices, sectionConfig, 
                   </h3>
                 )}
 
-                <p className="text-[#404040] text-sm md:text-base leading-relaxed max-w-lg mb-8">
-                  {service.description}
-                </p>
+                <p className="text-[#404040] text-sm md:text-base leading-relaxed max-w-lg mb-8" dangerouslySetInnerHTML={{ __html: service.description || '' }} />
 
                 <div className="inline-flex">
                   <a
@@ -190,12 +188,10 @@ export default function ServiceSection({ services: propServices, sectionConfig, 
         </div>
         <div className="absolute top-0 left-0 px-8 md:px-12 lg:px-16 pt-24 lg:pt-32 z-20">
           <h2 className="text-white text-3xl md:text-[46px] font-light tracking-[3.75px] leading-tight mb-4">
-            {config.heading}{" "}
-            <span className="text-[#5FBA51] italic font-semibold">{config.highlightedWord}</span>
+            <span dangerouslySetInnerHTML={{ __html: config.heading || '' }} />{" "}
+            <span className="text-[#5FBA51] italic font-semibold" dangerouslySetInnerHTML={{ __html: config.highlightedWord || '' }} />
           </h2>
-          <p className="text-white font-normal text-sm md:text-base mt-4 max-w-md leading-relaxed tracking-wide">
-            {config.description}
-          </p>
+          <p className="text-white font-normal text-sm md:text-base mt-4 max-w-md leading-relaxed tracking-wide" dangerouslySetInnerHTML={{ __html: config.description || '' }} />
         </div>
       </div>
     </section>

@@ -396,6 +396,7 @@ const typeDefs = gql`
     description: String!
     content: String
     image: Media
+    downloadFile: Media
     author: String
     companyName: String
     duration: String

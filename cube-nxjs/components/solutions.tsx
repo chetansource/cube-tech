@@ -109,12 +109,10 @@ export default function Solutions({ solutions: propSolutions, sectionConfig }: S
 
           <div className="relative z-10">
             <h2 className="text-white text-3xl md:text-4xl lg:text-[46px] font-light tracking-[3.75px] leading-tight lg:leading-[67px] mb-8">
-              {config.heading}
+              <span dangerouslySetInnerHTML={{ __html: config.heading || '' }} />
               <br />
               <span className="font-light">MAKE </span>
-              <span className="text-[#5FBA51] italic font-semibold">
-                {config.highlightedWord}
-              </span>
+              <span className="text-[#5FBA51] italic font-semibold" dangerouslySetInnerHTML={{ __html: config.highlightedWord || '' }} />
             </h2>
 
             <Link
@@ -137,9 +135,7 @@ export default function Solutions({ solutions: propSolutions, sectionConfig }: S
             </h3>
 
             {/* Solution description */}
-            <p className="text-base md:text-lg text-black/60 leading-relaxed tracking-wide mb-8 max-w-2xl">
-              {currentSolution.description}
-            </p>
+            <p className="text-base md:text-lg text-black/60 leading-relaxed tracking-wide mb-8 max-w-2xl" dangerouslySetInnerHTML={{ __html: currentSolution.description || '' }} />
 
             {/* Solution image */}
             <div className="relative h-64 md:h-80 lg:h-96 w-full overflow-hidden rounded-sm mb-8">

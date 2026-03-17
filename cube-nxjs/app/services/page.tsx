@@ -11,7 +11,7 @@ import Image from "next/image";
 import { getServicesPageContent, getServices, getPopularSearches, getMapProjects } from "@/utils/routes/Services";
 
 // Force dynamic rendering - don't pre-render at build time
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 const Services = async () => {
   // Fetch services page data
@@ -42,10 +42,8 @@ const Services = async () => {
         }
         title={
           <div className="flex flex-col md:flex md:flex-row md:gap-8 ">
-            {heroSection?.heading || "Our"}{" "}
-            <span className="text-white font-semibold italic pt-5 md:pt-0">
-              {heroSection?.highlightedWord || "Services"}
-            </span>
+            <span dangerouslySetInnerHTML={{ __html: heroSection?.heading || "Our" }} />{" "}
+            <span className="text-white font-semibold italic pt-5 md:pt-0" dangerouslySetInnerHTML={{ __html: heroSection?.highlightedWord || "Services" }} />
           </div>
         }
         featuredResources={heroSection?.featuredResources || []}
