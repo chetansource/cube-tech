@@ -88,7 +88,6 @@ const Awards = () => {
 
     let animationId: number;
     let isPaused = false;
-    let resumeTimeout: ReturnType<typeof setTimeout>;
     const scrollSpeed = 0.5;
 
     const scroll = () => {

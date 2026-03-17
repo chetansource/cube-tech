@@ -15,7 +15,7 @@ type Project = {
   mainImage?: { url: string; alt?: string };
   heading?: string;
   shortDescription?: string;
-  description: string;
+  description?: string;
   tags?: string[];
 };
 

@@ -52,7 +52,7 @@ export default function InsightsImpact({ resources, pageContent }: InsightsImpac
   const ITEMS_PER_SLIDE = 2;
 
   // Use dynamic resources or fallback to static data
-  const caseStudies = resources && resources.length > 0
+  const caseStudies: { id: string; title: string; description: string; slug: string; downloadFile?: { url: string } }[] = resources && resources.length > 0
     ? resources.map((resource, index) => ({
         id: `${String(index + 1).padStart(2, '0')}.`,
         title: resource.title,
