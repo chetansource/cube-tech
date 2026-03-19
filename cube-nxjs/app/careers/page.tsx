@@ -6,7 +6,7 @@ import CareerHero from '@/components/career-hero';
 import { getCareerPageContent } from '@/utils/routes/Careers';
 import React from 'react';
 
-export const revalidate = 60;
+export const revalidate = 5;
 
 export default async function CareerPage() {
   const { careerHeading, jobList, heroSection, exploreCards } = await getCareerPageContent("careerpage");

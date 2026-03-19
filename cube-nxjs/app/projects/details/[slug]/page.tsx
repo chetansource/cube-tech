@@ -9,7 +9,7 @@ import ProjectsCarousel from "@/components/project-details/project-carousel";
 import Image from "next/image";
 import { getProjectBySlug, getProjectsPageContent, getRelatedProjects } from "@/utils/routes/Projects";
 
-export const revalidate = 60;
+export const revalidate = 5;
 
 interface ProjectDetailPageProps {
   params: Promise<{

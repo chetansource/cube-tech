@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import RightArrowIcon from "./icons/right-arrow";
@@ -72,17 +72,55 @@ export default function Solutions({ solutions: propSolutions, sectionConfig }: S
   };
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const rightPanelRef = useRef<HTMLDivElement>(null);
+  const isHovering = useRef(false);
+  const scrollCooldown = useRef(false);
 
-  // Auto-scroll functionality
+  // Auto-scroll functionality — pauses when user is hovering on right panel
   useEffect(() => {
     if (solutions.length === 0) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % solutions.length);
-    }, 5000); // Change slide every 5 seconds
+      if (!isHovering.current) {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % solutions.length);
+      }
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [solutions.length]);
+
+  // Mouse wheel navigation on right panel
+  const handleWheel = useCallback((e: WheelEvent) => {
+    if (scrollCooldown.current) return;
+    e.preventDefault();
+
+    scrollCooldown.current = true;
+    if (e.deltaY > 0) {
+      setCurrentIndex((prev) => (prev + 1) % solutions.length);
+    } else {
+      setCurrentIndex((prev) => (prev - 1 + solutions.length) % solutions.length);
+    }
+
+    setTimeout(() => { scrollCooldown.current = false; }, 500);
+  }, [solutions.length]);
+
+  useEffect(() => {
+    const panel = rightPanelRef.current;
+    if (!panel) return;
+
+    const onEnter = () => { isHovering.current = true; };
+    const onLeave = () => { isHovering.current = false; };
+
+    panel.addEventListener('wheel', handleWheel, { passive: false });
+    panel.addEventListener('mouseenter', onEnter);
+    panel.addEventListener('mouseleave', onLeave);
+
+    return () => {
+      panel.removeEventListener('wheel', handleWheel);
+      panel.removeEventListener('mouseenter', onEnter);
+      panel.removeEventListener('mouseleave', onLeave);
+    };
+  }, [handleWheel]);
 
   const currentSolution = solutions[currentIndex] || solutions[0];
 
@@ -126,7 +164,7 @@ export default function Solutions({ solutions: propSolutions, sectionConfig }: S
         </div>
 
         {/* Right section - White background with content */}
-        <div className="bg-white relative flex flex-col justify-between px-8 md:px-12 lg:px-16 xl:px-24 py-16 lg:py-20">
+        <div ref={rightPanelRef} className="bg-white relative flex flex-col justify-between px-8 md:px-12 lg:px-16 xl:px-24 py-16 lg:py-20 cursor-ns-resize">
           {/* Content area */}
           <div className="flex-1 flex flex-col justify-center relative z-10">
             {/* Solution title */}

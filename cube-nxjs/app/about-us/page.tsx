@@ -10,7 +10,7 @@ import Timeline from "@/components/about-us/Timeline";
 import { getAboutPageContent } from "@/utils/routes/AboutUs";
 
 // Force dynamic rendering - don't pre-render at build time
-export const revalidate = 60;
+export const revalidate = 5;
 
 const AboutUsPage = async () => {
   const {

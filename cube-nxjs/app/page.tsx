@@ -12,8 +12,8 @@ import Projects from "@/components/projects";
 import Stats from "@/components/stats";
 import { getHomepageData } from "@/utils/routes/Homepage";
 
-// Revalidate every 60 seconds for fresh CMS content
-export const revalidate = 60;
+// Revalidate every 5 seconds for fresh CMS content
+export const revalidate = 5;
 
 export default async function Home() {
   // Fetch all homepage data from backend

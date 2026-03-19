@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Label, Input, Button, Text, Select, CheckBox } from '@adminjs/design-system';
+import { getMedia, invalidateMedia } from './mediaCache';
 
 // ─── BLOCK TYPE FIELD MAPPINGS ───────────────────────────────────────
 // Each block type lists ONLY the fields the frontend actually uses.
@@ -385,18 +386,13 @@ const SectionEdit = (props) => {
   };
 
   useEffect(() => {
-    fetch('/api/media?limit=200')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.docs) {
-          setMediaOptions(data.docs.map((m) => ({
-            value: m._id,
-            label: m.originalFilename || m.filename,
-            url: m.url,
-          })));
-        }
-      })
-      .catch(() => {});
+    getMedia().then((docs) => {
+      setMediaOptions(docs.map((m) => ({
+        value: m._id,
+        label: m.originalFilename || m.filename,
+        url: m.url,
+      })));
+    });
   }, []);
 
   // Get section indices
@@ -510,6 +506,7 @@ const SectionEdit = (props) => {
                       if (uploaded?.id || uploaded?._id) {
                         const mediaId = uploaded.id || uploaded._id;
                         const newOption = { value: mediaId, label: uploaded.originalFilename || file.name, url: uploaded.url };
+                        invalidateMedia();
                         setMediaOptions((prev) => [newOption, ...prev]);
                         onChange(fullPath, mediaId);
                       }

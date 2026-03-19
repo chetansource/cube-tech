@@ -1,7 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import RightArrowIcon from "./icons/right-arrow";
 import Image from "next/image";
+import Link from "next/link";
 
 // Project data structure
 interface Project {
@@ -103,6 +104,21 @@ export default function ProjectMap({
   const projects = propProjects && propProjects.length > 0 ? propProjects : defaultProjects;
 
   const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const hideTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const showProject = useCallback((project: Project) => {
+    if (hideTimeout.current) {
+      clearTimeout(hideTimeout.current);
+      hideTimeout.current = null;
+    }
+    setActiveProject(project);
+  }, []);
+
+  const scheduleHide = useCallback(() => {
+    hideTimeout.current = setTimeout(() => {
+      setActiveProject(null);
+    }, 300);
+  }, []);
 
   return (
     <div className="relative w-full h-screen overflow-hidden mb-15 md:mb-[141px]">
@@ -141,8 +157,8 @@ export default function ProjectMap({
                   r={activeProject?.id === project.id ? "1.5" : "1"}
                   fill={activeProject?.id === project.id ? "#4ade80" : "#22c55e"}
                   className="cursor-pointer transition-all duration-400"
-                  onMouseEnter={() => setActiveProject(project)}
-                  onMouseLeave={() => setActiveProject(null)}
+                  onMouseEnter={() => showProject(project)}
+                  onMouseLeave={scheduleHide}
                 />
               )
             ))}
@@ -174,8 +190,8 @@ export default function ProjectMap({
             <div
               key={project.id}
               className="flex items-center space-x-4 md:pl-4 group"
-              onMouseEnter={() => setActiveProject(project)}
-              onMouseLeave={() => setActiveProject(null)}
+              onMouseEnter={() => showProject(project)}
+              onMouseLeave={scheduleHide}
             >
               {/* Vertical white bar on hover */}
               <div
@@ -203,7 +219,12 @@ export default function ProjectMap({
 
       {/* Project Detail Popup */}
       {activeProject && (
-        <div className="absolute right-5 md:right-20 top-24 md:top-28 z-50 bg-black/30 backdrop-blur-sm p-4 md:p-6 border border-primary/20 transition-all duration-300 w-[60vw] md:w-[347px] ">
+        <Link
+          href={`/projects/details/${activeProject.slug}`}
+          className="absolute right-5 md:right-20 top-24 md:top-28 z-50 bg-black/30 backdrop-blur-sm p-4 md:p-6 border border-primary/20 transition-all duration-300 w-[60vw] md:w-[347px] block cursor-pointer hover:bg-black/40"
+          onMouseEnter={() => showProject(activeProject)}
+          onMouseLeave={scheduleHide}
+        >
           <div className="relative w-full h-[120px] md:h-[181px] mb-4 bg-black/30">
             <Image
               src={activeProject.mainImage?.url ?? "/placeholder.jpg"}
@@ -218,7 +239,7 @@ export default function ProjectMap({
             </h3>
             <RightArrowIcon color={"#5FBA51"} />
           </div>
-        </div>
+        </Link>
       )}
     </div>
   );

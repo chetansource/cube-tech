@@ -39,7 +39,7 @@ export default function Hero({
   const showTopSection = pathname === "/resources" || pathname === "/services";
   return (
     <section
-      className={`relative w-full bg-white mb-8 md:mb-[31px] overflow-hidden h-[768px]`}
+      className={`relative w-full bg-white mb-8 md:mb-[31px] overflow-hidden min-h-[768px]`}
     >
       <div className="absolute top-0 bottom-0 left-0 right-0 md:right-[57px] z-0">
         <div className="relative h-full md:pr-[57px]">
@@ -56,15 +56,15 @@ export default function Hero({
       <div
         className={`absolute top-0 bottom-0 left-0 right-0  md:right-[57px] ${overlayOpacity} z-10`}
       />
-      <div className="flex relative z-20 container  md:left-[57px]  px-4  h-full flex-col  md:justify-center">
-        <div className="max-w-5xl mt-[60%] md:mt-0">
+      <div className="flex relative z-20 container  px-4 md:px-16 lg:px-24  min-h-[768px] flex-col  justify-end pb-24 md:pb-32">
+        <div className="max-w-5xl">
           {pathname !== "/resources" && (
-            <div className="text-white text-[52px] md:text-[75px] font-light mb-12 leading-[40px] flex flex-col md:gap-8 ">
+            <div className="text-white text-[40px] md:text-[75px] font-light mb-8 leading-[1.15] flex flex-col md:gap-4 ">
               {title}
             </div>
           )}
           {subtitle && (
-            <p className="font-normal text-white text-lg mb-12 max-w-xl text-[14px]" dangerouslySetInnerHTML={{ __html: subtitle }} />
+            <p className="font-normal text-white mb-10 max-w-xl text-sm md:text-base leading-relaxed" dangerouslySetInnerHTML={{ __html: subtitle }} />
           )}
           {ctaText && ctaLink && (
             <Link
@@ -140,7 +140,7 @@ export default function Hero({
             {/* Title Block (only for /resources) */}
             {pathname === "/resources" && (
               <div className="text-white md:ml-8  col-start-4 self-end ">
-                <h1 className="text-3xl md:text-[75px] font-light md:leading-[40px] flex flex-col gap-8 ">
+                <h1 className="text-3xl md:text-[75px] font-light leading-tight flex flex-col gap-8 ">
                   {title}
                 </h1>
               </div>

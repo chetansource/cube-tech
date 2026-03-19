@@ -76,48 +76,57 @@ export default function ServiceSection({ services: propServices, sectionConfig, 
     };
   };
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const isHoveringRef = useRef(false);
 
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
     if (!scrollContainer) return;
 
     let scrollPosition = 0;
-    const scrollSpeed = 0.5; // Pixels per frame for smooth scrolling
+    const scrollSpeed = 0.5;
     let animationFrameId: number;
 
     const smoothScroll = () => {
       if (!scrollContainer) return;
 
-      scrollPosition += scrollSpeed;
-
-      // Get the total scrollable height
-      const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
-
-      // Reset to top when reaching bottom
-      if (scrollPosition >= maxScroll) {
-        scrollPosition = 0;
+      // Only auto-scroll when user is NOT hovering
+      if (!isHoveringRef.current) {
+        scrollPosition += scrollSpeed;
+        const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+        if (scrollPosition >= maxScroll) {
+          scrollPosition = 0;
+        }
+        scrollContainer.scrollTop = scrollPosition;
       }
 
-      scrollContainer.scrollTop = scrollPosition;
       animationFrameId = requestAnimationFrame(smoothScroll);
     };
 
-    // Prevent the container from capturing wheel events — let the page scroll
+    // When hovering, let the user scroll the container with mouse wheel
     const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      window.scrollBy(0, e.deltaY);
+      if (isHoveringRef.current) {
+        e.preventDefault();
+        scrollContainer.scrollTop += e.deltaY;
+        scrollPosition = scrollContainer.scrollTop;
+      }
     };
-    scrollContainer.addEventListener('wheel', handleWheel, { passive: false });
 
-    // Start the smooth scroll animation
+    const onEnter = () => { isHoveringRef.current = true; };
+    const onLeave = () => { isHoveringRef.current = false; };
+
+    scrollContainer.addEventListener('wheel', handleWheel, { passive: false });
+    scrollContainer.addEventListener('mouseenter', onEnter);
+    scrollContainer.addEventListener('mouseleave', onLeave);
+
     animationFrameId = requestAnimationFrame(smoothScroll);
 
-    // Cleanup on unmount
     return () => {
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
       scrollContainer.removeEventListener('wheel', handleWheel);
+      scrollContainer.removeEventListener('mouseenter', onEnter);
+      scrollContainer.removeEventListener('mouseleave', onLeave);
     };
   }, []);
 

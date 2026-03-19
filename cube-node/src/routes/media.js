@@ -149,6 +149,7 @@ router.get('/', async (req, res, next) => {
 
     const totalDocs = await Media.countDocuments(query);
 
+    res.set('Cache-Control', 'private, max-age=10');
     res.json({
       success: true,
       docs: media,

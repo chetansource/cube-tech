@@ -12,7 +12,7 @@ import Link from "next/link";
 import { getTestimonials } from "@/utils/routes/Homepage";
 import { getProjectsPageContent, getMapProjects, getFeaturedProjects } from "@/utils/routes/Projects";
 
-export const revalidate = 60;
+export const revalidate = 5;
 
 const ProjectsPage = async () => {
   // Fetch dynamic data from backend

@@ -118,7 +118,7 @@ const createAdminJS = () => {
         options: {
           navigation: { name: 'Content', icon: 'Settings' },
           properties: {
-            image: { type: 'reference', reference: 'Media' },
+            image: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
           },
           listProperties: ['title', 'order', 'active', 'updatedAt'],
           filterProperties: ['title', 'active'],
@@ -129,7 +129,7 @@ const createAdminJS = () => {
         options: {
           navigation: { name: 'Content', icon: 'Briefcase' },
           properties: {
-            mainImage: { type: 'reference', reference: 'Media' },
+            mainImage: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
             gallery: { type: 'reference', reference: 'Media', isArray: true },
             impact: { type: 'mixed' },
             policyCards: { type: 'mixed' },
@@ -143,8 +143,8 @@ const createAdminJS = () => {
         options: {
           navigation: { name: 'Content', icon: 'BookOpen' },
           properties: {
-            image: { type: 'reference', reference: 'Media' },
-            downloadFile: { type: 'reference', reference: 'Media' },
+            image: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
+            downloadFile: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
           },
           listProperties: ['title', 'category', 'status', 'featured', 'publishedAt'],
           filterProperties: ['title', 'category', 'status', 'featured'],
@@ -292,7 +292,7 @@ const createAdminJS = () => {
           navigation: { name: 'Forms', icon: 'FileText' },
           properties: {
             jobId: { type: 'reference', reference: 'Job' },
-            resumeUpload: { type: 'reference', reference: 'Media' },
+            resumeUpload: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
           },
           actions: {
             new: { isVisible: false },
@@ -554,7 +554,7 @@ const createAdminJS = () => {
         options: {
           navigation: { name: 'Site Elements', icon: 'Award' },
           properties: {
-            logo: { type: 'reference', reference: 'Media' },
+            logo: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
           },
           listProperties: ['name', 'order', 'active', 'updatedAt'],
           filterProperties: ['name', 'active'],
@@ -565,7 +565,7 @@ const createAdminJS = () => {
         options: {
           navigation: { name: 'Site Elements', icon: 'MessageCircle' },
           properties: {
-            avatar: { type: 'reference', reference: 'Media' },
+            avatar: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
           },
           listProperties: ['author', 'company', 'rating', 'order', 'active', 'updatedAt'],
           filterProperties: ['author', 'company', 'active'],
@@ -576,7 +576,7 @@ const createAdminJS = () => {
         options: {
           navigation: { name: 'Site Elements', icon: 'Star' },
           properties: {
-            logo: { type: 'reference', reference: 'Media' },
+            logo: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
           },
           listProperties: ['name', 'organization', 'date', 'order', 'active'],
           filterProperties: ['name', 'organization', 'active'],
@@ -587,7 +587,7 @@ const createAdminJS = () => {
         options: {
           navigation: { name: 'Site Elements', icon: 'Lightbulb' },
           properties: {
-            image: { type: 'reference', reference: 'Media' },
+            image: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
             projects: {
               type: 'reference',
               reference: 'Project',
@@ -611,7 +611,7 @@ const createAdminJS = () => {
         options: {
           navigation: { name: 'Site Elements', icon: 'Calendar' },
           properties: {
-            image: { type: 'reference', reference: 'Media' },
+            image: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
           },
           listProperties: ['year', 'title', 'order', 'active', 'updatedAt'],
           filterProperties: ['year', 'active'],
@@ -630,8 +630,8 @@ const createAdminJS = () => {
         options: {
           navigation: { name: 'Settings', icon: 'Settings' },
           properties: {
-            logo: { type: 'reference', reference: 'Media' },
-            favicon: { type: 'reference', reference: 'Media' },
+            logo: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
+            favicon: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
             contactInfo: { type: 'mixed' },
             socialMedia: { type: 'mixed' },
             seo: { type: 'mixed' },

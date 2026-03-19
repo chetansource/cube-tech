@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Label, Text } from '@adminjs/design-system';
+import { getMedia } from './mediaCache';
 
 // Same block type config as SectionEdit — only show relevant fields
 const BLOCK_TYPE_FIELDS = {
@@ -37,6 +38,12 @@ const BLOCK_TYPE_FIELDS = {
 
 const ARRAY_FIELDS = ['locations', 'socials', 'faqs', 'cards', 'leaders', 'timelineItems'];
 
+const MEDIA_FIELDS = new Set([
+  'backgroundImage', 'image', 'bannerImage', 'exploreMoreBackgroundImage',
+  'heroBackgroundImage', 'insightsBackgroundImage', 'galleryBackgroundImage',
+  'newsEventsBackgroundImage',
+]);
+
 const getSubFieldNames = (fieldName) => {
   switch (fieldName) {
     case 'locations': return ['label', 'address'];
@@ -54,6 +61,45 @@ const formatLabel = (name) => name.replace(/([A-Z])/g, ' $1').replace(/^./, (s) 
 const SectionShow = (props) => {
   const { record } = props;
   const params = record.params || {};
+  const [mediaMap, setMediaMap] = useState({});
+
+  useEffect(() => {
+    getMedia().then((docs) => {
+      const map = {};
+      docs.forEach((m) => {
+        map[m._id] = { url: m.url, filename: m.originalFilename || m.filename, mimeType: m.mimeType };
+      });
+      setMediaMap(map);
+    });
+  }, []);
+
+  const renderMediaPreview = (label, mediaId) => {
+    if (!mediaId) return null;
+    const media = mediaMap[mediaId];
+    if (!media) {
+      return renderValue(label, mediaId);
+    }
+    const isImage = media.mimeType && media.mimeType.startsWith('image/');
+    return (
+      <Box mb="md">
+        <Text fontWeight="bold" mr="md" style={{ minWidth: '160px', color: '#666', marginBottom: '4px' }}>{label}:</Text>
+        {isImage ? (
+          <Box>
+            <img
+              src={media.url}
+              alt={media.filename}
+              style={{ maxWidth: '200px', maxHeight: '140px', objectFit: 'contain', borderRadius: '6px', border: '1px solid #e0e0e0', marginBottom: '4px' }}
+            />
+            <Text fontSize="sm" color="grey60">{media.filename}</Text>
+          </Box>
+        ) : (
+          <a href={media.url} target="_blank" rel="noopener noreferrer" style={{ color: '#3040D6', textDecoration: 'none' }}>
+            {media.filename}
+          </a>
+        )}
+      </Box>
+    );
+  };
 
   const sectionIndices = [];
   Object.keys(params).forEach((key) => {
@@ -183,6 +229,9 @@ const SectionShow = (props) => {
         return <React.Fragment key={fieldName}>{renderRefArray(sectionIdx, fieldName)}</React.Fragment>;
       }
       const val = params[`sections.${sectionIdx}.${fieldName}`];
+      if (MEDIA_FIELDS.has(fieldName)) {
+        return <React.Fragment key={fieldName}>{renderMediaPreview(formatLabel(fieldName), val)}</React.Fragment>;
+      }
       return <React.Fragment key={fieldName}>{renderValue(formatLabel(fieldName), val)}</React.Fragment>;
     });
   };

@@ -10,7 +10,7 @@ import Image from "next/image";
 import PolygonIcon from "@/components/icons/polygon";
 import { Breadcrumb } from "@/components/project-page/bread-crump";
 
-export const revalidate = 60;
+export const revalidate = 5;
 
 interface ResourceDetailPageProps {
   params: Promise<{ slug: string }>;
