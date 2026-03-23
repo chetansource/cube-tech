@@ -297,13 +297,13 @@ const getSubFieldsForArray = (fieldName) => {
       ]},
       { name: 'bgColor', type: 'text' },
       { name: 'textColor', type: 'text' },
-      { name: 'image', type: 'text' },
+      { name: 'image', type: 'media' },
       { name: 'order', type: 'text' },
     ];
     case 'leaders': return [
       { name: 'name', type: 'text' },
       { name: 'designation', type: 'text' },
-      { name: 'image', type: 'text' },
+      { name: 'image', type: 'media' },
       { name: 'bio', type: 'textarea' },
       { name: 'linkedIn', type: 'text' },
     ];
@@ -316,6 +316,7 @@ const getSubFieldsForArray = (fieldName) => {
       { name: 'title', type: 'text' },
       { name: 'content', type: 'textarea' },
       { name: 'isPodcast', type: 'boolean' },
+      { name: 'podcastImage', type: 'media' },
       { name: 'podcastContent', type: 'textarea' },
       { name: 'podcastLink', type: 'text' },
       { name: 'isIconOnly', type: 'boolean' },
@@ -385,6 +386,13 @@ const SectionEdit = (props) => {
     setCollapsedSections((prev) => ({ ...prev, [idx]: !prev[idx] }));
   };
 
+  const [dragStates, setDragStates] = useState({});
+  const [uploadStates, setUploadStates] = useState({});
+  const [renameStates, setRenameStates] = useState({});
+  const [savingStates, setSavingStates] = useState({});
+  const dropRefs = useRef({});
+  const dragCounters = useRef({});
+
   useEffect(() => {
     getMedia().then((docs) => {
       setMediaOptions(docs.map((m) => ({
@@ -393,6 +401,17 @@ const SectionEdit = (props) => {
         url: m.url,
       })));
     });
+  }, []);
+
+  // Prevent browser default file open on drag/drop
+  useEffect(() => {
+    const preventDefaults = (e) => { e.preventDefault(); e.stopPropagation(); };
+    window.addEventListener('dragover', preventDefaults);
+    window.addEventListener('drop', preventDefaults);
+    return () => {
+      window.removeEventListener('dragover', preventDefaults);
+      window.removeEventListener('drop', preventDefaults);
+    };
   }, []);
 
   // Get section indices
@@ -454,6 +473,128 @@ const SectionEdit = (props) => {
     <CheckBox id={id} checked={value === true || value === 'true'} onChange={() => onChangeFn(value === true || value === 'true' ? false : true)} />
   );
 
+  const renderMediaField = (id, value, onChangeFn) => {
+    const isDragging = dragStates[id] || false;
+    const isUploading = uploadStates[id] || false;
+    const selectedOption = value ? mediaOptions.find((o) => o.value === value) || { value, label: value } : null;
+    const selectedUrl = selectedOption ? (mediaOptions.find((o) => o.value === value)?.url || null) : null;
+    const editName = renameStates[id] !== undefined ? renameStates[id] : (selectedOption?.label || '');
+    const isSaving = savingStates[id] || false;
+
+    const uploadFile = async (file) => {
+      if (!file) return;
+      setUploadStates((prev) => ({ ...prev, [id]: true }));
+      const formData = new FormData();
+      formData.append('file', file);
+      try {
+        const res = await fetch('/api/media', { method: 'POST', body: formData });
+        const data = await res.json();
+        const uploaded = data.doc || data.media;
+        if (uploaded?.id || uploaded?._id) {
+          const mediaId = uploaded.id || uploaded._id;
+          const newOption = { value: mediaId, label: uploaded.originalFilename || file.name, url: uploaded.url };
+          invalidateMedia();
+          setMediaOptions((prev) => [newOption, ...prev]);
+          onChangeFn(mediaId);
+        }
+      } catch (err) { /* upload failed silently */ }
+      setUploadStates((prev) => ({ ...prev, [id]: false }));
+    };
+
+    const saveRename = async () => {
+      if (!value || !editName.trim() || editName === selectedOption?.label) return;
+      setSavingStates((prev) => ({ ...prev, [id]: true }));
+      try {
+        const res = await fetch(`/api/media/${value}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ originalFilename: editName.trim() }),
+        });
+        if (res.ok) {
+          invalidateMedia();
+          setMediaOptions((prev) => prev.map((o) => o.value === value ? { ...o, label: editName.trim() } : o));
+        }
+      } catch (err) { /* silently fail */ }
+      setSavingStates((prev) => ({ ...prev, [id]: false }));
+    };
+
+    const setupDropRef = (el) => {
+      if (!el || dropRefs.current[id] === el) return;
+      dropRefs.current[id] = el;
+      if (!dragCounters.current[id]) dragCounters.current[id] = 0;
+
+      el.addEventListener('dragenter', (e) => { e.preventDefault(); e.stopPropagation(); dragCounters.current[id]++; setDragStates((prev) => ({ ...prev, [id]: true })); });
+      el.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); });
+      el.addEventListener('dragleave', (e) => { e.preventDefault(); e.stopPropagation(); dragCounters.current[id]--; if (dragCounters.current[id] === 0) setDragStates((prev) => ({ ...prev, [id]: false })); });
+      el.addEventListener('drop', (e) => { e.preventDefault(); e.stopPropagation(); dragCounters.current[id] = 0; setDragStates((prev) => ({ ...prev, [id]: false })); const file = e.dataTransfer.files?.[0]; if (file) uploadFile(file); });
+    };
+
+    return (
+      <Box style={styles.mediaBox}>
+        <Select
+          value={selectedOption}
+          options={mediaOptions}
+          onChange={(selected) => { onChangeFn(selected?.value || ''); setRenameStates((prev) => { const n = { ...prev }; delete n[id]; return n; }); }}
+          isClearable
+        />
+        <div
+          ref={setupDropRef}
+          onClick={() => document.getElementById(`file-input-${id}`).click()}
+          style={{
+            marginTop: '8px',
+            border: isDragging ? '2px dashed #3040D6' : '2px dashed #C0C0CA',
+            borderRadius: '8px',
+            padding: '16px',
+            textAlign: 'center',
+            background: isDragging ? '#EEF0FF' : '#FAFAFA',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          <input
+            id={`file-input-${id}`}
+            type="file"
+            accept="image/*,application/pdf,.doc,.docx"
+            style={{ display: 'none' }}
+            onChange={(e) => { uploadFile(e.target.files?.[0]); e.target.value = ''; }}
+          />
+          {isUploading ? (
+            <span style={{ color: '#3040D6', fontSize: '13px' }}>Uploading...</span>
+          ) : (
+            <>
+              <div style={{ fontSize: '24px', marginBottom: '2px', color: isDragging ? '#3040D6' : '#888' }}>{isDragging ? '\u2B07' : '\u2601'}</div>
+              <span style={{ color: '#666', fontSize: '12px' }}>Drag & drop a file here, or <span style={{ color: '#3040D6', fontWeight: 500 }}>click to browse</span></span>
+            </>
+          )}
+        </div>
+        {value && (
+          <div style={{ marginTop: '8px', padding: '8px', background: '#F7F7FA', borderRadius: '8px', border: '1px solid #e0e0e0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {selectedUrl && <img src={selectedUrl} alt="" style={{ maxHeight: '50px', borderRadius: '4px', border: '1px solid #e0e0e0' }} />}
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: '10px', color: '#888', display: 'block', marginBottom: '3px' }}>File Name</label>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setRenameStates((prev) => ({ ...prev, [id]: e.target.value }))}
+                    onKeyDown={(e) => { if (e.key === 'Enter') saveRename(); }}
+                    style={{ flex: 1, padding: '4px 6px', border: '1px solid #C0C0CA', borderRadius: '4px', fontSize: '12px', outline: 'none' }}
+                  />
+                  {editName !== selectedOption?.label && (
+                    <button onClick={saveRename} disabled={isSaving} style={{ padding: '4px 10px', background: '#3040D6', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '11px', cursor: isSaving ? 'not-allowed' : 'pointer', opacity: isSaving ? 0.7 : 1 }}>
+                      {isSaving ? '...' : 'Rename'}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </Box>
+    );
+  };
+
   // ── Field renderer (per type) ──
 
   const renderField = (sectionIdx, fieldDef) => {
@@ -481,48 +622,7 @@ const SectionEdit = (props) => {
         ) : type === 'boolean' ? (
           renderBooleanField(fullPath, value, (val) => onChange(fullPath, val))
         ) : type === 'media' ? (
-          <Box style={styles.mediaBox}>
-            <Select
-              value={value ? mediaOptions.find((o) => o.value === value) || { value, label: value } : null}
-              options={mediaOptions}
-              onChange={(selected) => onChange(fullPath, selected?.value || '')}
-            />
-            <Box mt="sm" flex flexDirection="row" alignItems="center" style={{ gap: '8px' }}>
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: '#3040D6', color: '#fff', borderRadius: '4px', fontSize: '12px', cursor: 'pointer' }}>
-                Upload New
-                <input
-                  type="file"
-                  accept="image/*,application/pdf,.doc,.docx"
-                  style={{ display: 'none' }}
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    const formData = new FormData();
-                    formData.append('file', file);
-                    try {
-                      const res = await fetch('/api/media', { method: 'POST', body: formData });
-                      const data = await res.json();
-                      const uploaded = data.doc || data.media;
-                      if (uploaded?.id || uploaded?._id) {
-                        const mediaId = uploaded.id || uploaded._id;
-                        const newOption = { value: mediaId, label: uploaded.originalFilename || file.name, url: uploaded.url };
-                        invalidateMedia();
-                        setMediaOptions((prev) => [newOption, ...prev]);
-                        onChange(fullPath, mediaId);
-                      }
-                    } catch (err) { /* upload failed silently */ }
-                    e.target.value = '';
-                  }}
-                />
-              </label>
-              {value && (() => {
-                const selected = mediaOptions.find((o) => o.value === value);
-                return selected?.url ? (
-                  <img src={selected.url} alt="" style={{ maxHeight: '60px', borderRadius: '4px' }} />
-                ) : null;
-              })()}
-            </Box>
-          </Box>
+          renderMediaField(fullPath, value, (id) => onChange(fullPath, id))
         ) : (
           renderTextInput(fullPath, value, (e) => onChange(fullPath, e.target.value))
         )}
@@ -708,6 +808,8 @@ const SectionEdit = (props) => {
                         options={sf.options}
                         onChange={(selected) => onChange(fullKey, selected?.value || '')}
                       />
+                    : sf.type === 'media'
+                    ? renderMediaField(fullKey, val, (id) => onChange(fullKey, id))
                     : renderTextInput(fullKey, val, (e) => onChange(fullKey, e.target.value))
                   }
                 </Box>
@@ -741,6 +843,8 @@ const SectionEdit = (props) => {
                       options={sf.options}
                       onChange={(selected) => handleLocalChange(localIdx, sf.name, selected?.value || '')}
                     />
+                  : sf.type === 'media'
+                  ? renderMediaField(`new-${localIdx}-${sf.name}`, item[sf.name] || '', (id) => handleLocalChange(localIdx, sf.name, id))
                   : <Input value={item[sf.name] || ''} onChange={(e) => handleLocalChange(localIdx, sf.name, e.target.value)} placeholder={`Enter ${sf.name}`} style={styles.fullWidth} />
                 }
               </Box>

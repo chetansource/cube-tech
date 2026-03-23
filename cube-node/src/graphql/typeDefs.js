@@ -371,6 +371,7 @@ const typeDefs = gql`
     impact: ProjectImpact
     policyCards: [PolicyCard!]
     featured: Boolean
+    mapCity: String
     mapPosition: MapPosition
     showOnMap: Boolean
     status: String!

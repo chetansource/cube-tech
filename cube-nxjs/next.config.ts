@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'cube-highways.s3.ap-south-1.amazonaws.com',
         port: '',
-        pathname: '/media/**',
+        pathname: '/**',
       },
       {
         protocol: 'https',

@@ -9,6 +9,7 @@ const { s3Client, AWS_CONFIG } = require('../config/aws');
 const { PutObjectCommand } = require('@aws-sdk/client-s3');
 const { Upload } = require('@aws-sdk/lib-storage');
 const AWS = require('aws-sdk'); // AWS SDK v2 for @adminjs/upload
+const MongoStore = require('connect-mongo').default;
 
 // Configure AWS SDK v2 for @adminjs/upload (without ACL)
 AWS.config.update({
@@ -109,6 +110,10 @@ const createAdminJS = () => {
             createdAt: { isVisible: { list: true, filter: true, show: true, edit: false } },
             updatedAt: { isVisible: { list: true, filter: true, show: true, edit: false } },
           },
+          actions: {
+            delete: { isVisible: false },
+            bulkDelete: { isVisible: false },
+          },
           listProperties: ['title', 'slug', 'status', 'updatedAt'],
           filterProperties: ['title', 'slug', 'status'],
         },
@@ -119,6 +124,7 @@ const createAdminJS = () => {
           navigation: { name: 'Content', icon: 'Settings' },
           properties: {
             image: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
+            icon: { isVisible: false },
           },
           listProperties: ['title', 'order', 'active', 'updatedAt'],
           filterProperties: ['title', 'active'],
@@ -133,6 +139,12 @@ const createAdminJS = () => {
             gallery: { type: 'reference', reference: 'Media', isArray: true },
             impact: { type: 'mixed' },
             policyCards: { type: 'mixed' },
+            mapCity: {
+              type: 'string',
+              components: { edit: AdminJS.bundle('./components/CityMapPicker') },
+            },
+            'mapPosition.x': { isVisible: { edit: false, show: true, list: false, filter: false } },
+            'mapPosition.y': { isVisible: { edit: false, show: true, list: false, filter: false } },
           },
           listProperties: ['title', 'slug', 'category', 'status', 'featured', 'updatedAt'],
           filterProperties: ['title', 'category', 'status', 'featured'],
@@ -697,12 +709,17 @@ const createAdminRouter = (adminJs) => {
     },
     null,
     {
+      store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI,
+        collectionName: 'adminSessions',
+        ttl: 24 * 60 * 60, // 24 hours
+      }),
       resave: false,
-      saveUninitialized: true,
+      saveUninitialized: false,
       secret: process.env.JWT_SECRET || 'some-secret-password-at-least-32-characters-long',
       cookie: {
         httpOnly: true,
-        secure: false, // Disable secure cookie to allow HTTP/IP access
+        secure: false,
         sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
       },

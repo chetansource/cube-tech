@@ -14,6 +14,7 @@ interface Project {
     url: string;
     alt?: string;
   };
+  mapCity?: string;
   mapPosition?: {
     x: number;
     y: number;
@@ -30,66 +31,6 @@ interface ProjectMapProps {
   ctaLink?: string;
 }
 
-// Fallback project data
-const defaultProjects: Project[] = [
-  {
-    id: "1",
-    title: "Parking Study",
-    slug: "parking-study",
-    shortDescription: "Traffic analysis and count study for highway development",
-    mapPosition: { x: 68, y: 53 },
-    mainImage: { url: "/long-highway-2.webp", alt: "Parking Study" },
-  },
-  {
-    id: "2",
-    title: "Parking Demand Analysis",
-    slug: "parking-demand-analysis",
-    shortDescription:
-      "Comprehensive analysis of parking requirements and usage patterns",
-    mapPosition: { x: 43, y: 44 },
-    mainImage: { url: "/long-highway-2.webp", alt: "Parking Demand Analysis" },
-  },
-  {
-    id: "3",
-    title: "Choice of Parking System",
-    slug: "choice-of-parking-system",
-    shortDescription: "Evaluation and selection of optimal parking systems",
-    mapPosition: { x: 40, y: 28 },
-    mainImage: { url: "/long-highway-2.webp", alt: "Choice of Parking System" },
-  },
-  {
-    id: "4",
-    title: "Development of Concept Plan",
-    slug: "development-of-concept-plan",
-    shortDescription: "Creating conceptual frameworks for parking solutions",
-    mapPosition: { x: 42, y: 61 },
-    mainImage: { url: "/long-highway-2.webp", alt: "Development of Concept Plan" },
-  },
-  {
-    id: "5",
-    title: "Parking Project Structuring",
-    slug: "parking-project-structuring",
-    shortDescription: "Organizing and planning parking project implementation",
-    mapPosition: { x: 40, y: 64 },
-    mainImage: { url: "/long-highway-2.webp", alt: "Parking Project Structuring" },
-  },
-  {
-    id: "6",
-    title: "Simulation of Parking System",
-    slug: "simulation-of-parking-system",
-    shortDescription: "Computer modeling to optimize parking efficiency",
-    mapPosition: { x: 78, y: 73 },
-    mainImage: { url: "/long-highway-2.webp", alt: "Simulation of Parking System" },
-  },
-  {
-    id: "7",
-    title: "Traffic Impact Assessment",
-    slug: "traffic-impact-assessment",
-    shortDescription: "Evaluating traffic flow changes from infrastructure projects",
-    mapPosition: { x: 65, y: 27 },
-    mainImage: { url: "/long-highway-2.webp", alt: "Traffic Impact Assessment" },
-  },
-];
 
 export default function ProjectMap({
   projects: propProjects,
@@ -100,8 +41,7 @@ export default function ProjectMap({
   ctaText = "See all services",
   ctaLink = "/services"
 }: ProjectMapProps) {
-  // Use prop projects or fallback to defaults if empty
-  const projects = propProjects && propProjects.length > 0 ? propProjects : defaultProjects;
+  const projects = propProjects || [];
 
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const hideTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -119,6 +59,30 @@ export default function ProjectMap({
       setActiveProject(null);
     }, 300);
   }, []);
+
+  // Compute offsets for projects sharing the same coordinates (same city)
+  const getClusteredPosition = useCallback((project: Project, index: number) => {
+    if (!project.mapPosition) return null;
+    const { x, y } = project.mapPosition;
+
+    // Find all projects at the same position
+    const samePos = projects.filter(
+      (p) => p.mapPosition && p.mapPosition.x === x && p.mapPosition.y === y
+    );
+    if (samePos.length <= 1) return { x, y };
+
+    const idx = samePos.findIndex((p) => p.id === project.id);
+    const offsets = [
+      { dx: 0, dy: 0 },
+      { dx: 2.5, dy: 0 },
+      { dx: -2.5, dy: 0 },
+      { dx: 0, dy: 2.5 },
+      { dx: 2.5, dy: 2.5 },
+      { dx: -2.5, dy: 2.5 },
+    ];
+    const offset = offsets[idx] || { dx: idx * 2, dy: 0 };
+    return { x: x + offset.dx, y: y + offset.dy };
+  }, [projects]);
 
   return (
     <div className="relative w-full h-screen overflow-hidden mb-15 md:mb-[141px]">
@@ -148,20 +112,21 @@ export default function ProjectMap({
             />
 
             {/* Project dots */}
-            {projects.map((project) => (
-              project.mapPosition && (
+            {projects.map((project, index) => {
+              const pos = getClusteredPosition(project, index);
+              return pos && (
                 <circle
                   key={project.id}
-                  cx={project.mapPosition.x}
-                  cy={project.mapPosition.y}
+                  cx={pos.x}
+                  cy={pos.y}
                   r={activeProject?.id === project.id ? "1.5" : "1"}
                   fill={activeProject?.id === project.id ? "#4ade80" : "#22c55e"}
                   className="cursor-pointer transition-all duration-400"
                   onMouseEnter={() => showProject(project)}
                   onMouseLeave={scheduleHide}
                 />
-              )
-            ))}
+              );
+            })}
           </svg>
         </div>
       </div>

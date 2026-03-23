@@ -163,6 +163,27 @@ router.get('/', async (req, res, next) => {
 });
 
 /**
+ * PATCH /api/media/:id
+ * Update media metadata (rename, alt, caption)
+ */
+router.patch('/:id', async (req, res, next) => {
+  try {
+    const media = await Media.findById(req.params.id);
+    if (!media) {
+      return res.status(404).json({ success: false, error: { message: 'Media not found', code: 'NOT_FOUND' } });
+    }
+    const { originalFilename, alt, caption } = req.body;
+    if (originalFilename !== undefined) media.originalFilename = originalFilename;
+    if (alt !== undefined) media.alt = alt;
+    if (caption !== undefined) media.caption = caption;
+    await media.save();
+    res.json({ success: true, doc: media });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
  * DELETE /api/media/:id
  * Delete media file (for admin)
  */

@@ -4,7 +4,10 @@ import type { Faq } from "../types";
 
 const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/graphql`;
 
-const graphQLClient = new GraphQLClient(baseUrl);
+const graphQLClient = new GraphQLClient(baseUrl, {
+  fetch: (url, options) =>
+    fetch(url, { ...options, next: { revalidate: 10 } } as RequestInit),
+});
 
 export const getFaqs = async (slug: string): Promise<Faq[]> => {
   const query = gql`

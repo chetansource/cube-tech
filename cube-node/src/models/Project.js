@@ -74,6 +74,10 @@ const projectSchema = new mongoose.Schema({
     default: false,
     index: true,
   },
+  mapCity: {
+    type: String,
+    trim: true,
+  },
   mapPosition: {
     x: { type: Number, min: 0, max: 100 },
     y: { type: Number, min: 0, max: 100 },
