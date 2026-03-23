@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useMemo } from "react";
 import RightArrowIcon from "./icons/right-arrow";
 import Image from "next/image";
 import Link from "next/link";
@@ -41,7 +41,7 @@ export default function ProjectMap({
   ctaText = "See all services",
   ctaLink = "/services"
 }: ProjectMapProps) {
-  const projects = propProjects || [];
+  const projects = useMemo(() => propProjects || [], [propProjects]);
 
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const hideTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -61,7 +61,7 @@ export default function ProjectMap({
   }, []);
 
   // Compute offsets for projects sharing the same coordinates (same city)
-  const getClusteredPosition = useCallback((project: Project, index: number) => {
+  const getClusteredPosition = useCallback((project: Project) => {
     if (!project.mapPosition) return null;
     const { x, y } = project.mapPosition;
 
@@ -112,8 +112,8 @@ export default function ProjectMap({
             />
 
             {/* Project dots */}
-            {projects.map((project, index) => {
-              const pos = getClusteredPosition(project, index);
+            {projects.map((project) => {
+              const pos = getClusteredPosition(project);
               return pos && (
                 <circle
                   key={project.id}
