@@ -32,11 +32,18 @@ export const getFaqs = async (slug: string): Promise<Faq[]> => {
   `;
 
   const variables = { slug };
-  const data = await graphQLClient.request<PageResponse<FaqSection>>(
-    query,
-    variables
-  );
-  // Extract FAQs from the FaqSection block
+
+  let data;
+  try {
+    data = await graphQLClient.request<PageResponse<FaqSection>>(
+      query,
+      variables
+    );
+  } catch (error) {
+    console.error("Error fetching FAQs:", error);
+    return [];
+  }
+
   const page = data.Pages.docs[0];
   const faqSection = page?.sections.find(
     (section) => section.blockType === "faqSection"

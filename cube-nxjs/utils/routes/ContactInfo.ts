@@ -39,10 +39,17 @@ export const ContactInfo = async (slug: string) => {
   `;
 
   const variables = { slug };
-  const data = await graphQLClient.request<PageResponse<ContactSection>>(
-    query,
-    variables
-  );
+
+  let data;
+  try {
+    data = await graphQLClient.request<PageResponse<ContactSection>>(
+      query,
+      variables
+    );
+  } catch (error) {
+    console.error("Error fetching contact info:", error);
+    return null;
+  }
 
   const page = data.Pages.docs[0];
 

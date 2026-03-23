@@ -147,24 +147,30 @@ export const getAboutPageContent = async (slug: string) => {
   `;
 
   const variables = { slug };
+  const fallback = {
+    heroSection: null,
+    timelineSection: null,
+    leadershipSection: null,
+    teamSection: null,
+    corporateResponsibilitySection: null,
+    statsSection: null,
+    testimonialsSection: null,
+  };
 
-  const data = await graphQLClient.request<PageResponse<AboutPageResponse>>(
-    query,
-    variables
-  );
+  let data;
+  try {
+    data = await graphQLClient.request<PageResponse<AboutPageResponse>>(
+      query,
+      variables
+    );
+  } catch (error) {
+    console.error("Error fetching about page content:", error);
+    return fallback;
+  }
 
   const page = data.Pages.docs[0];
 
-  if (!page || !page.sections)
-    return {
-      heroSection: null,
-      timelineSection: null,
-      leadershipSection: null,
-      teamSection: null,
-      corporateResponsibilitySection: null,
-      statsSection: null,
-      testimonialsSection: null,
-    };
+  if (!page || !page.sections) return fallback;
 
   const heroSection = page.sections.find(
     (section: any) => section.blockType === "aboutHeroSection"
