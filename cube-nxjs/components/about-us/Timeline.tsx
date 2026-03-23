@@ -1,7 +1,4 @@
-"use client";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
-import { useState } from "react";
 import OurStoryIcon_1 from "../icons/OurStoryIcon-1";
 import OurStoryIcon_2 from "../icons/OurStoryIcon-2";
 import OurStoryIcon_3 from "../icons/OurStoryIcon-3";
@@ -18,23 +15,18 @@ export default function Timeline({
   heading = "Our Story",
   timelineItems = []
 }: TimelineProps) {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
-  // Fallback data if no items provided
   const defaultTimelineItems: TimelineItem[] = [
     {
       year: "2007",
       side: "left",
       title: "MILESTONE",
       content: "Vision for Traffic and Travel Demand Estimation",
-      isPodcast: true,
     },
     {
       year: "2012",
       side: "right",
       title: "MILESTONE",
       content: "Innovations in Traffic Engineering and Forecasting",
-      isPodcast: true,
     },
     { isIconOnly: true, iconType: 1 },
     {
@@ -42,7 +34,6 @@ export default function Timeline({
       side: "left",
       title: "MILESTONE",
       content: "Lenders Independent Engineer, Traffic Audit",
-      isPodcast: true,
     },
     { isIconOnly: true, iconType: 2 },
     { isIconOnly: true, iconType: 3 },
@@ -51,7 +42,6 @@ export default function Timeline({
       side: "right",
       title: "MILESTONE",
       content: "AI Vision Tools, Advanced Traffic Management",
-      isPodcast: true,
     },
   ];
 
@@ -72,20 +62,21 @@ export default function Timeline({
         )}
       </h1>
       <div className="relative">
-        <div className="absolute left-1/2 transform -translate-x-1/2 h-[84%] w-0.5 bg-black mt-26" />
+        {/* Full continuous line */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 w-0.5 bg-black top-0 bottom-0" />
 
         <div className="relative z-10">
           {items.map((item, index) => {
-            const isHovered = hoveredIndex === index;
+            const isFirst = index === 0;
+            const isLast = index === items.length - 1;
+
             if (item.isIconOnly) {
               let IconComponent;
 
-              // Use iconType from data, or calculate based on position
-              const iconType = item.iconType || items
+              const iconType = Number(item.iconType) || items
                 .slice(0, index + 1)
                 .filter((i) => i.isIconOnly).length;
 
-              // Map the icon type to the component
               if (iconType === 1) IconComponent = OurStoryIcon_1;
               if (iconType === 2) IconComponent = OurStoryIcon_2;
               if (iconType === 3) IconComponent = OurStoryIcon_3;
@@ -102,59 +93,41 @@ export default function Timeline({
             }
 
             const contentBlock = (
-              <div className="relative min-h-[260px] transition-all duration-500 ease-in-out">
-                {/* Milestone view */}
-                <div
-                  className={`absolute inset-0 top-20 transition-opacity duration-500 ${
-                    isHovered ? "opacity-0 pointer-events-none" : "opacity-100"
-                  }`}
-                >
+              <div className="relative min-h-[260px]">
+                {item.image?.url && (
+                  <div className="w-[80%] h-[160px] md:w-[90%] md:h-[180px] relative mb-3">
+                    <Image
+                      src={item.image.url}
+                      alt={item.image.alt || item.title || "Timeline image"}
+                      fill
+                      sizes="(max-width: 768px) 80vw, 50vw"
+                      className="rounded-lg object-cover"
+                    />
+                  </div>
+                )}
+                <div className={item.image?.url ? "" : "pt-20"}>
                   <h3 className="text-[#AFB1B6] text-sm md:text-base mb-2" dangerouslySetInnerHTML={{ __html: item.title || '' }} />
                   <p className="text-gray-700 text-sm md:text-lg" dangerouslySetInnerHTML={{ __html: item.content || '' }} />
                 </div>
-
-                {/* Podcast view */}
-                {item.isPodcast && (
-                  <div
-                    className={`absolute inset-0 transition-opacity duration-500 ${
-                      isHovered
-                        ? "opacity-100"
-                        : "opacity-0 pointer-events-none"
-                    }`}
-                  >
-                    <div className="w-[80%] h-[80%] md:w-[90%] md:h-[90%] relative mt-22 md:mt-10 ">
-                      <Image
-                        src={item.podcastImage?.url || "/timeline-image.webp"}
-                        alt={item.podcastImage?.alt || "Podcast image"}
-                        fill
-                        sizes="(max-width: 768px) 80vw, 50vw"
-                        className="rounded-lg object-cover"
-                      />
-                    </div>
-                    <div className="text-gray-500 flex items-center text-sm py-2">
-                      /PODCAST <ArrowRight className="ml-2 h-4 w-4" />
-                    </div>
-                    <p className="text-gray-700 text-sm md:text-base mt-2 w-[90%]" dangerouslySetInnerHTML={{ __html: item.podcastContent || "This is a podcast about traffic innovations, planning strategies, and future infrastructure designs." }} />
-                    <a
-                      href={item.podcastLink || "#"}
-                      className="inline-flex items-center text-green-500 text-sm font-medium mt-1"
-                    >
-                      READ MORE <ArrowRight className="ml-1 h-4 w-4" />
-                    </a>
-                  </div>
-                )}
               </div>
             );
 
             return (
               <div
                 key={index}
-                className={`flex items-center mt-[-70] md:mt-0 ${
-                  index === timelineItems.length - 1 ? "mb-0" : ""
+                className={`relative flex items-center ${
+                  isLast ? "mb-0" : ""
                 }`}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
               >
+                {/* Cover line above first item's circle */}
+                {isFirst && (
+                  <div className="absolute left-1/2 -translate-x-1/2 w-2 bg-[#FAFAFA] md:bg-white top-0 bottom-1/2 z-[1]" />
+                )}
+                {/* Cover line below last item's circle */}
+                {isLast && (
+                  <div className="absolute left-1/2 -translate-x-1/2 w-2 bg-[#FAFAFA] md:bg-white top-1/2 bottom-0 z-[1]" />
+                )}
+
                 {/* Left content */}
                 <div
                   className={`w-1/2 pr-[10%] ${
@@ -165,10 +138,8 @@ export default function Timeline({
                 </div>
 
                 {/* Center node */}
-                <div
-                  className="absolute left-1/2 transform -translate-x-1/2 z-20"
-                >
-                  <div className="w-14 h-14 rounded-full bg-accent text-white flex items-center justify-center font-medium cursor-pointer shadow-md hover:scale-105 transition-transform">
+                <div className="absolute left-1/2 transform -translate-x-1/2 z-10 pointer-events-none">
+                  <div className="w-14 h-14 rounded-full bg-accent text-white flex items-center justify-center font-medium shadow-md">
                     {item.year}
                   </div>
                 </div>

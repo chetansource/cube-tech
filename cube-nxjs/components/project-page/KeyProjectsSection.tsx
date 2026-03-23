@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import PrivacyIcon from "../icons/PrivacyIcon";
+import { CheckCircle } from "lucide-react";
 
 // Define the types for our project data
 interface PolicyCard {
@@ -126,7 +126,7 @@ export default function KeyProjectsSection({
           const projectTitle = project.title?.split(" - ")[0] || project.title;
           const projectLocation = project.location || "";
           const projectHighlight = project.category || project.studyType || "";
-          const projectDescription = project.description || project.shortDescription || "";
+          const projectDescription = project.shortDescription || project.description || "";
           const projectImage = project.mainImage?.url || "/services-section-banner.webp";
           const policyCards = project.policyCards || [];
 
@@ -171,14 +171,14 @@ export default function KeyProjectsSection({
                     </Link>
                   </div>
 
-                  {/* Policy Cards Carousel */}
+                  {/* Policy Cards */}
                   {policyCards.length > 0 && (
                     <div className="mt-8 overflow-hidden">
                       <div
-                        ref={index === 0 ? carouselRef : null}
-                        className="flex gap-6 animate-carousel"
+                        ref={policyCards.length > 3 && index === 0 ? carouselRef : null}
+                        className="flex gap-6"
                         style={{
-                          animation: isInView ? "carousel 20s linear infinite" : "none",
+                          animation: policyCards.length > 3 && isInView ? "carousel 20s linear infinite" : "none",
                         }}
                       >
                         {policyCards.map((card, cardIndex) => (
@@ -188,21 +188,9 @@ export default function KeyProjectsSection({
                           >
                             {/* Icon */}
                             <div className="text-accent mb-4">
-                              {card.iconImage?.url ? (
-                                <div className="w-10 h-10 rounded-full border-2 border-accent flex items-center justify-center p-2 overflow-hidden">
-                                  <Image
-                                    src={card.iconImage.url}
-                                    alt={card.iconImage.alt || card.title}
-                                    width={24}
-                                    height={24}
-                                    className="object-contain"
-                                  />
-                                </div>
-                              ) : (
                                 <div className="w-10 h-10 rounded-full border-2 border-accent flex items-center justify-center">
-                                  <PrivacyIcon />
-                                </div>
-                              )}
+                                <CheckCircle className="w-5 h-5 text-accent" />
+                              </div>
                             </div>
 
                             {/* Title */}
@@ -219,10 +207,6 @@ export default function KeyProjectsSection({
                               <div className="h-16 md:h-20"></div>
                             )}
 
-                            {/* Arrow */}
-                            <button className="text-accent flex items-center">
-                              <ArrowRight className="w-5 h-5" />
-                            </button>
                           </div>
                         ))}
                       </div>

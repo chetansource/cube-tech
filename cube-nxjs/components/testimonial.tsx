@@ -141,17 +141,17 @@ export function Testimonial({ testimonials: propTestimonials }: TestimonialProps
             {testimonials.map((testimonial) => (
               <div
                 key={testimonial.id}
-                className=" flex-shrink-0 w-[190px]  md:w-full md:max-w-md bg-gray-50 rounded-lg p-2 md:p-8"
+                className="flex-shrink-0 w-[190px] md:w-full md:max-w-md bg-gray-50 rounded-lg p-2 md:p-8 flex flex-col"
               >
                 <div className="text-[#4CD964] text-4xl font-serif  md:mb-4">
                   &ldquo;
                 </div>
-                <div className="flex flex-col gap-8">
-                  <div className="text-sm md:text-base text-gray-700 ">
+                <div className="flex flex-col justify-between flex-1">
+                  <div className="text-sm md:text-base text-gray-700 mb-8">
                     {testimonial.quote}
                   </div>
 
-                  <div className="flex  items-end">
+                  <div className="flex items-center mt-auto">
                     <Image
                       src={testimonial.avatar}
                       alt={`${testimonial.author} avatar`}

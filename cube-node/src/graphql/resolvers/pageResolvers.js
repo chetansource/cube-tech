@@ -25,7 +25,8 @@ const pageResolvers = {
         .populate('sections.backgroundImage')
         .populate('sections.image')
         .populate('sections.leaders.image')
-        .populate('sections.timelineItems.podcastImage')
+        .populate('sections.members.image')
+        .populate('sections.timelineItems.image')
         .populate('sections.cards.image')
         .populate('sections.heroBackgroundImage')
         .populate('sections.insightsBackgroundImage')
@@ -64,7 +65,8 @@ const pageResolvers = {
         .populate('sections.backgroundImage')
         .populate('sections.image')
         .populate('sections.leaders.image')
-        .populate('sections.timelineItems.podcastImage')
+        .populate('sections.members.image')
+        .populate('sections.timelineItems.image')
         .populate('sections.cards.image')
         .populate('sections.heroBackgroundImage')
         .populate('sections.insightsBackgroundImage')
@@ -135,6 +137,10 @@ const pageResolvers = {
           return 'ProjectMapSection';
         case 'projectsHeroSection':
           return 'ProjectsHeroSection';
+        case 'resourcesFaqSection':
+          return 'ResourcesFaqSection';
+        case 'teamSection':
+          return 'TeamSection';
         default:
           return 'GenericSection';
       }

@@ -3,6 +3,7 @@ import type {
   PageResponse,
   AboutHeroSection,
   LeadershipSection,
+  TeamSection,
   TimelineSection,
   CorporateResponsibilitySection,
   StatsSection,
@@ -12,13 +13,14 @@ import type {
 const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/graphql`;
 const graphQLClient = new GraphQLClient(baseUrl, {
   fetch: (url, options) =>
-    fetch(url, { ...options, next: { revalidate: 10 } } as RequestInit),
+    fetch(url, { ...options, next: { revalidate: 5 } } as RequestInit),
 });
 
 interface AboutPageResponse {
   sections: (
     | AboutHeroSection
     | LeadershipSection
+    | TeamSection
     | TimelineSection
     | CorporateResponsibilitySection
     | StatsSection
@@ -49,18 +51,15 @@ export const getAboutPageContent = async (slug: string) => {
               title
               heading
               timelineItems {
-                year
-                side
-                title
-                content
-                isPodcast
-                podcastImage {
+                image {
                   url
                   alt
                   filename
                 }
-                podcastContent
-                podcastLink
+                year
+                side
+                title
+                content
                 isIconOnly
                 iconType
               }
@@ -70,6 +69,22 @@ export const getAboutPageContent = async (slug: string) => {
               title
               description
               leaders {
+                name
+                designation
+                image {
+                  url
+                  alt
+                  filename
+                }
+                bio
+                linkedIn
+              }
+            }
+            ... on TeamSection {
+              blockType
+              title
+              description
+              members {
                 name
                 designation
                 image {
@@ -145,6 +160,7 @@ export const getAboutPageContent = async (slug: string) => {
       heroSection: null,
       timelineSection: null,
       leadershipSection: null,
+      teamSection: null,
       corporateResponsibilitySection: null,
       statsSection: null,
       testimonialsSection: null,
@@ -162,6 +178,10 @@ export const getAboutPageContent = async (slug: string) => {
     (section: any) => section.blockType === "leadershipSection"
   ) as LeadershipSection | undefined;
 
+  const teamSection = page.sections.find(
+    (section: any) => section.blockType === "teamSection"
+  ) as TeamSection | undefined;
+
   const corporateResponsibilitySection = page.sections.find(
     (section: any) => section.blockType === "corporateResponsibilitySection"
   ) as CorporateResponsibilitySection | undefined;
@@ -178,6 +198,7 @@ export const getAboutPageContent = async (slug: string) => {
     heroSection,
     timelineSection,
     leadershipSection,
+    teamSection,
     corporateResponsibilitySection,
     statsSection,
     testimonialsSection,

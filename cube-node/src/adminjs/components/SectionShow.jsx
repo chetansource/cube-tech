@@ -6,12 +6,14 @@ import { getMedia } from './mediaCache';
 const BLOCK_TYPE_FIELDS = {
   'contact-info': { label: 'Contact Info', fields: ['phone', 'email', 'locations', 'socials'] },
   'faqSection': { label: 'FAQ Section', fields: ['faqs'] },
+  'resourcesFaqSection': { label: 'Resources FAQ Section', fields: ['faqs'] },
   'heroSection': { label: 'Hero Section', fields: ['heading', 'description', 'ctaText', 'ctaLink', 'backgroundImage'] },
   'servicesSolutionsSection': { label: 'Services Solutions Section', fields: ['heading', 'highlightedWord', 'description', 'ctaText', 'ctaLink', 'backgroundImage', 'solutions'] },
   'servicesSection': { label: 'Services Section', fields: ['title', 'description', 'image'] },
   'exploreMoreSection': { label: 'Explore More Section', fields: ['exploreMoreTitle', 'exploreMoreDescription', 'exploreMoreBackgroundImage'] },
   'aboutHeroSection': { label: 'About Hero Section', fields: ['heading', 'subheading', 'backgroundImage'] },
   'leadershipSection': { label: 'Leadership Section', fields: ['title', 'description', 'leaders'] },
+  'teamSection': { label: 'Team Section', fields: ['title', 'description', 'members'] },
   'timelineSection': { label: 'Timeline Section', fields: ['heading', 'timelineItems'] },
   'corporateResponsibilitySection': { label: 'Corporate Responsibility', fields: ['mainHeading', 'subheading', 'title', 'description', 'tags', 'backgroundImage'] },
   'statsSection': { label: 'Stats Section', fields: [], info: 'Data from Stats collection.' },
@@ -36,7 +38,7 @@ const BLOCK_TYPE_FIELDS = {
   'solutionsSection': { label: 'Solutions Section', fields: [], info: 'Data from Solutions collection.' },
 };
 
-const ARRAY_FIELDS = ['locations', 'socials', 'faqs', 'cards', 'leaders', 'timelineItems'];
+const ARRAY_FIELDS = ['locations', 'socials', 'faqs', 'cards', 'leaders', 'members', 'timelineItems'];
 
 const MEDIA_FIELDS = new Set([
   'backgroundImage', 'image', 'bannerImage', 'exploreMoreBackgroundImage',
@@ -51,7 +53,8 @@ const getSubFieldNames = (fieldName) => {
     case 'faqs': return ['question', 'answer'];
     case 'cards': return ['title', 'content', 'date', 'cardType', 'bgColor', 'textColor', 'order'];
     case 'leaders': return ['name', 'designation', 'bio', 'linkedIn'];
-    case 'timelineItems': return ['year', 'side', 'title', 'content', 'isPodcast', 'podcastContent', 'podcastLink', 'isIconOnly', 'iconType'];
+    case 'members': return ['name', 'designation', 'bio', 'linkedIn'];
+    case 'timelineItems': return ['year', 'side', 'title', 'content', 'isIconOnly', 'iconType'];
     default: return [];
   }
 };

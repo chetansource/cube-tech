@@ -4,8 +4,6 @@ import React from "react";
 import Image from "next/image";
 import PolygonIcon from "@/components/icons/polygon";
 import Stats from "@/components/stats";
-import RightArrowIcon from "@/components/icons/right-arrow";
-import LeftArrowIcon from "@/components/icons/left-arrow";
 import Timeline from "@/components/about-us/Timeline";
 import { getAboutPageContent } from "@/utils/routes/AboutUs";
 
@@ -17,6 +15,7 @@ const AboutUsPage = async () => {
     heroSection,
     timelineSection,
     leadershipSection,
+    teamSection,
     corporateResponsibilitySection,
     statsSection,
     testimonialsSection,
@@ -82,13 +81,13 @@ const AboutUsPage = async () => {
           </div>
 
           {/* Leader Cards container */}
-          <div className="md:col-span-1 lg:col-span-3 overflow-x-auto md:overflow-visible hide-scrollbar">
-            <div className="flex gap-4 md:grid md:grid-cols-2 lg:grid-cols-3">
+          <div className="md:col-span-1 lg:col-span-3 overflow-x-auto hide-scrollbar">
+            <div className="flex gap-4">
               {leaders.length > 0
                 ? leaders.map((leader, i) => (
                     <div
                       key={i}
-                      className="min-w-[160px] md:min-w-0 flex-shrink-0 overflow-hidden shadow-md relative h-[200px] md:h-[392px]"
+                      className="min-w-[160px] md:min-w-[calc(25%-12px)] flex-shrink-0 overflow-hidden shadow-md relative h-[200px] md:h-[392px]"
                     >
                       <Image
                         src={leader.image?.url || "/leadership-banner-1.webp"}
@@ -112,7 +111,7 @@ const AboutUsPage = async () => {
                   [1, 2, 3].map((_, i) => (
                     <div
                       key={i}
-                      className="min-w-[160px] md:min-w-0 flex-shrink-0 overflow-hidden shadow-md relative h-[200px] md:h-[392px]"
+                      className="min-w-[160px] md:min-w-[calc(25%-12px)] flex-shrink-0 overflow-hidden shadow-md relative h-[200px] md:h-[392px]"
                     >
                       <Image
                         src="/leadership-banner-1.webp"
@@ -136,16 +135,74 @@ const AboutUsPage = async () => {
           </div>
         </div>
 
-        {/* Navigation Arrows */}
-        <div className="hidden md:flex justify-end mt-6">
-          <button className="mx-2 p-2 rounded-full hover:bg-secondary">
-            <LeftArrowIcon />
-          </button>
-          <button className="mx-2 p-2 rounded-full hover:bg-secondary">
-            <RightArrowIcon color="#5FBA51" />
-          </button>
+      </div>
+
+      {/* Team Section */}
+      <div className="p-8 py-12 md:py-22 bg-white">
+        <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Team Text */}
+          <div className="md:col-span-1 w-full">
+            <h2 className="text-2xl md:text-[46px] font-light mb-12 leading-[40px]">
+              <span dangerouslySetInnerHTML={{ __html: teamSection?.title || "TEAM" }} />
+            </h2>
+            <p className="text-sm mb-8 leading-[20px] text-[#404040]" dangerouslySetInnerHTML={{ __html: teamSection?.description || "Behind every successful organization is a strong team. Our professionals combine strategic thinking, industry knowledge, and leadership to drive innovation, ensure efficiency, and build sustainable growth for the future." }} />
+          </div>
+
+          {/* Team Member Cards */}
+          <div className="md:col-span-1 lg:col-span-3 overflow-x-auto hide-scrollbar">
+            <div className="flex gap-4">
+              {(teamSection?.members && teamSection.members.length > 0)
+                ? teamSection.members.map((member, i) => (
+                    <div
+                      key={i}
+                      className="min-w-[160px] md:min-w-[calc(25%-12px)] flex-shrink-0 overflow-hidden shadow-md relative h-[200px] md:h-[392px]"
+                    >
+                      <Image
+                        src={member.image?.url || "/leadership-banner-1.webp"}
+                        alt={member.image?.alt || member.name}
+                        fill
+                        sizes="(max-width: 768px) 160px, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover"
+                      />
+                      <div className="text-white p-4 absolute bottom-0 left-0 right-0 bg-black/40">
+                        <p className="text-sm mb-4">{member.name}</p>
+                        <a
+                          href={member.linkedIn || "#"}
+                          className="text-white text-lg font-semibold block"
+                        >
+                          {member.designation}
+                        </a>
+                      </div>
+                    </div>
+                  ))
+                : [1, 2, 3].map((_, i) => (
+                    <div
+                      key={i}
+                      className="min-w-[160px] md:min-w-[calc(25%-12px)] flex-shrink-0 overflow-hidden shadow-md relative h-[200px] md:h-[392px]"
+                    >
+                      <Image
+                        src="/leadership-banner-1.webp"
+                        alt="Team Member"
+                        fill
+                        sizes="(max-width: 768px) 160px, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover"
+                      />
+                      <div className="text-white p-4 absolute bottom-0 left-0 right-0 bg-black/40">
+                        <p className="text-sm mb-4">NAME</p>
+                        <a
+                          href="#"
+                          className="text-white text-lg font-semibold block"
+                        >
+                          Designation
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+            </div>
+          </div>
         </div>
       </div>
+
       <Stats stats={statsSection?.stats} />
       {/* Banner Section - Corporate Responsibility */}
       <section

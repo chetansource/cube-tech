@@ -29,25 +29,35 @@ const fallbackFaqs: Faq[] = [
   }
 ];
 
-export default function Faq() {
-  const [faqs, setFaqs] = useState<Faq[]>(fallbackFaqs);
+interface FaqProps {
+  items?: Faq[];
+  slug?: string;
+}
+
+export default function Faq({ items, slug = "homepage" }: FaqProps = {}) {
+  const [faqs, setFaqs] = useState<Faq[]>(items && items.length > 0 ? items : fallbackFaqs);
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   useEffect(() => {
+    // If items are passed as props, use them directly
+    if (items && items.length > 0) {
+      setFaqs(items);
+      return;
+    }
+
     const fetchData = async () => {
       try {
-        const faqData = await getFaqs("homepage");
+        const faqData = await getFaqs(slug);
         if (faqData && faqData.length > 0) {
           setFaqs(faqData);
         }
       } catch (error) {
         console.error("Error fetching FAQs:", error);
-        // Keep fallback FAQs on error
       }
     };
 
     fetchData();
-  }, []);
+  }, [items, slug]);
 
 
   const toggleFaq = (index: number) => {

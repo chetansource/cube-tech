@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, Label, Input, Button, Text, Select, CheckBox } from '@adminjs/design-system';
 import { getMedia, invalidateMedia } from './mediaCache';
 
@@ -19,6 +19,12 @@ const BLOCK_TYPE_FIELDS = {
   },
   'faqSection': {
     label: 'FAQ Section',
+    fields: [
+      { name: 'faqs', type: 'array' },
+    ],
+  },
+  'resourcesFaqSection': {
+    label: 'Resources FAQ Section',
     fields: [
       { name: 'faqs', type: 'array' },
     ],
@@ -79,6 +85,14 @@ const BLOCK_TYPE_FIELDS = {
       { name: 'title', type: 'text' },
       { name: 'description', type: 'textarea' },
       { name: 'leaders', type: 'array' },
+    ],
+  },
+  'teamSection': {
+    label: 'Team Section',
+    fields: [
+      { name: 'title', type: 'text' },
+      { name: 'description', type: 'textarea' },
+      { name: 'members', type: 'array' },
     ],
   },
   'timelineSection': {
@@ -307,26 +321,87 @@ const getSubFieldsForArray = (fieldName) => {
       { name: 'bio', type: 'textarea' },
       { name: 'linkedIn', type: 'text' },
     ];
+    case 'members': return [
+      { name: 'name', type: 'text' },
+      { name: 'designation', type: 'text' },
+      { name: 'image', type: 'media' },
+      { name: 'bio', type: 'textarea' },
+      { name: 'linkedIn', type: 'text' },
+    ];
     case 'timelineItems': return [
-      { name: 'year', type: 'text' },
+      { name: 'image', type: 'media', hideWhen: { field: 'isIconOnly', value: true } },
+      { name: 'year', type: 'text', hideWhen: { field: 'isIconOnly', value: true } },
       { name: 'side', type: 'select', options: [
         { value: 'left', label: 'Left' },
         { value: 'right', label: 'Right' },
-      ]},
-      { name: 'title', type: 'text' },
-      { name: 'content', type: 'textarea' },
-      { name: 'isPodcast', type: 'boolean' },
-      { name: 'podcastImage', type: 'media' },
-      { name: 'podcastContent', type: 'textarea' },
-      { name: 'podcastLink', type: 'text' },
+      ], hideWhen: { field: 'isIconOnly', value: true } },
+      { name: 'title', type: 'text', hideWhen: { field: 'isIconOnly', value: true } },
+      { name: 'content', type: 'textarea', hideWhen: { field: 'isIconOnly', value: true } },
       { name: 'isIconOnly', type: 'boolean' },
-      { name: 'iconType', type: 'text' },
+      { name: 'iconType', type: 'iconSelect', showWhen: { field: 'isIconOnly', value: true } },
     ];
     default: return [];
   }
 };
 
-const ARRAY_FIELDS = ['locations', 'socials', 'faqs', 'cards', 'leaders', 'timelineItems'];
+const ARRAY_FIELDS = ['locations', 'socials', 'faqs', 'cards', 'leaders', 'members', 'timelineItems'];
+
+// ─── STYLES ──────────────────────────────────────────────────────────
+
+// ─── ICON TYPE PREVIEWS ─────────────────────────────────────────────
+const ICON_OPTIONS = [
+  {
+    value: '1',
+    label: 'Equalizer',
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 25 25" fill="none"><path d="M5.48828 20.9219C5.20495 20.9219 4.96761 20.8259 4.77628 20.6339C4.58495 20.4419 4.48895 20.2045 4.48828 19.9219V5.92188C4.48828 5.63855 4.58428 5.40121 4.77628 5.20988C4.96828 5.01855 5.20561 4.92255 5.48828 4.92188C5.77095 4.92121 6.00861 5.01721 6.20128 5.20988C6.39395 5.40255 6.48961 5.63988 6.48828 5.92188V19.9219C6.48828 20.2052 6.39228 20.4429 6.20028 20.6349C6.00828 20.8269 5.77095 20.9225 5.48828 20.9219ZM12.4883 20.9219C12.2049 20.9219 11.9676 20.8259 11.7763 20.6339C11.5849 20.4419 11.4889 20.2045 11.4883 19.9219V17.9219C11.4883 17.6385 11.5843 17.4012 11.7763 17.2099C11.9683 17.0185 12.2056 16.9225 12.4883 16.9219C12.7709 16.9212 13.0086 17.0172 13.2013 17.2099C13.3939 17.4025 13.4896 17.6399 13.4883 17.9219V19.9219C13.4883 20.2052 13.3923 20.4429 13.2003 20.6349C13.0083 20.8269 12.7709 20.9225 12.4883 20.9219ZM19.4883 20.9219C19.2049 20.9219 18.9676 20.8259 18.7763 20.6339C18.5849 20.4419 18.4889 20.2045 18.4883 19.9219V5.92188C18.4883 5.63855 18.5843 5.40121 18.7763 5.20988C18.9683 5.01855 19.2056 4.92255 19.4883 4.92188C19.7709 4.92121 20.0086 5.01721 20.2013 5.20988C20.3939 5.40255 20.4896 5.63988 20.4883 5.92188V19.9219C20.4883 20.2052 20.3923 20.4429 20.2003 20.6349C20.0083 20.8269 19.7709 20.9225 19.4883 20.9219ZM12.4883 14.9219C12.2049 14.9219 11.9676 14.8259 11.7763 14.6339C11.5849 14.4419 11.4889 14.2045 11.4883 13.9219V11.9219C11.4883 11.6385 11.5843 11.4012 11.7763 11.2099C11.9683 11.0185 12.2056 10.9225 12.4883 10.9219C12.7709 10.9212 13.0086 11.0172 13.2013 11.2099C13.3939 11.4025 13.4896 11.6399 13.4883 11.9219V13.9219C13.4883 14.2052 13.3923 14.4429 13.2003 14.6349C13.0083 14.8269 12.7709 14.9225 12.4883 14.9219ZM12.4883 8.92188C12.2049 8.92188 11.9676 8.82588 11.7763 8.63388C11.5849 8.44188 11.4889 8.20455 11.4883 7.92188V5.92188C11.4883 5.63855 11.5843 5.40121 11.7763 5.20988C11.9683 5.01855 12.2056 4.92255 12.4883 4.92188C12.7709 4.92121 13.0086 5.01721 13.2013 5.20988C13.3939 5.40255 13.4896 5.63988 13.4883 5.92188V7.92188C13.4883 8.20521 13.3923 8.44288 13.2003 8.63488C13.0083 8.82688 12.7709 8.92254 12.4883 8.92188Z" fill="white"/></svg>',
+  },
+  {
+    value: '2',
+    label: 'Infrastructure',
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="17" viewBox="0 0 18 17" fill="none"><g clip-path="url(#clip_ic2)"><path d="M15.8633 13.9219V12.9219C15.8633 12.7219 15.8633 8.82187 12.8883 7.52187C10.5508 6.52187 10.5508 4.02187 10.5508 3.92188V0.921875H8.42578V3.92188C8.42578 4.02187 8.42578 6.52187 6.08828 7.52187C3.11328 8.82187 3.11328 12.7219 3.11328 12.9219V13.9219H0.988281L4.17578 16.9219L7.36328 13.9219H5.23828V12.9219C5.23828 12.9219 5.23828 10.1219 7.04453 9.32187C8.21328 8.82187 8.95703 8.02187 9.48828 7.32188C10.0195 8.12188 10.7633 8.82187 11.932 9.32187C13.7383 10.1219 13.7383 12.9219 13.7383 12.9219V13.9219H11.6133L14.8008 16.9219L17.9883 13.9219H15.8633Z" fill="white"/></g><defs><clipPath id="clip_ic2"><rect width="17" height="16" fill="white" transform="translate(0.988281 0.921875)"/></clipPath></defs></svg>',
+  },
+  {
+    value: '3',
+    label: 'Settings',
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 22 23" fill="none"><path d="M14.5508 3.21094C14.5508 5.80327 14.5508 7.10035 15.3199 7.90519C16.0882 8.71094 17.3263 8.71094 19.8008 8.71094M14.5508 20.6276C14.5508 18.0353 14.5508 16.7382 15.3199 15.9334C16.0882 15.1276 17.3263 15.1276 19.8008 15.1276M8.42578 3.21094C8.42578 5.80327 8.42578 7.10035 7.65666 7.90519C6.88841 8.71094 5.65028 8.71094 3.17578 8.71094M8.42578 20.6276C8.42578 18.0353 8.42578 16.7382 7.65666 15.9334C6.88841 15.1276 5.65028 15.1276 3.17578 15.1276M11.4883 3.21094V5.04427M19.8008 11.9193H18.0508M11.4883 18.7943V20.6276M4.92578 11.9193H3.17578M14.1133 11.9193C14.1133 12.6486 13.8367 13.3481 13.3444 13.8638C12.8522 14.3795 12.1845 14.6693 11.4883 14.6693C10.7921 14.6693 10.1244 14.3795 9.63213 13.8638C9.13984 13.3481 8.86328 12.6486 8.86328 11.9193C8.86328 11.1899 9.13984 10.4905 9.63213 9.97473C10.1244 9.459 10.7921 9.16927 11.4883 9.16927C12.1845 9.16927 12.8522 9.459 13.3444 9.97473C13.8367 10.4905 14.1133 11.1899 14.1133 11.9193Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  },
+];
+
+const IconSelectField = ({ value, onChange }) => {
+  const selected = String(value);
+  return (
+    <Box flex flexDirection="row" style={{ gap: '12px' }}>
+      {ICON_OPTIONS.map((opt) => (
+        <Box
+          key={opt.value}
+          onClick={() => onChange(opt.value)}
+          style={{
+            cursor: 'pointer',
+            border: selected === opt.value ? '3px solid #3040D6' : '2px solid #ddd',
+            borderRadius: '12px',
+            padding: '12px 16px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '8px',
+            background: selected === opt.value ? '#eef1ff' : '#fff',
+            transition: 'all 0.15s',
+          }}
+        >
+          <Box style={{
+            width: '40px', height: '40px', borderRadius: '50%', background: '#5FBA51',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <span dangerouslySetInnerHTML={{ __html: opt.svg }} />
+          </Box>
+          <Text fontSize="xs" fontWeight={selected === opt.value ? 'bold' : 'normal'}>
+            {opt.label}
+          </Text>
+        </Box>
+      ))}
+    </Box>
+  );
+};
 
 // ─── STYLES ──────────────────────────────────────────────────────────
 
@@ -795,6 +870,21 @@ const SectionEdit = (props) => {
             {subFieldDefs.map((sf) => {
               const fullKey = `${prefix}.${arrIdx}.${sf.name}`;
               const val = params[fullKey] || '';
+
+              // Conditional visibility
+              if (sf.showWhen) {
+                const depVal = params[`${prefix}.${arrIdx}.${sf.showWhen.field}`];
+                const isTruthy = depVal === true || depVal === 'true' || depVal === '1';
+                if (sf.showWhen.value === true && !isTruthy) return null;
+                if (sf.showWhen.value === false && isTruthy) return null;
+              }
+              if (sf.hideWhen) {
+                const depVal = params[`${prefix}.${arrIdx}.${sf.hideWhen.field}`];
+                const isTruthy = depVal === true || depVal === 'true' || depVal === '1';
+                if (sf.hideWhen.value === true && isTruthy) return null;
+                if (sf.hideWhen.value === false && !isTruthy) return null;
+              }
+
               return (
                 <Box key={fullKey} mb="md" style={styles.fullWidth}>
                   <Label htmlFor={fullKey} style={styles.labelSm}>{formatLabel(sf.name)}</Label>
@@ -804,10 +894,12 @@ const SectionEdit = (props) => {
                     ? renderBooleanField(fullKey, val, (v) => onChange(fullKey, v))
                     : sf.type === 'select'
                     ? <Select
-                        value={val ? sf.options.find((o) => o.value === val) || null : null}
+                        value={val != null && val !== '' ? sf.options.find((o) => String(o.value) === String(val)) || null : null}
                         options={sf.options}
                         onChange={(selected) => onChange(fullKey, selected?.value || '')}
                       />
+                    : sf.type === 'iconSelect'
+                    ? <IconSelectField value={val} onChange={(v) => onChange(fullKey, v)} />
                     : sf.type === 'media'
                     ? renderMediaField(fullKey, val, (id) => onChange(fullKey, id))
                     : renderTextInput(fullKey, val, (e) => onChange(fullKey, e.target.value))
@@ -830,7 +922,21 @@ const SectionEdit = (props) => {
                 <Button type="button" size="sm" variant="danger" onClick={() => handleCancelItem(localIdx)}>Cancel</Button>
               </Box>
             </Box>
-            {subFieldDefs.map((sf) => (
+            {subFieldDefs.map((sf) => {
+              // Conditional visibility for new items
+              if (sf.showWhen) {
+                const depVal = item[sf.showWhen.field];
+                const isTruthy = depVal === true || depVal === 'true' || depVal === '1';
+                if (sf.showWhen.value === true && !isTruthy) return null;
+                if (sf.showWhen.value === false && isTruthy) return null;
+              }
+              if (sf.hideWhen) {
+                const depVal = item[sf.hideWhen.field];
+                const isTruthy = depVal === true || depVal === 'true' || depVal === '1';
+                if (sf.hideWhen.value === true && isTruthy) return null;
+                if (sf.hideWhen.value === false && !isTruthy) return null;
+              }
+              return (
               <Box key={`new-${localIdx}-${sf.name}`} mb="md" style={styles.fullWidth}>
                 <Label style={styles.labelSm}>{formatLabel(sf.name)}</Label>
                 {sf.type === 'textarea'
@@ -839,16 +945,19 @@ const SectionEdit = (props) => {
                   ? renderBooleanField(`new-${localIdx}-${sf.name}`, item[sf.name], (v) => handleLocalChange(localIdx, sf.name, v))
                   : sf.type === 'select'
                   ? <Select
-                      value={item[sf.name] ? sf.options.find((o) => o.value === item[sf.name]) || null : null}
+                      value={item[sf.name] != null && item[sf.name] !== '' ? sf.options.find((o) => String(o.value) === String(item[sf.name])) || null : null}
                       options={sf.options}
                       onChange={(selected) => handleLocalChange(localIdx, sf.name, selected?.value || '')}
                     />
+                  : sf.type === 'iconSelect'
+                  ? <IconSelectField value={item[sf.name]} onChange={(v) => handleLocalChange(localIdx, sf.name, v)} />
                   : sf.type === 'media'
                   ? renderMediaField(`new-${localIdx}-${sf.name}`, item[sf.name] || '', (id) => handleLocalChange(localIdx, sf.name, id))
                   : <Input value={item[sf.name] || ''} onChange={(e) => handleLocalChange(localIdx, sf.name, e.target.value)} placeholder={`Enter ${sf.name}`} style={styles.fullWidth} />
                 }
               </Box>
-            ))}
+              );
+            })}
           </Box>
         ))}
 

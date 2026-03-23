@@ -5,27 +5,30 @@ import UpArrowIcon from "../icons/up-arrow";
 import PolygonIcon from "../icons/polygon";
 import Image from "next/image";
 
-interface ParkingStudyProps {
+interface SectionOneProps {
   title: string;
   location: string;
   projectName: string;
   studyType: string;
   date: string;
+  shortDescription?: string;
   description: string;
   mainImage: string;
-  thumbnails?: string[];
+  descriptionImage?: string;
 }
 
-export const SectionOne: React.FC<ParkingStudyProps> = ({
+export const SectionOne: React.FC<SectionOneProps> = ({
   title,
   location,
   projectName,
   studyType,
   date,
+  shortDescription,
   description,
   mainImage,
+  descriptionImage,
 }) => {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
 
   const toggleExpanded = () => {
     setExpanded(!expanded);
@@ -39,25 +42,26 @@ export const SectionOne: React.FC<ParkingStudyProps> = ({
           {/* Background Image */}
           <div className="absolute inset-0 w-full h-full z-0">
             <Image
-              src="/homepage-solutions-banner.png"
-              alt="Background"
+              src={descriptionImage || mainImage}
+              alt={projectName}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover"
             />
           </div>
           {/* Overlay */}
-          {/* <div className="absolute inset-0 bg-black/10 z-10" /> */}
+          <div className="absolute inset-0 bg-black/30 z-10" />
           {/* Content */}
           <div className="relative z-20 pt-8 md:pt-12 pl-4 md:pl-8">
             <h1 className="text-2xl md:text-4xl md:text-[46px] text-white uppercase md:leading-[64px] md:tracking-[3.75px]">
               {title}{" "}
-              <span className="block md:inline">
-                <span className="">G.K-I</span>{" "}
-                <span className="text-accent italic font-semibold">
-                  {location}
+              {location && (
+                <span className="block md:inline">
+                  <span className="text-accent italic font-semibold">
+                    {location}
+                  </span>
                 </span>
-              </span>
+              )}
             </h1>
           </div>
           {/* Polygon Corner */}
@@ -78,42 +82,38 @@ export const SectionOne: React.FC<ParkingStudyProps> = ({
                 {projectName}
               </div>
             </div>
-            <div>
-              <div className="md:leading-[54px] md:tracking-[0.25px] text-base md:text-lg ">
-                {studyType}
+            {studyType && (
+              <div>
+                <div className="md:leading-[54px] md:tracking-[0.25px] text-base md:text-lg ">
+                  {studyType}
+                </div>
+                {date && (
+                  <div className="md:leading-[54px] md:tracking-[0.25px] text-sm md:text-base text-black/60">
+                    {date}
+                  </div>
+                )}
               </div>
-              <div className="md:leading-[54px] md:tracking-[0.25px] text-sm md:text-base text-black/60">
-                {date}
-              </div>
-            </div>
+            )}
           </div>
 
-          {/* Main image with thumbnails */}
+          {/* Main image */}
           <div className="relative w-full h-80">
             <Image
               src={mainImage}
-              alt="Aerial view of highway"
+              alt={projectName}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover rounded-sm"
             />
-            {/* <div className="absolute top-4 right-4 bg-white/80 p-2 rounded-sm flex gap-2">
-              {thumbnails.map((thumb, index) => (
-                <img
-                  key={index}
-                  src={thumb}
-                  alt={`Thumbnail ${index + 1}`}
-                  className="w-20 h-16 object-cover"
-                />
-              ))}
-            </div> */}
           </div>
 
           {/* Description */}
           <div>
-            <p className="font-semibold italic md:leading-[20px]">
-              Car Parking at G.K-I New Delhi-
-            </p>
+            {shortDescription && (
+              <p className="font-semibold italic md:leading-[20px]">
+                {shortDescription}
+              </p>
+            )}
             {expanded && (
               <p className="md:leading-[20px] text-sm leading-relaxed mt-1">
                 {description}

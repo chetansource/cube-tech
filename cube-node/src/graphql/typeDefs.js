@@ -60,6 +60,11 @@ const typeDefs = gql`
     faqs: [FAQ!]!
   }
 
+  type ResourcesFaqSection {
+    blockType: String!
+    faqs: [FAQ!]!
+  }
+
   type ContactInfo {
     blockType: String!
     phone: String
@@ -136,15 +141,27 @@ const typeDefs = gql`
     leaders: [LeaderCard!]
   }
 
+  type TeamMember {
+    name: String!
+    designation: String!
+    image: Media
+    bio: String
+    linkedIn: String
+  }
+
+  type TeamSection {
+    blockType: String!
+    title: String
+    description: String
+    members: [TeamMember!]
+  }
+
   type TimelineItemType {
+    image: Media
     year: String
     side: String
     title: String
     content: String
-    isPodcast: Boolean
-    podcastImage: Media
-    podcastContent: String
-    podcastLink: String
     isIconOnly: Boolean
     iconType: Int
   }
@@ -273,7 +290,7 @@ const typeDefs = gql`
     backgroundImage: Media
   }
 
-  union Section = FaqSection | ContactInfo | CareerTitle | JobListSection | HeroSection | ExploreCardsSection | GenericSection | AboutHeroSection | LeadershipSection | TimelineSection | CorporateResponsibilitySection | StatsSection | TestimonialsSection | ResourcesHeroSection | InsightsImpactSection | ResourceGallerySection | NewsEventsSection | ExploreMoreSection | ServicesHeroSection | ServicesOfferedSection | ServicesSolutionsSection | ContactBannerSection | ProjectMapSection | ProjectsHeroSection
+  union Section = FaqSection | ContactInfo | CareerTitle | JobListSection | HeroSection | ExploreCardsSection | GenericSection | AboutHeroSection | LeadershipSection | TimelineSection | CorporateResponsibilitySection | StatsSection | TestimonialsSection | ResourcesHeroSection | InsightsImpactSection | ResourceGallerySection | NewsEventsSection | ExploreMoreSection | ServicesHeroSection | ServicesOfferedSection | ServicesSolutionsSection | ContactBannerSection | ProjectMapSection | ProjectsHeroSection | ResourcesFaqSection | TeamSection
 
   # Page Type
   type Page {
@@ -338,6 +355,7 @@ const typeDefs = gql`
 
   type ProjectImpact {
     title: String
+    highlightedWord: String
     description: String
     metrics: [Metric!]
   }
@@ -363,6 +381,7 @@ const typeDefs = gql`
     shortDescription: String
     description: String!
     mainImage: Media
+    descriptionImage: Media
     gallery: [Media!]
     tags: [String!]
     category: String

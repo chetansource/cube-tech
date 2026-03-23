@@ -8,6 +8,7 @@ const metricSchema = new mongoose.Schema({
 
 const projectImpactSchema = new mongoose.Schema({
   title: String,
+  highlightedWord: String,
   description: String,
   metrics: [metricSchema],
 }, { _id: false });
@@ -52,6 +53,10 @@ const projectSchema = new mongoose.Schema({
     required: true,
   },
   mainImage: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Media',
+  },
+  descriptionImage: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Media',
   },

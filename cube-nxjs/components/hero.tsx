@@ -56,8 +56,8 @@ export default function Hero({
       <div
         className={`absolute top-0 bottom-0 left-0 right-0  md:right-[57px] ${overlayOpacity} z-10`}
       />
-      <div className="flex relative z-20 container  px-4 md:px-16 lg:px-24  min-h-[768px] flex-col  justify-end pb-24 md:pb-32">
-        <div className="max-w-5xl">
+      <div className="relative z-20 container  px-4 md:px-16 lg:px-24  min-h-[768px] flex flex-col">
+        <div className="max-w-5xl mt-auto mb-auto pt-48 md:pt-56">
           {pathname !== "/resources" && (
             <div className="text-white text-[40px] md:text-[75px] font-light mb-8 leading-[1.15] flex flex-col md:gap-4 ">
               {title}
@@ -76,7 +76,7 @@ export default function Hero({
           )}
         </div>
         {showTopSection && (
-          <div className="absolute left-0 bottom-0 p-4 md:py-18 md:grid  md:grid-cols-3 gap-4 ">
+          <div className="pb-6 md:pb-10 pt-4 md:grid md:grid-cols-3 gap-4">
             {/* Featured Resources Cards */}
             {featuredResources.length > 0 ? (
               featuredResources.slice(0, 2).map((resource, index) => (

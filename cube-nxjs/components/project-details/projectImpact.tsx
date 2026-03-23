@@ -1,37 +1,46 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { CheckCircle, LifeBuoy } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import RightArrowIcon from "../icons/right-arrow";
 
-interface ImpactCardProps {
-  icon: React.ReactNode;
-  title: string;
-  description?: string;
-  color?: string;
+
+interface Metric {
+  label: string;
+  value: string;
 }
 
-const ImpactCard: React.FC<ImpactCardProps> = ({
-  icon,
-  title,
-  description,
-}) => {
+interface ProjectImpactProps {
+  title?: string;
+  highlightedWord?: string;
+  description?: string;
+  metrics?: Metric[];
+}
+
+interface ImpactCardProps {
+  title: string;
+  description?: string;
+}
+
+const ImpactCard: React.FC<ImpactCardProps> = ({ title, description }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <div
       className={`flex flex-col md:min-w-[250px] h-[207px] md:h-[312px] p-4 md:p-6 border border-border rounded-sm relative transition-all duration-300 cursor-pointer ${
-        isHovered ? "bg-[#5FBA51] text-white" : ""
+        isHovered ? "bg-[#5FBA51]" : ""
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="md:mb-4">{icon}</div>
-      <h3 className="text-sm md:text-2xl md:leading-[33px] md:tracking-[0.75px] mb-2">
+      <div className="md:mb-4">
+        <CheckCircle className={`h-6 w-6 ${isHovered ? "text-white" : "text-accent"}`} />
+      </div>
+      <h3 className={`text-sm md:text-2xl md:leading-[33px] md:tracking-[0.75px] mb-2 ${isHovered ? "text-white" : "text-black"}`}>
         {title}
       </h3>
       {description && (
-        <p className="text-xs md:text-base text-muted-foreground">
+        <p className={`text-xs md:text-base ${isHovered ? "text-white/80" : "text-muted-foreground"}`}>
           {description}
         </p>
       )}
@@ -42,53 +51,36 @@ const ImpactCard: React.FC<ImpactCardProps> = ({
   );
 };
 
-export function ProjectImpact() {
-  const carouselRef = useRef<HTMLDivElement>(null);
+const defaultMetrics: Metric[] = [
+  { label: "IFC Safeguard Policies", value: "" },
+  { label: "Social Impact Assessment (SIA)", value: "Lorem ipsum dolor sit amet, consectetur." },
+  { label: "Livelihood Enhancement Plan (LEP)", value: "" },
+  { label: "Environmental Assessment", value: "" },
+  { label: "Community Development", value: "" },
+];
 
-  const cards: ImpactCardProps[] = [
-    {
-      icon: <div className="h-6 w-6 text-primary"></div>,
-      title: "IFC Safeguard Policies",
-      color: "bg-white",
-    },
-    {
-      icon: <CheckCircle className="h-6 w-6 text-white" />,
-      title: "Social Impact Assessment (SIA)",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur. Nunc ut condimentum ultricies.",
-      color: "bg-white",
-    },
-    {
-      icon: <LifeBuoy className="h-6 w-6 text-primary" />,
-      title: "Livelihood Enhancement Plan (LEP)",
-      color: "bg-white",
-    },
-    {
-      icon: <div className="h-6 w-6 text-primary"></div>,
-      title: "Environmental Assessment",
-      color: "bg-white",
-    },
-    {
-      icon: <div className="h-6 w-6 text-primary"></div>,
-      title: "Community Development",
-      color: "bg-white",
-    },
-  ];
+export function ProjectImpact({ title, highlightedWord, description, metrics }: ProjectImpactProps) {
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const displayMetrics = metrics && metrics.length > 0 ? metrics : defaultMetrics;
+
+  const cards = displayMetrics.map((m) => ({
+    title: m.label,
+    description: m.value || undefined,
+  }));
 
   const totalCards = cards.length;
   const visibleCards = 3;
 
-  // Auto-scroll for web view only
   useEffect(() => {
+    if (totalCards <= visibleCards) return;
     const isWeb = window.innerWidth >= 768;
     if (!isWeb) return;
 
     let currentIndex = 0;
     const interval = setInterval(() => {
       currentIndex = (currentIndex + 1) % (totalCards - visibleCards + 1);
-
       if (carouselRef.current) {
-        const scrollAmount = carouselRef.current.offsetWidth * 0.4; // ~40% width per card
+        const scrollAmount = carouselRef.current.offsetWidth * 0.4;
         carouselRef.current.scrollTo({
           left: currentIndex * scrollAmount,
           behavior: "smooth",
@@ -102,11 +94,16 @@ export function ProjectImpact() {
   return (
     <div className="flex flex-col md:flex-row w-full gap-8 md:py-12">
       {/* Left section - Title */}
-      <div className="md:w-2/3 flex">
+      <div className="md:w-2/3 flex flex-col">
         <h2 className="text-2xl px-4 md:text-[46px] md:leading-[64px] md:tracking-[3.75px] mb-2 uppercase text-black/60">
-          PROJECT{" "}
-          <span className="text-accent font-semibold italic">IMPACT</span>
+          {title || "PROJECT"}{" "}
+          <span className="text-accent font-semibold italic">
+            {highlightedWord || "IMPACT"}
+          </span>
         </h2>
+        {description && (
+          <p className="px-4 text-sm text-[#404040] mt-1">{description}</p>
+        )}
       </div>
 
       {/* Right section - Cards */}
@@ -116,15 +113,13 @@ export function ProjectImpact() {
           {cards.map((card, index) => (
             <ImpactCard
               key={index}
-              icon={card.icon}
               title={card.title}
               description={card.description}
-              color={card.color}
             />
           ))}
         </div>
 
-        {/* Web: Auto-scrolling carousel */}
+        {/* Web: Scrolling carousel or static */}
         <div
           ref={carouselRef}
           className="hidden md:flex gap-8 overflow-x-auto scrollbar-hide"
@@ -133,10 +128,8 @@ export function ProjectImpact() {
           {cards.map((card, index) => (
             <div key={index} className="flex-shrink-0 w-[40%] md:w-1/3">
               <ImpactCard
-                icon={card.icon}
                 title={card.title}
                 description={card.description}
-                color={card.color}
               />
             </div>
           ))}

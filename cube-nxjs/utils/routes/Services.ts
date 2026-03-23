@@ -3,7 +3,7 @@ import { GraphQLClient, gql } from "graphql-request";
 const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/graphql`;
 const graphQLClient = new GraphQLClient(baseUrl, {
   fetch: (url, options) =>
-    fetch(url, { ...options, next: { revalidate: 10 } } as RequestInit),
+    fetch(url, { ...options, next: { revalidate: 5 } } as RequestInit),
 });
 
 // Type Definitions for Services Page
@@ -38,6 +38,7 @@ export interface MapProject {
     url: string;
     alt?: string;
   };
+  mapCity?: string;
   mapPosition?: {
     x: number;
     y: number;
@@ -359,6 +360,7 @@ export async function getMapProjects(): Promise<MapProject[]> {
             url
             alt
           }
+          mapCity
           mapPosition {
             x
             y
@@ -372,7 +374,7 @@ export async function getMapProjects(): Promise<MapProject[]> {
   try {
     const data: any = await graphQLClient.request(query);
     const projects = (data.Projects?.docs || [])
-      .filter((p: MapProject) => p.showOnMap && p.mapPosition?.x && p.mapPosition?.y);
+      .filter((p: MapProject) => p.showOnMap && (p.mapCity || (p.mapPosition?.x && p.mapPosition?.y)));
     return projects;
   } catch (error) {
     console.error("Error fetching map projects:", error);

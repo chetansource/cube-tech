@@ -46,15 +46,27 @@ export interface LeadershipSection {
   leaders: LeaderCard[];
 }
 
+export interface TeamMember {
+  name: string;
+  designation: string;
+  image?: Media;
+  bio?: string;
+  linkedIn?: string;
+}
+
+export interface TeamSection {
+  blockType: "teamSection";
+  title?: string;
+  description?: string;
+  members: TeamMember[];
+}
+
 export interface TimelineItemType {
+  image?: Media;
   year?: string;
   side?: "left" | "right";
   title?: string;
   content?: string;
-  isPodcast?: boolean;
-  podcastImage?: Media;
-  podcastContent?: string;
-  podcastLink?: string;
   isIconOnly?: boolean;
   iconType?: number;
 }

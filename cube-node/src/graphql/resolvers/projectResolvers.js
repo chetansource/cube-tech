@@ -23,6 +23,7 @@ const projectResolvers = {
       const skip = (page - 1) * limit;
       const docs = await Project.find(query)
         .populate('mainImage')
+        .populate('descriptionImage')
         .populate('gallery')
         .populate('policyCards.iconImage')
         .limit(limit)
@@ -44,6 +45,7 @@ const projectResolvers = {
       const query = id ? { _id: id } : { slug };
       return await Project.findOne(query)
         .populate('mainImage')
+        .populate('descriptionImage')
         .populate('gallery')
         .populate('policyCards.iconImage');
     },

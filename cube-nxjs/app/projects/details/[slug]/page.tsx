@@ -77,11 +77,18 @@ const ProjectDetailPage = async ({ params }: ProjectDetailPageProps) => {
         projectName={project.title}
         studyType={project.studyType || ""}
         date={project.date || ""}
-        description={project.description || project.shortDescription || ""}
+        shortDescription={project.shortDescription || ""}
+        description={project.description || ""}
         mainImage={project.mainImage?.url || "/long-highway-3.webp"}
+        descriptionImage={project.descriptionImage?.url}
       />
       <div className="pt-8 pb-16 md:pb-0 md:pt-0 md:px-16">
-        <ProjectImpact />
+        <ProjectImpact
+          title={project.impact?.title}
+          highlightedWord={project.impact?.highlightedWord}
+          description={project.impact?.description}
+          metrics={project.impact?.metrics}
+        />
       </div>
       <ProjectsCarousel projects={relatedProjects} />
     </div>

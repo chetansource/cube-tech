@@ -3,7 +3,7 @@ import { GraphQLClient, gql } from "graphql-request";
 const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/graphql`;
 const graphQLClient = new GraphQLClient(baseUrl, {
   fetch: (url, options) =>
-    fetch(url, { ...options, next: { revalidate: 10 } } as RequestInit),
+    fetch(url, { ...options, next: { revalidate: 5 } } as RequestInit),
 });
 
 // TypeScript interfaces for Resources Page sections
@@ -53,11 +53,17 @@ export interface ExploreMoreSection {
   };
 }
 
+export interface ResourcesFaqSection {
+  blockType: 'resourcesFaqSection';
+  faqs: { question: string; answer: string }[];
+}
+
 export interface ResourcesPageContent {
   heroSection?: ResourcesHeroSection;
   insightsSection?: InsightsImpactSection;
   gallerySection?: ResourceGallerySection;
   exploreMoreSection?: ExploreMoreSection;
+  faqSection?: ResourcesFaqSection;
 }
 
 /**
@@ -113,6 +119,13 @@ export async function getResourcesPageContent(slug: string = 'resources'): Promi
                 alt
               }
             }
+            ... on ResourcesFaqSection {
+              blockType
+              faqs {
+                question
+                answer
+              }
+            }
           }
         }
       }
@@ -134,12 +147,14 @@ export async function getResourcesPageContent(slug: string = 'resources'): Promi
     const insightsSection = sections.find((s: any) => s.blockType === 'insightsImpactSection') as InsightsImpactSection;
     const gallerySection = sections.find((s: any) => s.blockType === 'resourceGallerySection') as ResourceGallerySection;
     const exploreMoreSection = sections.find((s: any) => s.blockType === 'exploreMoreSection') as ExploreMoreSection;
+    const faqSection = sections.find((s: any) => s.blockType === 'resourcesFaqSection') as ResourcesFaqSection;
 
     return {
       heroSection,
       insightsSection,
       gallerySection,
       exploreMoreSection,
+      faqSection,
     };
   } catch (error) {
     console.error('Error fetching resources page content:', error);

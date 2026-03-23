@@ -22,6 +22,7 @@ const ResourcesPage = async () => {
   const heroSection = pageContent.heroSection;
   const insightsSection = pageContent.insightsSection;
   const gallerySection = pageContent.gallerySection;
+  const resourcesFaqSection = pageContent.faqSection;
 
   return (
     <div className="min-h-screen">
@@ -48,7 +49,7 @@ const ResourcesPage = async () => {
       />
 
       <Awards />
-      <Faq />
+      <Faq items={resourcesFaqSection?.faqs} />
     </div>
   );
 };

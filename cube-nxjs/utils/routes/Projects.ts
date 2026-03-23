@@ -3,7 +3,7 @@ import { GraphQLClient, gql } from "graphql-request";
 const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/graphql`;
 const graphQLClient = new GraphQLClient(baseUrl, {
   fetch: (url, options) =>
-    fetch(url, { ...options, next: { revalidate: 10 } } as RequestInit),
+    fetch(url, { ...options, next: { revalidate: 5 } } as RequestInit),
 });
 
 // Type Definitions for Projects Page
@@ -23,6 +23,7 @@ export interface ProjectImpactMetric {
 
 export interface ProjectImpact {
   title: string;
+  highlightedWord?: string;
   description: string;
   metrics: ProjectImpactMetric[];
 }
@@ -40,6 +41,10 @@ export interface Project {
     url: string;
     alt?: string;
   };
+  descriptionImage?: {
+    url: string;
+    alt?: string;
+  };
   gallery?: {
     url: string;
     alt?: string;
@@ -51,6 +56,7 @@ export interface Project {
   impact?: ProjectImpact;
   policyCards?: PolicyCard[];
   featured: boolean;
+  mapCity?: string;
   mapPosition?: {
     x: number;
     y: number;
@@ -162,6 +168,10 @@ export async function getProjects(
             url
             alt
           }
+          descriptionImage {
+            url
+            alt
+          }
           gallery {
             url
             alt
@@ -172,6 +182,7 @@ export async function getProjects(
           duration
           impact {
             title
+            highlightedWord
             description
             metrics {
               label
@@ -187,6 +198,7 @@ export async function getProjects(
             }
           }
           featured
+          mapCity
           mapPosition {
             x
             y
@@ -251,6 +263,10 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
             url
             alt
           }
+          descriptionImage {
+            url
+            alt
+          }
           gallery {
             url
             alt
@@ -261,6 +277,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
           duration
           impact {
             title
+            highlightedWord
             description
             metrics {
               label
@@ -276,6 +293,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
             }
           }
           featured
+          mapCity
           mapPosition {
             x
             y
@@ -320,6 +338,10 @@ export async function getFeaturedProject(): Promise<Project | null> {
             url
             alt
           }
+          descriptionImage {
+            url
+            alt
+          }
           gallery {
             url
             alt
@@ -330,6 +352,7 @@ export async function getFeaturedProject(): Promise<Project | null> {
           duration
           impact {
             title
+            highlightedWord
             description
             metrics {
               label
@@ -380,6 +403,10 @@ export async function getFeaturedProjects(limit: number = 3): Promise<Project[]>
             url
             alt
           }
+          descriptionImage {
+            url
+            alt
+          }
           gallery {
             url
             alt
@@ -390,6 +417,7 @@ export async function getFeaturedProjects(limit: number = 3): Promise<Project[]>
           duration
           impact {
             title
+            highlightedWord
             description
             metrics {
               label
@@ -438,6 +466,11 @@ export async function getMapProjects(): Promise<Project[]> {
             url
             alt
           }
+          descriptionImage {
+            url
+            alt
+          }
+          mapCity
           mapPosition {
             x
             y
@@ -451,7 +484,7 @@ export async function getMapProjects(): Promise<Project[]> {
   try {
     const data: any = await graphQLClient.request(query);
     const projects = (data.Projects?.docs || []).filter(
-      (p: Project) => p.showOnMap && p.mapPosition?.x && p.mapPosition?.y
+      (p: Project) => p.showOnMap && (p.mapCity || (p.mapPosition?.x && p.mapPosition?.y))
     );
     return projects;
   } catch (error) {
@@ -644,6 +677,10 @@ export async function getRelatedProjects(
           location
           shortDescription
           mainImage {
+            url
+            alt
+          }
+          descriptionImage {
             url
             alt
           }
