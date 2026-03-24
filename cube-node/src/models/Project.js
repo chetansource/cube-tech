@@ -74,7 +74,12 @@ const projectSchema = new mongoose.Schema({
   duration: String,
   impact: projectImpactSchema,
   policyCards: [policyCardSchema],
-  featured: {
+  showOnHomepage: {
+    type: Boolean,
+    default: false,
+    index: true,
+  },
+  keyProject: {
     type: Boolean,
     default: false,
     index: true,
@@ -110,6 +115,6 @@ projectSchema.pre('save', function(next) {
 });
 
 // Compound index for filtering
-projectSchema.index({ status: 1, featured: 1, createdAt: -1 });
+projectSchema.index({ status: 1, showOnHomepage: 1, createdAt: -1 });
 
 module.exports = mongoose.model('Project', projectSchema);

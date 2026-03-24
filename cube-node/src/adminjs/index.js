@@ -148,8 +148,8 @@ const createAdminJS = () => {
             'mapPosition.x': { isVisible: { edit: true, show: true, list: false, filter: false } },
             'mapPosition.y': { isVisible: { edit: true, show: true, list: false, filter: false } },
           },
-          listProperties: ['title', 'slug', 'category', 'status', 'featured', 'updatedAt'],
-          filterProperties: ['title', 'category', 'status', 'featured'],
+          listProperties: ['title', 'slug', 'category', 'status', 'showOnHomepage', 'keyProject', 'updatedAt'],
+          filterProperties: ['title', 'category', 'status', 'showOnHomepage', 'keyProject'],
         },
       },
       {
@@ -160,8 +160,8 @@ const createAdminJS = () => {
             image: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
             downloadFile: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
           },
-          listProperties: ['title', 'category', 'status', 'featured', 'publishedAt'],
-          filterProperties: ['title', 'category', 'status', 'featured'],
+          listProperties: ['title', 'category', 'status', 'featured', 'showInNewsEvents', 'publishedAt'],
+          filterProperties: ['title', 'category', 'status', 'featured', 'showInNewsEvents'],
           actions: {
             clone: {
               actionType: 'record',

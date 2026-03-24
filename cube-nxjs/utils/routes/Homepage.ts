@@ -65,7 +65,8 @@ export interface Project {
   tags?: string[];
   category?: string;
   client?: string;
-  featured: boolean;
+  showOnHomepage: boolean;
+  keyProject: boolean;
   status: string;
 }
 
@@ -275,12 +276,12 @@ export async function getServices(limit: number = 10): Promise<Service[]> {
 }
 
 /**
- * Fetch featured projects
+ * Fetch projects marked for homepage
  */
 export async function getFeaturedProjects(limit: number = 6): Promise<Project[]> {
   const query = gql`
-    query GetFeaturedProjects {
-      Projects {
+    query GetHomepageProjects {
+      Projects(where: { showOnHomepage: true, status: { equals: "published" } }) {
         docs {
           id
           title
@@ -296,7 +297,7 @@ export async function getFeaturedProjects(limit: number = 6): Promise<Project[]>
           tags
           category
           client
-          featured
+          showOnHomepage
           status
         }
       }
@@ -306,7 +307,6 @@ export async function getFeaturedProjects(limit: number = 6): Promise<Project[]>
   try {
     const data: any = await graphQLClient.request(query);
     const projects = (data.Projects?.docs || [])
-      .filter((p: Project) => p.featured && p.status === "published")
       .sort((a: Project, b: Project) => {
         const dateA = a.date ? new Date(a.date).getTime() : 0;
         const dateB = b.date ? new Date(b.date).getTime() : 0;
@@ -315,7 +315,7 @@ export async function getFeaturedProjects(limit: number = 6): Promise<Project[]>
       .slice(0, limit);
     return projects;
   } catch (error) {
-    console.error("Error fetching featured projects:", error);
+    console.error("Error fetching homepage projects:", error);
     return [];
   }
 }

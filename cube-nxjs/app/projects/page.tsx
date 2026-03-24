@@ -19,7 +19,7 @@ const ProjectsPage = async () => {
   const testimonials = await getTestimonials(10);
   const projectsPageData = await getProjectsPageContent("projects");
   const mapProjects = await getMapProjects();
-  const featuredProjects = await getFeaturedProjects(3);
+  const featuredProjects = await getFeaturedProjects();
 
   // Get contact banner section data with fallback
   const contactBanner = projectsPageData.contactBannerSection;

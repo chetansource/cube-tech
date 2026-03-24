@@ -58,6 +58,11 @@ const resourceSchema = new mongoose.Schema({
     default: false,
     index: true,
   },
+  showInNewsEvents: {
+    type: Boolean,
+    default: false,
+    index: true,
+  },
   categoryColor: {
     type: String,
     default: '#007bff',

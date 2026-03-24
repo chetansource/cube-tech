@@ -7,6 +7,11 @@ const apiLimiter = rateLimit({
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  skip: (req) => {
+    const ip = req.ip || '';
+    // Skip rate limiting for localhost and Docker internal network requests
+    return ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(ip) || ip.startsWith('::ffff:172.') || ip.startsWith('172.');
+  },
 });
 
 // Strict limiter for form submissions

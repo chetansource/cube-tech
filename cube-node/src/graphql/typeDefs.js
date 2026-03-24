@@ -389,7 +389,8 @@ const typeDefs = gql`
     duration: String
     impact: ProjectImpact
     policyCards: [PolicyCard!]
-    featured: Boolean
+    showOnHomepage: Boolean
+    keyProject: Boolean
     mapCity: String
     mapPosition: MapPosition
     showOnMap: Boolean
@@ -422,6 +423,7 @@ const typeDefs = gql`
     duration: String
     tags: [String!]
     featured: Boolean
+    showInNewsEvents: Boolean
     categoryColor: String
     readTime: Int
     status: String!
@@ -635,7 +637,8 @@ const typeDefs = gql`
     slug: StringQueryInput
     status: StringQueryInput
     category: StringQueryInput
-    featured: Boolean
+    showOnHomepage: Boolean
+    keyProject: Boolean
     showOnMap: Boolean
   }
 
@@ -644,6 +647,7 @@ const typeDefs = gql`
     category: StringQueryInput
     status: StringQueryInput
     featured: Boolean
+    showInNewsEvents: Boolean
   }
 
   # Queries

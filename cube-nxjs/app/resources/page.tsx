@@ -6,7 +6,7 @@ import Header from "@/components/header";
 import Hero from "@/components/hero";
 import InsightsImpact from "@/components/resources/insights-impact";
 import ResourcesPageClient from "@/components/resources/resources-page-client";
-import { getResources, getFeaturedCaseStudies } from "@/utils/routes/Resources";
+import { getResources, getFeaturedCaseStudies, getNewsEventsResources } from "@/utils/routes/Resources";
 import { getResourcesPageContent } from "@/utils/routes/ResourcesPage";
 
 const ResourcesPage = async () => {
@@ -14,7 +14,7 @@ const ResourcesPage = async () => {
   const [allResources, featuredCaseStudies, newsResources, pageContent] = await Promise.all([
     getResources(),
     getFeaturedCaseStudies(),
-    getResources('NEWS'), // Fetch only NEWS category for News & Events section
+    getNewsEventsResources(),
     getResourcesPageContent('resources'),
   ]);
 
@@ -40,7 +40,7 @@ const ResourcesPage = async () => {
         resources={featuredCaseStudies}
         pageContent={insightsSection}
       />
-      <ResourcesSection resources={newsResources.slice(0, 2)} />
+      <ResourcesSection resources={newsResources} />
 
       {/* Client component for filtering and dynamic sections */}
       <ResourcesPageClient

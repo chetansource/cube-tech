@@ -131,7 +131,6 @@ const BLOCK_TYPE_FIELDS = {
       { name: 'heading', type: 'text' },
       { name: 'highlightedWord', type: 'text' },
       { name: 'backgroundImage', type: 'media' },
-      { name: 'featuredResources', type: 'refArray', ref: 'Resource' },
     ],
   },
   'servicesOfferedSection': {
@@ -141,7 +140,6 @@ const BLOCK_TYPE_FIELDS = {
       { name: 'highlightedWord', type: 'text' },
       { name: 'description', type: 'textarea' },
       { name: 'bannerImage', type: 'media' },
-      { name: 'services', type: 'refArray', ref: 'Service' },
     ],
   },
   'projectMapSection': {

@@ -4,6 +4,10 @@ const nextConfig: NextConfig = {
   output: 'standalone', // Required for Docker deployment
   experimental: {
     viewTransition: true,
+    staleTimes: {
+      dynamic: 0,
+      static: 0,
+    },
   },
   images: {
     remotePatterns: [

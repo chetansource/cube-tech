@@ -15,8 +15,11 @@ const projectResolvers = {
         if (where.category?.equals) {
           query.category = where.category.equals;
         }
-        if (where.featured !== undefined) {
-          query.featured = where.featured;
+        if (where.showOnHomepage !== undefined) {
+          query.showOnHomepage = where.showOnHomepage;
+        }
+        if (where.keyProject !== undefined) {
+          query.keyProject = where.keyProject;
         }
       }
 

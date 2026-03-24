@@ -55,7 +55,8 @@ export interface Project {
   duration?: string;
   impact?: ProjectImpact;
   policyCards?: PolicyCard[];
-  featured: boolean;
+  showOnHomepage: boolean;
+  keyProject: boolean;
   mapCity?: string;
   mapPosition?: {
     x: number;
@@ -119,7 +120,7 @@ export async function getProjects(
   limit: number = 50,
   page: number = 1,
   filters?: {
-    featured?: boolean;
+    showOnHomepage?: boolean;
     status?: string;
     category?: string;
     tags?: string[];
@@ -133,8 +134,8 @@ export async function getProjects(
 }> {
   const whereClause: any = {};
 
-  if (filters?.featured !== undefined) {
-    whereClause.featured = { equals: filters.featured };
+  if (filters?.showOnHomepage !== undefined) {
+    whereClause.showOnHomepage = { equals: filters.showOnHomepage };
   }
 
   if (filters?.status) {
@@ -197,7 +198,8 @@ export async function getProjects(
               alt
             }
           }
-          featured
+          showOnHomepage
+          keyProject
           mapCity
           mapPosition {
             x
@@ -292,7 +294,8 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
               alt
             }
           }
-          featured
+          showOnHomepage
+          keyProject
           mapCity
           mapPosition {
             x
@@ -319,12 +322,12 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
 }
 
 /**
- * Fetch featured project for key project section
+ * Fetch homepage project for key project section
  */
 export async function getFeaturedProject(): Promise<Project | null> {
   const query = gql`
     query GetFeaturedProject {
-      Projects(where: { featured: { equals: true }, status: { equals: "published" } }, limit: 1) {
+      Projects(where: { showOnHomepage: true, status: { equals: "published" } }, limit: 1) {
         docs {
           id
           title
@@ -367,7 +370,8 @@ export async function getFeaturedProject(): Promise<Project | null> {
               alt
             }
           }
-          featured
+          showOnHomepage
+          keyProject
           status
         }
       }
@@ -378,18 +382,18 @@ export async function getFeaturedProject(): Promise<Project | null> {
     const data: any = await graphQLClient.request(query);
     return data.Projects?.docs?.[0] || null;
   } catch (error) {
-    console.error("Error fetching featured project:", error);
+    console.error("Error fetching homepage project:", error);
     return null;
   }
 }
 
 /**
- * Fetch top featured projects for key projects section
+ * Fetch key projects for the Key Projects section on projects page
  */
-export async function getFeaturedProjects(limit: number = 3): Promise<Project[]> {
+export async function getFeaturedProjects(limit: number = 10): Promise<Project[]> {
   const query = gql`
-    query GetFeaturedProjects($limit: Int!) {
-      Projects(where: { featured: true, status: { equals: "published" } }, limit: $limit) {
+    query GetKeyProjects($limit: Int!) {
+      Projects(where: { keyProject: true, status: { equals: "published" } }, limit: $limit) {
         docs {
           id
           title
@@ -432,7 +436,7 @@ export async function getFeaturedProjects(limit: number = 3): Promise<Project[]>
               alt
             }
           }
-          featured
+          keyProject
           status
         }
       }
@@ -445,7 +449,7 @@ export async function getFeaturedProjects(limit: number = 3): Promise<Project[]>
     const data: any = await graphQLClient.request(query, variables);
     return data.Projects?.docs || [];
   } catch (error) {
-    console.error("Error fetching featured projects:", error);
+    console.error("Error fetching key projects:", error);
     return [];
   }
 }

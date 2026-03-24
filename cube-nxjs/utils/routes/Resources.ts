@@ -37,6 +37,7 @@ const RESOURCE_FRAGMENT = `
     duration
     tags
     featured
+    showInNewsEvents
     categoryColor
     readTime
     status
@@ -70,6 +71,7 @@ export interface Resource {
   duration?: string;
   tags?: string[];
   featured?: boolean;
+  showInNewsEvents?: boolean;
   categoryColor?: string;
   readTime?: number;
   status: 'draft' | 'published';
@@ -141,6 +143,35 @@ export async function getResources(
  */
 export async function getFeaturedCaseStudies(): Promise<Resource[]> {
   return getResources('CASESTUDY', true);
+}
+
+/**
+ * Fetch resources marked for News & Events section
+ */
+export async function getNewsEventsResources(limit: number = 10): Promise<Resource[]> {
+  const query = gql`
+    ${MEDIA_FRAGMENT}
+    ${RESOURCE_FRAGMENT}
+    query GetNewsEventsResources($where: ResourceWhereInput, $limit: Int) {
+      Resources(where: $where, limit: $limit) {
+        docs {
+          ...ResourceFields
+        }
+      }
+    }
+  `;
+
+  try {
+    const where = {
+      status: { equals: "published" },
+      showInNewsEvents: true,
+    };
+    const data: ResourcesResponse = await graphQLClient.request(query, { where, limit });
+    return data.Resources.docs;
+  } catch (error) {
+    console.error('Error fetching news & events resources:', error);
+    return [];
+  }
 }
 
 /**

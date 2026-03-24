@@ -18,6 +18,9 @@ const resourceResolvers = {
         if (where.featured !== undefined) {
           query.featured = where.featured;
         }
+        if (where.showInNewsEvents !== undefined) {
+          query.showInNewsEvents = where.showInNewsEvents;
+        }
       }
 
       const skip = (page - 1) * limit;
