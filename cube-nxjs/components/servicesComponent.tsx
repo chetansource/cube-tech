@@ -7,6 +7,7 @@ import RightArrowIcon from "./icons/right-arrow";
 interface Service {
   id: string;
   title: string;
+  slug?: string;
   description: string;
   link?: string;
 }
@@ -169,7 +170,7 @@ export default function ServiceSection({ services: propServices, sectionConfig, 
 
                 <div className="inline-flex">
                   <a
-                    href={service.link || "/services"}
+                    href={service.slug ? `/services/details/${service.slug}` : (service.link || "/services")}
                     className="inline-flex items-center bg-[#5FBA51] text-white px-6 py-3 hover:bg-[#4da043] transition-colors gap-3"
                   >
                     <span className="text-sm tracking-wider">READ MORE</span>

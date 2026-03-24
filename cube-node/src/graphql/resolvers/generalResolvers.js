@@ -20,6 +20,10 @@ const generalResolvers = {
       return await queryBuilder;
     },
 
+    Service: async (_, { slug }) => {
+      return await Service.findOne({ slug }).populate('image').populate('contentImage');
+    },
+
     Partners: async (_, { limit }) => {
       const query = { active: true };
       let queryBuilder = Partner.find(query).populate('logo').sort({ order: 1 });

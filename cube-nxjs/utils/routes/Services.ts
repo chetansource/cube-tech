@@ -10,7 +10,13 @@ const graphQLClient = new GraphQLClient(baseUrl, {
 export interface Service {
   id: string;
   title: string;
+  slug?: string;
   description: string;
+  content?: string;
+  contentImage?: {
+    url: string;
+    alt?: string;
+  };
   icon?: string;
   image?: {
     url: string;
@@ -290,6 +296,7 @@ export async function getServices(limit: number = 10): Promise<Service[]> {
       Services {
         id
         title
+        slug
         description
         icon
         image {
@@ -314,6 +321,42 @@ export async function getServices(limit: number = 10): Promise<Service[]> {
   } catch (error) {
     console.error("Error fetching services:", error);
     return [];
+  }
+}
+
+/**
+ * Fetch a single service by slug
+ */
+export async function getServiceBySlug(slug: string): Promise<Service | null> {
+  const query = gql`
+    query GetServiceBySlug($slug: String!) {
+      Service(slug: $slug) {
+        id
+        title
+        slug
+        description
+        content
+        contentImage {
+          url
+          alt
+        }
+        image {
+          url
+          alt
+        }
+        features
+        order
+        active
+      }
+    }
+  `;
+
+  try {
+    const data: any = await graphQLClient.request(query, { slug });
+    return data.Service;
+  } catch (error) {
+    console.error("Error fetching service by slug:", error);
+    return null;
   }
 }
 

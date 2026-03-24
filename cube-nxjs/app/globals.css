@@ -194,6 +194,26 @@ nextjs-portal {
   }
 }
 
+  .service-content-scroll {
+    scrollbar-width: none;
+  }
+  .service-content-scroll:hover {
+    scrollbar-width: thin;
+  }
+  .service-content-scroll::-webkit-scrollbar {
+    width: 0;
+  }
+  .service-content-scroll:hover::-webkit-scrollbar {
+    width: 6px;
+  }
+  .service-content-scroll:hover::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 3px;
+  }
+  .service-content-scroll:hover::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
 /* Smooth page transitions */
 ::view-transition-old(root) {
   animation: fade-out 200ms ease-in-out;

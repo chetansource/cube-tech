@@ -124,10 +124,14 @@ const createAdminJS = () => {
           navigation: { name: 'Content', icon: 'Settings' },
           properties: {
             image: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
+            contentImage: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
             icon: { isVisible: false },
+            slug: { isVisible: { list: true, filter: true, show: true, edit: false } },
+            content: { type: 'textarea' },
+            link: { isVisible: false },
           },
-          listProperties: ['title', 'order', 'active', 'updatedAt'],
-          filterProperties: ['title', 'active'],
+          listProperties: ['title', 'slug', 'order', 'active', 'updatedAt'],
+          filterProperties: ['title', 'slug', 'active'],
         },
       },
       {

@@ -19,11 +19,11 @@ import Component8 from '../src/adminjs/components/MediaPicker'
 AdminJS.UserComponents.Component8 = Component8
 import Component9 from '../src/adminjs/components/MediaShow'
 AdminJS.UserComponents.Component9 = Component9
-import Component10 from '../src/adminjs/components/MediaPicker'
+import Component10 from '../src/adminjs/components/MediaListPreview'
 AdminJS.UserComponents.Component10 = Component10
-import Component11 from '../src/adminjs/components/MediaShow'
+import Component11 from '../src/adminjs/components/MediaPicker'
 AdminJS.UserComponents.Component11 = Component11
-import Component12 from '../src/adminjs/components/MediaListPreview'
+import Component12 from '../src/adminjs/components/MediaShow'
 AdminJS.UserComponents.Component12 = Component12
 import Component13 from '../src/adminjs/components/MediaPicker'
 AdminJS.UserComponents.Component13 = Component13
@@ -31,31 +31,31 @@ import Component14 from '../src/adminjs/components/MediaShow'
 AdminJS.UserComponents.Component14 = Component14
 import Component15 from '../src/adminjs/components/MediaListPreview'
 AdminJS.UserComponents.Component15 = Component15
-import Component16 from '../src/adminjs/components/ExportCsvButton'
+import Component16 from '../src/adminjs/components/MediaPicker'
 AdminJS.UserComponents.Component16 = Component16
-import Component17 from '../src/adminjs/components/MediaPicker'
+import Component17 from '../src/adminjs/components/MediaShow'
 AdminJS.UserComponents.Component17 = Component17
-import Component18 from '../src/adminjs/components/MediaShow'
+import Component18 from '../src/adminjs/components/MediaListPreview'
 AdminJS.UserComponents.Component18 = Component18
-import Component19 from '../src/adminjs/components/MediaListPreview'
+import Component19 from '../src/adminjs/components/ExportCsvButton'
 AdminJS.UserComponents.Component19 = Component19
-import Component20 from '../src/adminjs/components/ExportCsvButton'
+import Component20 from '../src/adminjs/components/MediaPicker'
 AdminJS.UserComponents.Component20 = Component20
-import Component21 from '../src/adminjs/components/ExportCsvButton'
+import Component21 from '../src/adminjs/components/MediaShow'
 AdminJS.UserComponents.Component21 = Component21
-import Component22 from '../src/adminjs/components/ImagePreview'
+import Component22 from '../src/adminjs/components/MediaListPreview'
 AdminJS.UserComponents.Component22 = Component22
-import Component23 from '../node_modules/@adminjs/upload/src/features/upload-file/components/edit'
+import Component23 from '../src/adminjs/components/ExportCsvButton'
 AdminJS.UserComponents.Component23 = Component23
-import Component24 from '../node_modules/@adminjs/upload/src/features/upload-file/components/list'
+import Component24 from '../src/adminjs/components/ExportCsvButton'
 AdminJS.UserComponents.Component24 = Component24
-import Component25 from '../node_modules/@adminjs/upload/src/features/upload-file/components/show'
+import Component25 from '../src/adminjs/components/ImagePreview'
 AdminJS.UserComponents.Component25 = Component25
-import Component26 from '../src/adminjs/components/MediaPicker'
+import Component26 from '../node_modules/@adminjs/upload/src/features/upload-file/components/edit'
 AdminJS.UserComponents.Component26 = Component26
-import Component27 from '../src/adminjs/components/MediaShow'
+import Component27 from '../node_modules/@adminjs/upload/src/features/upload-file/components/list'
 AdminJS.UserComponents.Component27 = Component27
-import Component28 from '../src/adminjs/components/MediaListPreview'
+import Component28 from '../node_modules/@adminjs/upload/src/features/upload-file/components/show'
 AdminJS.UserComponents.Component28 = Component28
 import Component29 from '../src/adminjs/components/MediaPicker'
 AdminJS.UserComponents.Component29 = Component29
@@ -93,3 +93,9 @@ import Component45 from '../src/adminjs/components/MediaShow'
 AdminJS.UserComponents.Component45 = Component45
 import Component46 from '../src/adminjs/components/MediaListPreview'
 AdminJS.UserComponents.Component46 = Component46
+import Component47 from '../src/adminjs/components/MediaPicker'
+AdminJS.UserComponents.Component47 = Component47
+import Component48 from '../src/adminjs/components/MediaShow'
+AdminJS.UserComponents.Component48 = Component48
+import Component49 from '../src/adminjs/components/MediaListPreview'
+AdminJS.UserComponents.Component49 = Component49

@@ -447,7 +447,10 @@ const typeDefs = gql`
   type Service {
     id: ID!
     title: String!
+    slug: String
     description: String!
+    content: String
+    contentImage: Media
     icon: String
     image: Media
     features: [String!]
@@ -676,7 +679,8 @@ const typeDefs = gql`
     Resource(id: ID, slug: String): Resource
 
     # Services
-    Services(limit: Int): [Service!]!
+    Services(limit: Int, showOnServicePage: Boolean): [Service!]!
+    Service(slug: String!): Service
 
     # Partners
     Partners(limit: Int): [Partner!]!
