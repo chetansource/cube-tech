@@ -62,7 +62,7 @@ const ServiceDetailPage = async ({ params }: ServiceDetailPageProps) => {
       </section>
 
       {/* Service Detail Content */}
-      <section className="w-full px-4 md:px-16 lg:px-24 pb-24">
+      <section className="w-full px-4 md:px-16 lg:px-24 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:h-[600px]">
           {/* Left - Image with Title Overlay */}
           <div className="relative h-[400px] md:h-full overflow-hidden">

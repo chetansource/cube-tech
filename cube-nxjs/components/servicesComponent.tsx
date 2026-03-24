@@ -26,7 +26,7 @@ interface ServiceSectionProps {
 }
 
 // Fallback services for development
-const defaultServices = [
+const defaultServices: Service[] = [
   {
     id: "1",
     title: "Travel Demand Estimation & Modelling",
