@@ -99,6 +99,17 @@ const startServer = async () => {
       res.send([header, ...rows].join('\n'));
     });
 
+    app.get('/admin/export/newsletter', async (req, res) => {
+      const Newsletter = require('./models/Newsletter');
+      const records = await Newsletter.find({}).sort({ subscribedAt: -1 }).lean();
+      const escCsv = (val) => { const s = String(val == null ? '' : val).replace(/"/g, '""').replace(/\n/g, ' '); return `"${s}"`; };
+      const header = 'Email,Status,Subscribed At';
+      const rows = records.map((r) => [r.email, r.status, r.subscribedAt ? new Date(r.subscribedAt).toISOString() : ''].map(escCsv).join(','));
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="newsletter-subscribers.csv"');
+      res.send([header, ...rows].join('\n'));
+    });
+
     // Body parsing - AFTER AdminJS
     app.use(json({ limit: '10mb' }));
     app.use(express.urlencoded({ extended: true, limit: '10mb' }));

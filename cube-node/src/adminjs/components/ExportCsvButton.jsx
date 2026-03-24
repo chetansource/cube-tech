@@ -10,6 +10,7 @@ const ExportCsvButton = (props) => {
     let url = null;
     if (resourceId === 'Contacts') url = '/admin/export/contacts';
     if (resourceId === 'JobApplicants') url = '/admin/export/job-applicants';
+    if (resourceId === 'Newsletter') url = '/admin/export/newsletter';
 
     if (url) {
       // Trigger CSV download via hidden iframe to avoid navigating away
