@@ -6,16 +6,17 @@ import Header from "@/components/header";
 import Hero from "@/components/hero";
 import InsightsImpact from "@/components/resources/insights-impact";
 import ResourcesPageClient from "@/components/resources/resources-page-client";
-import { getResources, getFeaturedCaseStudies, getNewsEventsResources } from "@/utils/routes/Resources";
+import { getResources, getFeaturedCaseStudies, getNewsEventsResources, getResourceBannerResources } from "@/utils/routes/Resources";
 import { getResourcesPageContent } from "@/utils/routes/ResourcesPage";
 
 const ResourcesPage = async () => {
   // Fetch all resources, featured case studies, news resources, and page content
-  const [allResources, featuredCaseStudies, newsResources, pageContent] = await Promise.all([
+  const [allResources, featuredCaseStudies, newsResources, pageContent, resourceBannerResources] = await Promise.all([
     getResources(),
     getFeaturedCaseStudies(),
     getNewsEventsResources(),
     getResourcesPageContent('resources'),
+    getResourceBannerResources(),
   ]);
 
   // Extract sections from page content with fallbacks
@@ -35,6 +36,7 @@ const ResourcesPage = async () => {
             <span className="text-white font-semibold italic pl-4 md:py-2" dangerouslySetInnerHTML={{ __html: heroSection?.heroTitleItalic || "Latest" }} />
           </div>
         }
+        featuredResources={resourceBannerResources}
       />
       <InsightsImpact
         resources={featuredCaseStudies}

@@ -21,6 +21,15 @@ const resourceResolvers = {
         if (where.showInNewsEvents !== undefined) {
           query.showInNewsEvents = where.showInNewsEvents;
         }
+        if (where.showOnServicePage !== undefined) {
+          query.showOnServicePage = where.showOnServicePage;
+        }
+        if (where.showOnResourceBanner !== undefined) {
+          query.showOnResourceBanner = where.showOnResourceBanner;
+        }
+        if (where.showInRDSection !== undefined) {
+          query.showInRDSection = where.showInRDSection;
+        }
       }
 
       const skip = (page - 1) * limit;

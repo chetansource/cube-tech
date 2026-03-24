@@ -38,6 +38,9 @@ const RESOURCE_FRAGMENT = `
     tags
     featured
     showInNewsEvents
+    showOnServicePage
+    showOnResourceBanner
+    showInRDSection
     categoryColor
     readTime
     status
@@ -72,6 +75,9 @@ export interface Resource {
   tags?: string[];
   featured?: boolean;
   showInNewsEvents?: boolean;
+  showOnServicePage?: boolean;
+  showOnResourceBanner?: boolean;
+  showInRDSection?: boolean;
   categoryColor?: string;
   readTime?: number;
   status: 'draft' | 'published';
@@ -170,6 +176,64 @@ export async function getNewsEventsResources(limit: number = 10): Promise<Resour
     return data.Resources.docs;
   } catch (error) {
     console.error('Error fetching news & events resources:', error);
+    return [];
+  }
+}
+
+/**
+ * Fetch resources marked for Resource Banner
+ */
+export async function getResourceBannerResources(limit: number = 2): Promise<Resource[]> {
+  const query = gql`
+    ${MEDIA_FRAGMENT}
+    ${RESOURCE_FRAGMENT}
+    query GetResourceBannerResources($where: ResourceWhereInput, $limit: Int) {
+      Resources(where: $where, limit: $limit) {
+        docs {
+          ...ResourceFields
+        }
+      }
+    }
+  `;
+
+  try {
+    const where = {
+      status: { equals: "published" },
+      showOnResourceBanner: true,
+    };
+    const data: ResourcesResponse = await graphQLClient.request(query, { where, limit });
+    return data.Resources.docs;
+  } catch (error) {
+    console.error('Error fetching resource banner resources:', error);
+    return [];
+  }
+}
+
+/**
+ * Fetch resources marked for Services Banner
+ */
+export async function getServicePageResources(limit: number = 2): Promise<Resource[]> {
+  const query = gql`
+    ${MEDIA_FRAGMENT}
+    ${RESOURCE_FRAGMENT}
+    query GetServicesBannerResources($where: ResourceWhereInput, $limit: Int) {
+      Resources(where: $where, limit: $limit) {
+        docs {
+          ...ResourceFields
+        }
+      }
+    }
+  `;
+
+  try {
+    const where = {
+      status: { equals: "published" },
+      showOnServicePage: true,
+    };
+    const data: ResourcesResponse = await graphQLClient.request(query, { where, limit });
+    return data.Resources.docs;
+  } catch (error) {
+    console.error('Error fetching services banner resources:', error);
     return [];
   }
 }

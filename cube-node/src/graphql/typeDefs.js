@@ -424,6 +424,9 @@ const typeDefs = gql`
     tags: [String!]
     featured: Boolean
     showInNewsEvents: Boolean
+    showOnServicePage: Boolean
+    showOnResourceBanner: Boolean
+    showInRDSection: Boolean
     categoryColor: String
     readTime: Int
     status: String!
@@ -648,6 +651,9 @@ const typeDefs = gql`
     status: StringQueryInput
     featured: Boolean
     showInNewsEvents: Boolean
+    showOnServicePage: Boolean
+    showOnResourceBanner: Boolean
+    showInRDSection: Boolean
   }
 
   # Queries

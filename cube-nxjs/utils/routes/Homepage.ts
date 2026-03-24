@@ -392,8 +392,8 @@ export async function getTestimonials(limit: number = 10): Promise<Testimonial[]
  */
 export async function getFeaturedResources(limit: number = 2): Promise<Resource[]> {
   const query = gql`
-    query GetFeaturedResources {
-      Resources {
+    query GetFeaturedResources($where: ResourceWhereInput, $limit: Int) {
+      Resources(where: $where, limit: $limit) {
         docs {
           id
           title
@@ -406,22 +406,18 @@ export async function getFeaturedResources(limit: number = 2): Promise<Resource[
           category
           tags
           date
-          featured
         }
       }
     }
   `;
 
   try {
-    const data: any = await graphQLClient.request(query);
-    const resources = (data.Resources?.docs || [])
-      .filter((r: Resource) => r.featured)
-      .sort((a: Resource, b: Resource) => {
-        const dateA = a.date ? new Date(a.date).getTime() : 0;
-        const dateB = b.date ? new Date(b.date).getTime() : 0;
-        return dateB - dateA;
-      })
-      .slice(0, limit);
+    const where = {
+      status: { equals: "published" },
+      showInRDSection: true,
+    };
+    const data: any = await graphQLClient.request(query, { where, limit });
+    const resources = data.Resources?.docs || [];
     return resources;
   } catch (error) {
     console.error("Error fetching featured resources:", error);

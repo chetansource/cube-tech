@@ -96,7 +96,7 @@ export default function Hero({
                     />
                   </div>
                   <div className="flex flex-row items-start justify-between w-full mt-2">
-                    <div className="text-[14px] md:text-[18px] font-normal text-white leading-[22px] md:leading-[28px] tracking-[1px] md:tracking-[0.75px] w-[170px] md:w-[323px] max-w-full ">
+                    <div className="text-[14px] md:text-[18px] font-normal text-white leading-[22px] md:leading-[28px] tracking-[1px] md:tracking-[0.75px] w-[170px] md:w-[323px] max-w-full line-clamp-4">
                       {resource.title}
                     </div>
                     <RightArrowIcon color={"#5FBA51"} />

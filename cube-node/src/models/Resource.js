@@ -63,6 +63,21 @@ const resourceSchema = new mongoose.Schema({
     default: false,
     index: true,
   },
+  showOnServicePage: {
+    type: Boolean,
+    default: false,
+    index: true,
+  },
+  showOnResourceBanner: {
+    type: Boolean,
+    default: false,
+    index: true,
+  },
+  showInRDSection: {
+    type: Boolean,
+    default: false,
+    index: true,
+  },
   categoryColor: {
     type: String,
     default: '#007bff',

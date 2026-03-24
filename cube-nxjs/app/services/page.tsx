@@ -9,6 +9,7 @@ import ServicesSolutions from "@/components/servcies-solutions";
 import Link from "next/link";
 import Image from "next/image";
 import { getServicesPageContent, getServices, getPopularSearches, getMapProjects } from "@/utils/routes/Services";
+import { getServicePageResources } from "@/utils/routes/Resources";
 
 // Force dynamic rendering - don't pre-render at build time
 export const revalidate = 5;
@@ -32,6 +33,9 @@ const Services = async () => {
   // Fetch projects for map
   const mapProjects = await getMapProjects();
 
+  // Fetch resources marked for services banner
+  const servicesBannerResources = await getServicePageResources();
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -46,7 +50,7 @@ const Services = async () => {
             <span className="text-white font-semibold italic pt-5 md:pt-0" dangerouslySetInnerHTML={{ __html: heroSection?.highlightedWord || "Services" }} />
           </div>
         }
-        featuredResources={heroSection?.featuredResources || []}
+        featuredResources={servicesBannerResources.length > 0 ? servicesBannerResources : (heroSection?.featuredResources || [])}
       />
       {/* services offered section */}
       <section className="w-full relative overflow-hidden">

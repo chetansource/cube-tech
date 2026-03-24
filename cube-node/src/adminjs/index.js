@@ -159,9 +159,10 @@ const createAdminJS = () => {
           properties: {
             image: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
             downloadFile: { type: 'reference', reference: 'Media', components: { edit: AdminJS.bundle('./components/MediaPicker'), show: AdminJS.bundle('./components/MediaShow'), list: AdminJS.bundle('./components/MediaListPreview') } },
+            showOnServicePage: { label: 'Show On Service Page' },
           },
-          listProperties: ['title', 'category', 'status', 'featured', 'showInNewsEvents', 'publishedAt'],
-          filterProperties: ['title', 'category', 'status', 'featured', 'showInNewsEvents'],
+          listProperties: ['title', 'category', 'status', 'featured', 'showInNewsEvents', 'showOnServicePage', 'showOnResourceBanner', 'showInRDSection', 'publishedAt'],
+          filterProperties: ['title', 'category', 'status', 'featured', 'showInNewsEvents', 'showOnServicePage', 'showOnResourceBanner', 'showInRDSection'],
           actions: {
             clone: {
               actionType: 'record',
@@ -204,6 +205,7 @@ const createAdminJS = () => {
                     author: originalResource.author,
                     tags: originalResource.tags,
                     featured: originalResource.featured,
+                    showOnServicePage: originalResource.showOnServicePage,
                     categoryColor: originalResource.categoryColor,
                     readTime: originalResource.readTime,
                     status: 'draft', // Set to draft to avoid accidental publishing
@@ -660,6 +662,15 @@ const createAdminJS = () => {
       },
     ],
     rootPath: '/admin',
+    locale: {
+      translations: {
+        properties: {
+          featured: 'Show In Resource Gallery',
+          showOnResourceBanner: 'Show On Resource Banner',
+          showInRDSection: 'Show In R&D Section',
+        },
+      },
+    },
     branding: {
       companyName: 'Cube Highways CMS',
       logo: false,
