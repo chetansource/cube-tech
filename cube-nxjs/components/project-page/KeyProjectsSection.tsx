@@ -43,7 +43,7 @@ export default function KeyProjectsSection({
   className = "",
 }: KeyProjectsSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const carouselRef = useRef<HTMLDivElement>(null);
+  const carouselRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [isInView, setIsInView] = useState(false);
 
   // Fallback project data if no projects provided
@@ -99,16 +99,78 @@ export default function KeyProjectsSection({
     };
   }, []);
   
-  // Control the animation based on viewport visibility
+  // Auto-scroll + drag-to-scroll for policy card carousels
   useEffect(() => {
-    if (!carouselRef.current) return;
+    const cleanups: (() => void)[] = [];
 
-    if (isInView) {
-      carouselRef.current.style.animationPlayState = "running";
-    } else {
-      carouselRef.current.style.animationPlayState = "paused";
-    }
-  }, [isInView]);
+    carouselRefs.current.forEach((container) => {
+      if (!container) return;
+
+      let animationId: number;
+      let isPaused = !isInView;
+      const scrollSpeed = 0.5;
+
+      const scroll = () => {
+        if (container && !isPaused) {
+          container.scrollLeft += scrollSpeed;
+          if (container.scrollLeft >= container.scrollWidth - container.clientWidth) {
+            container.scrollLeft = 0;
+          }
+        }
+        animationId = requestAnimationFrame(scroll);
+      };
+
+      // Drag to scroll
+      let isDragging = false;
+      let startX = 0;
+      let startScrollLeft = 0;
+
+      const handleMouseDown = (e: MouseEvent) => {
+        isDragging = true;
+        isPaused = true;
+        startX = e.pageX;
+        startScrollLeft = container.scrollLeft;
+        container.style.cursor = 'grabbing';
+      };
+
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const walk = (e.pageX - startX) * 1.5;
+        container.scrollLeft = startScrollLeft - walk;
+      };
+
+      const handleMouseUp = () => {
+        isDragging = false;
+        isPaused = false;
+        container.style.cursor = 'grab';
+      };
+
+      const handleMouseLeave = () => {
+        isDragging = false;
+        isPaused = false;
+        container.style.cursor = 'grab';
+      };
+
+      container.style.cursor = 'grab';
+      container.addEventListener('mousedown', handleMouseDown);
+      container.addEventListener('mousemove', handleMouseMove);
+      container.addEventListener('mouseup', handleMouseUp);
+      container.addEventListener('mouseleave', handleMouseLeave);
+
+      animationId = requestAnimationFrame(scroll);
+
+      cleanups.push(() => {
+        cancelAnimationFrame(animationId);
+        container.removeEventListener('mousedown', handleMouseDown);
+        container.removeEventListener('mousemove', handleMouseMove);
+        container.removeEventListener('mouseup', handleMouseUp);
+        container.removeEventListener('mouseleave', handleMouseLeave);
+      });
+    });
+
+    return () => cleanups.forEach((fn) => fn());
+  }, [isInView, projects]);
 
   return (
     <section ref={sectionRef} className={`w-full bg-white ${className}`}>
@@ -175,11 +237,9 @@ export default function KeyProjectsSection({
                   {policyCards.length > 0 && (
                     <div className="mt-8 overflow-hidden">
                       <div
-                        ref={policyCards.length > 3 && index === 0 ? carouselRef : null}
-                        className="flex gap-6"
-                        style={{
-                          animation: policyCards.length > 3 && isInView ? "carousel 20s linear infinite" : "none",
-                        }}
+                        ref={(el) => { carouselRefs.current[index] = el; }}
+                        className="flex gap-6 overflow-x-auto"
+                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                       >
                         {policyCards.map((card, cardIndex) => (
                           <div

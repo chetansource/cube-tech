@@ -53,9 +53,12 @@ const generalResolvers = {
       return await queryBuilder;
     },
 
-    Solutions: async (_, { limit }) => {
+    Solutions: async (_, { limit, showOnServicePage }) => {
       const query = { active: true };
-      let queryBuilder = Solution.find(query).populate('image').sort({ order: 1 });
+      if (showOnServicePage !== undefined) {
+        query.showOnServicePage = showOnServicePage;
+      }
+      let queryBuilder = Solution.find(query).populate('image').populate({ path: 'projects', populate: { path: 'mainImage' } }).sort({ order: 1 });
 
       if (limit) {
         queryBuilder = queryBuilder.limit(limit);

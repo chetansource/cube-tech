@@ -56,7 +56,6 @@ const AwardItem: React.FC<AwardItemProps> = ({ logo, name, date, description }) 
 const Awards = () => {
   const [awards, setAwards] = useState<AwardItemProps[]>(fallbackAwardData);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const fetchAwards = async () => {
@@ -142,16 +141,13 @@ const Awards = () => {
     const handleMouseUp = () => {
       isDragging = false;
       scrollContainer.style.cursor = 'grab';
-    };
-
-    const handleMouseLeaveSection = () => {
-      isDragging = false;
-      scrollContainer.style.cursor = 'grab';
       resumeAutoScroll();
     };
 
-    const handleMouseEnterSection = () => {
-      pauseAutoScroll();
+    const handleMouseLeave = () => {
+      isDragging = false;
+      scrollContainer.style.cursor = 'grab';
+      resumeAutoScroll();
     };
 
     scrollContainer.style.cursor = 'grab';
@@ -159,13 +155,7 @@ const Awards = () => {
     scrollContainer.addEventListener('mousedown', handleMouseDown);
     scrollContainer.addEventListener('mousemove', handleMouseMove);
     scrollContainer.addEventListener('mouseup', handleMouseUp);
-    scrollContainer.addEventListener('mouseleave', handleMouseUp);
-
-    const sectionEl = sectionRef.current;
-    if (sectionEl) {
-      sectionEl.addEventListener('mouseenter', handleMouseEnterSection);
-      sectionEl.addEventListener('mouseleave', handleMouseLeaveSection);
-    }
+    scrollContainer.addEventListener('mouseleave', handleMouseLeave);
 
     animationId = requestAnimationFrame(scroll);
 
@@ -175,16 +165,12 @@ const Awards = () => {
       scrollContainer.removeEventListener('mousedown', handleMouseDown);
       scrollContainer.removeEventListener('mousemove', handleMouseMove);
       scrollContainer.removeEventListener('mouseup', handleMouseUp);
-      scrollContainer.removeEventListener('mouseleave', handleMouseUp);
-      if (sectionEl) {
-        sectionEl.removeEventListener('mouseenter', handleMouseEnterSection);
-        sectionEl.removeEventListener('mouseleave', handleMouseLeaveSection);
-      }
+      scrollContainer.removeEventListener('mouseleave', handleMouseLeave);
     };
   }, [awards]);
 
   return (
-    <section ref={sectionRef} className="bg-white relative overflow-hidden pb-[300px]">
+    <section className="bg-white relative overflow-hidden pb-[300px]">
       <div className="md:py-8 md:p-12 relative">
         <div className="absolute w-[90%] md:w-[90%] h-full">
           <p className="pl-4 md:pr-[170px] font-roboto text-[90px] md:text-[181.122px] font-normal leading-[153.5px] tracking-[-2.717px] text-black/5 select-none">

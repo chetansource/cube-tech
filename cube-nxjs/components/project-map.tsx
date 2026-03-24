@@ -25,60 +25,57 @@ interface Project {
 // Determined empirically by visual analysis of highly-detailed-map.svg
 // The map uses a non-linear projection so these are hardcoded, not computed
 const CITY_COORDINATES: Record<string, { x: number; y: number }> = {
-  // Metro cities
-  'Delhi': { x: 32, y: 25 },
-  'Mumbai': { x: 19, y: 51 },
-  'Bangalore': { x: 37, y: 75 },
-  'Bengaluru': { x: 37, y: 75 },
-  'Chennai': { x: 42, y: 75 },
-  'Hyderabad': { x: 38, y: 65 },
-  'Kolkata': { x: 67, y: 43 },
-  'Pune': { x: 22, y: 56 },
-  'Ahmedabad': { x: 13, y: 44 },
-  // State capitals
-  'Lucknow': { x: 40, y: 31 },
-  'Jaipur': { x: 25, y: 30 },
-  'Chandigarh': { x: 28, y: 18 },
-  'Bhopal': { x: 30, y: 43 },
-  'Patna': { x: 52, y: 33 },
-  'Bhubaneswar': { x: 52, y: 50 },
-  'Thiruvananthapuram': { x: 30, y: 88 },
-  'Kochi': { x: 28, y: 83 },
-  'Guwahati': { x: 72, y: 25 },
-  'Dehradun': { x: 32, y: 17 },
-  'Shimla': { x: 29, y: 16 },
-  'Srinagar': { x: 25, y: 6 },
-  'Jammu': { x: 24, y: 10 },
-  'Ranchi': { x: 52, y: 40 },
-  'Raipur': { x: 42, y: 48 },
-  'Gandhinagar': { x: 13, y: 44 },
-  'Panaji': { x: 20, y: 60 },
-  'Imphal': { x: 78, y: 30 },
-  'Shillong': { x: 73, y: 26 },
-  'Aizawl': { x: 76, y: 30 },
-  'Kohima': { x: 78, y: 27 },
-  'Agartala': { x: 74, y: 30 },
-  'Itanagar': { x: 76, y: 22 },
-  'Gangtok': { x: 68, y: 24 },
-  'Dispur': { x: 73, y: 26 },
-  'Amaravati': { x: 44, y: 63 },
-  // Major tier-2 cities
-  'Noida': { x: 33, y: 26 },
-  'Gurugram': { x: 31, y: 26 },
-  'Surat': { x: 15, y: 50 },
-  'Vadodara': { x: 14, y: 47 },
-  'Nagpur': { x: 38, y: 48 },
-  'Indore': { x: 25, y: 44 },
-  'Coimbatore': { x: 33, y: 80 },
-  'Visakhapatnam': { x: 50, y: 58 },
-  'Madurai': { x: 36, y: 83 },
-  'Varanasi': { x: 46, y: 33 },
-  'Kanpur': { x: 39, y: 32 },
-  'Mysuru': { x: 34, y: 78 },
-  'Mangaluru': { x: 27, y: 76 },
-  'Jodhpur': { x: 17, y: 31 },
-  'Udaipur': { x: 18, y: 37 },
-  'Agra': { x: 34, y: 29 },
+  'Agartala': { x: 92.17, y: 55.30 },
+  'Agra': { x: 48.39, y: 41.47 },
+  'Ahmedabad': { x: 34.56, y: 52.99 },
+  'Aizawl': { x: 94.47, y: 61.05 },
+  'Amaravati': { x: 59.91, y: 74.88 },
+  'Bangalore': { x: 57.60, y: 85.25 },
+  'Bengaluru': { x: 57.60, y: 85.25 },
+  'Bhopal': { x: 50.69, y: 55.30 },
+  'Bhubaneswar': { x: 69.12, y: 66.82 },
+  'Chandigarh': { x: 46.08, y: 28.80 },
+  'Chennai': { x: 64.52, y: 92.17 },
+  'Coimbatore': { x: 59.91, y: 95.62 },
+  'Dehradun': { x: 48.39, y: 34.56 },
+  'Delhi': { x: 47.23, y: 38.02 },
+  'Dispur': { x: 87.56, y: 49.54 },
+  'Gandhinagar': { x: 33.41, y: 50.69 },
+  'Gangtok': { x: 80.64, y: 40.32 },
+  'Gurugram': { x: 47.23, y: 39.17 },
+  'Guwahati': { x: 86.40, y: 49.54 },
+  'Hyderabad': { x: 59.91, y: 69.12 },
+  'Imphal': { x: 94.47, y: 51.84 },
+  'Indore': { x: 48.39, y: 57.60 },
+  'Itanagar': { x: 89.86, y: 43.78 },
+  'Jaipur': { x: 43.78, y: 43.78 },
+  'Jammu': { x: 43.78, y: 20.74 },
+  'Jodhpur': { x: 40.32, y: 48.39 },
+  'Kanpur': { x: 54.14, y: 43.78 },
+  'Kochi': { x: 55.30, y: 94.47 },
+  'Kohima': { x: 95.62, y: 49.54 },
+  'Kolkata': { x: 71.43, y: 55.30 },
+  'Lucknow': { x: 55.30, y: 41.47 },
+  'Madurai': { x: 62.21, y: 96.77 },
+  'Mangaluru': { x: 52.99, y: 87.56 },
+  'Mumbai': { x: 41.47, y: 69.12 },
+  'Mysuru': { x: 56.45, y: 87.56 },
+  'Nagpur': { x: 57.60, y: 59.91 },
+  'Noida': { x: 48.39, y: 38.59 },
+  'Panaji': { x: 48.39, y: 78.34 },
+  'Patna': { x: 63.36, y: 46.08 },
+  'Pune': { x: 43.78, y: 73.73 },
+  'Raipur': { x: 62.21, y: 62.21 },
+  'Ranchi': { x: 66.82, y: 57.60 },
+  'Shimla': { x: 44.93, y: 29.95 },
+  'Shillong': { x: 87.56, y: 52.99 },
+  'Srinagar': { x: 41.47, y: 13.82 },
+  'Surat': { x: 36.87, y: 57.60 },
+  'Thiruvananthapuram': { x: 57.60, y: 99.08 },
+  'Udaipur': { x: 41.47, y: 51.84 },
+  'Vadodara': { x: 35.71, y: 55.30 },
+  'Varanasi': { x: 59.91, y: 48.39 },
+  'Visakhapatnam': { x: 69.12, y: 71.43 },
 };
 
 interface ProjectMapProps {
@@ -120,11 +117,8 @@ export default function ProjectMap({
     }, 300);
   }, []);
 
-  // Resolve position: prefer city lookup (always accurate), fallback to stored coords
+  // Resolve position: use stored mapPosition coordinates directly
   const getResolvedPosition = useCallback((project: Project) => {
-    if (project.mapCity && CITY_COORDINATES[project.mapCity]) {
-      return CITY_COORDINATES[project.mapCity];
-    }
     return project.mapPosition || null;
   }, []);
 
@@ -164,7 +158,7 @@ export default function ProjectMap({
         {/* Square wrapper: both image and dots share the exact same box.
             h-full = viewport height, aspect-square = width equals height.
             Positioned to the right with ml-auto + shifted with md:pr-0 md:pl-80 */}
-        <div className="relative h-full aspect-square md:ml-auto md:mr-0" style={{ marginLeft: 'auto', marginRight: '-10%' }}>
+        <div className="relative h-full aspect-square md:ml-auto md:mr-0" style={{ marginLeft: 'auto', marginRight: '0' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/highly-detailed-map.svg"
@@ -227,11 +221,11 @@ export default function ProjectMap({
       </div>
 
       {/* Header */}
-      <div className="absolute top-5 md:top-20 left-5 md:left-20 max-w-md z-10">
-        <h1 className="text-2xl md:text-[65px] font-light mb-2 text-white leading-[97.5px]">
+      <div className="absolute top-5 md:top-20 left-5 md:left-20 z-10">
+        <h1 className="text-2xl md:text-[65px] font-light mb-2 text-white leading-[97.5px] whitespace-nowrap">
           {title} <span className="italic font-semibold">{highlightedWord}</span>
         </h1>
-        <p className="text-white/60 mt-4 text-lg leading-[24px]">
+        <p className="text-white/60 mt-4 text-lg leading-[24px] max-w-md">
           {description}
         </p>
         {showCta && ctaText && ctaLink && (
@@ -244,18 +238,19 @@ export default function ProjectMap({
       </div>
 
       {/* Project List */}
-      <div className="absolute bottom-5  md:left-20 z-10">
+      <div className="absolute bottom-5 left-5 md:left-20 z-10 max-h-[40vh] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <style jsx>{`div::-webkit-scrollbar { display: none; }`}</style>
         <div className="space-y-4">
           {projects.map((project) => (
             <div
               key={project.id}
-              className="flex items-center space-x-4 md:pl-4 group"
+              className="relative flex items-center group cursor-pointer"
               onMouseEnter={() => showProject(project)}
               onMouseLeave={scheduleHide}
             >
-              {/* Vertical white bar on hover */}
+              {/* Vertical white bar on hover - positioned to the left */}
               <div
-                className={`h-1 w-8 transition-all duration-300 ${
+                className={`absolute -left-12 h-1 w-8 transition-all duration-300 ${
                   activeProject?.id === project.id
                     ? "bg-white opacity-100"
                     : "opacity-0"
@@ -266,7 +261,7 @@ export default function ProjectMap({
               <div
                 className={`text-base md:text-2xl transition-colors duration-300 ${
                   activeProject?.id === project.id
-                    ? "text-white cursor-pointer"
+                    ? "text-white"
                     : "text-white/60"
                 }`}
               >

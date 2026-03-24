@@ -318,6 +318,40 @@ export async function getServices(limit: number = 10): Promise<Service[]> {
 }
 
 /**
+ * Fetch solutions marked for service page
+ */
+export async function getServicePageSolutions(): Promise<ServiceSolution[]> {
+  const query = gql`
+    query GetServicePageSolutions {
+      Solutions(showOnServicePage: true) {
+        id
+        idString
+        title
+        description
+        order
+        projects {
+          id
+          title
+          slug
+          mainImage {
+            url
+            alt
+          }
+        }
+      }
+    }
+  `;
+
+  try {
+    const data: any = await graphQLClient.request(query);
+    return (data.Solutions || []).sort((a: ServiceSolution, b: ServiceSolution) => a.order - b.order);
+  } catch (error) {
+    console.error("Error fetching service page solutions:", error);
+    return [];
+  }
+}
+
+/**
  * Fetch popular searches
  */
 export async function getPopularSearches(limit: number = 20): Promise<PopularSearch[]> {

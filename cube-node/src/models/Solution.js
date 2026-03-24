@@ -31,6 +31,11 @@ const solutionSchema = new mongoose.Schema({
     default: true,
     index: true,
   },
+  showOnServicePage: {
+    type: Boolean,
+    default: false,
+    index: true,
+  },
 }, {
   timestamps: true,
 });

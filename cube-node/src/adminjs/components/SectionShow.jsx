@@ -8,7 +8,7 @@ const BLOCK_TYPE_FIELDS = {
   'faqSection': { label: 'FAQ Section', fields: ['faqs'] },
   'resourcesFaqSection': { label: 'Resources FAQ Section', fields: ['faqs'] },
   'heroSection': { label: 'Hero Section', fields: ['heading', 'description', 'ctaText', 'ctaLink', 'backgroundImage'] },
-  'servicesSolutionsSection': { label: 'Services Solutions Section', fields: ['heading', 'highlightedWord', 'description', 'ctaText', 'ctaLink', 'backgroundImage', 'solutions'] },
+  'servicesSolutionsSection': { label: 'Services Solutions Section', fields: ['heading', 'highlightedWord', 'description', 'ctaText', 'ctaLink', 'backgroundImage'], info: 'Solutions are managed from Site Elements → Solution (Show On Service Page checkbox).' },
   'servicesSection': { label: 'Services Section', fields: ['title', 'description', 'image'] },
   'exploreMoreSection': { label: 'Explore More Section', fields: ['exploreMoreTitle', 'exploreMoreDescription', 'exploreMoreBackgroundImage'] },
   'aboutHeroSection': { label: 'About Hero Section', fields: ['heading', 'subheading', 'backgroundImage'] },
@@ -221,7 +221,7 @@ const SectionShow = (props) => {
       );
     }
 
-    return config.fields.map((fieldName) => {
+    const fieldElements = config.fields.map((fieldName) => {
       if (ARRAY_FIELDS.includes(fieldName)) {
         return <React.Fragment key={fieldName}>{renderArrayItems(sectionIdx, fieldName)}</React.Fragment>;
       }
@@ -237,6 +237,17 @@ const SectionShow = (props) => {
       }
       return <React.Fragment key={fieldName}>{renderValue(formatLabel(fieldName), val)}</React.Fragment>;
     });
+
+    return (
+      <>
+        {fieldElements}
+        {config.info && config.fields.length > 0 && (
+          <Box style={{ background: '#e8f4fd', border: '1px solid #b3d7f2', borderRadius: '6px', padding: '12px', marginTop: '12px' }}>
+            <Text fontSize="sm">{config.info}</Text>
+          </Box>
+        )}
+      </>
+    );
   };
 
   return (

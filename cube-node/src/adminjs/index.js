@@ -141,10 +141,7 @@ const createAdminJS = () => {
             impact: { type: 'mixed' },
             policyCards: { type: 'mixed' },
             'policyCards.iconImage': { isVisible: false },
-            mapCity: {
-              type: 'string',
-              components: { edit: AdminJS.bundle('./components/CityMapPicker') },
-            },
+            mapCity: { isVisible: false },
             'mapPosition.x': { isVisible: { edit: true, show: true, list: false, filter: false } },
             'mapPosition.y': { isVisible: { edit: true, show: true, list: false, filter: false } },
           },
@@ -354,6 +351,15 @@ const createAdminJS = () => {
           actions: {
             new: { isVisible: false }, // Disable creating subscriptions from admin
             edit: { isVisible: true }, // Allow editing for status updates
+            exportCsv: {
+              actionType: 'resource',
+              icon: 'Download',
+              label: 'Export CSV',
+              component: AdminJS.bundle('./components/ExportCsvButton'),
+              handler: (request, response, context) => {
+                return { redirectUrl: context.resource.href(), record: {} };
+              },
+            },
           },
           listProperties: ['email', 'status', 'subscribedAt'],
           filterProperties: ['email', 'status', 'subscribedAt'],
@@ -610,8 +616,8 @@ const createAdminJS = () => {
               isArray: true,
             },
           },
-          listProperties: ['idString', 'title', 'order', 'active', 'updatedAt'],
-          filterProperties: ['title', 'active'],
+          listProperties: ['idString', 'title', 'order', 'active', 'showOnServicePage', 'updatedAt'],
+          filterProperties: ['title', 'active', 'showOnServicePage'],
         },
       },
       {

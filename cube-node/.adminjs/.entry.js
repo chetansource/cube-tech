@@ -19,27 +19,27 @@ import Component8 from '../src/adminjs/components/MediaPicker'
 AdminJS.UserComponents.Component8 = Component8
 import Component9 from '../src/adminjs/components/MediaShow'
 AdminJS.UserComponents.Component9 = Component9
-import Component10 from '../src/adminjs/components/CityMapPicker'
+import Component10 from '../src/adminjs/components/MediaPicker'
 AdminJS.UserComponents.Component10 = Component10
-import Component11 from '../src/adminjs/components/MediaPicker'
+import Component11 from '../src/adminjs/components/MediaShow'
 AdminJS.UserComponents.Component11 = Component11
-import Component12 from '../src/adminjs/components/MediaShow'
+import Component12 from '../src/adminjs/components/MediaListPreview'
 AdminJS.UserComponents.Component12 = Component12
-import Component13 from '../src/adminjs/components/MediaListPreview'
+import Component13 from '../src/adminjs/components/MediaPicker'
 AdminJS.UserComponents.Component13 = Component13
-import Component14 from '../src/adminjs/components/MediaPicker'
+import Component14 from '../src/adminjs/components/MediaShow'
 AdminJS.UserComponents.Component14 = Component14
-import Component15 from '../src/adminjs/components/MediaShow'
+import Component15 from '../src/adminjs/components/MediaListPreview'
 AdminJS.UserComponents.Component15 = Component15
-import Component16 from '../src/adminjs/components/MediaListPreview'
+import Component16 from '../src/adminjs/components/ExportCsvButton'
 AdminJS.UserComponents.Component16 = Component16
-import Component17 from '../src/adminjs/components/ExportCsvButton'
+import Component17 from '../src/adminjs/components/MediaPicker'
 AdminJS.UserComponents.Component17 = Component17
-import Component18 from '../src/adminjs/components/MediaPicker'
+import Component18 from '../src/adminjs/components/MediaShow'
 AdminJS.UserComponents.Component18 = Component18
-import Component19 from '../src/adminjs/components/MediaShow'
+import Component19 from '../src/adminjs/components/MediaListPreview'
 AdminJS.UserComponents.Component19 = Component19
-import Component20 from '../src/adminjs/components/MediaListPreview'
+import Component20 from '../src/adminjs/components/ExportCsvButton'
 AdminJS.UserComponents.Component20 = Component20
 import Component21 from '../src/adminjs/components/ExportCsvButton'
 AdminJS.UserComponents.Component21 = Component21

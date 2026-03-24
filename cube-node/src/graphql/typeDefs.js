@@ -510,6 +510,7 @@ const typeDefs = gql`
     projects: [Project!]
     order: Int
     active: Boolean!
+    showOnServicePage: Boolean
     createdAt: DateTime!
     updatedAt: DateTime!
   }
@@ -687,7 +688,7 @@ const typeDefs = gql`
     Awards(limit: Int): [Award!]!
 
     # Solutions
-    Solutions(limit: Int): [Solution!]!
+    Solutions(limit: Int, showOnServicePage: Boolean): [Solution!]!
 
     # Stats
     Stats(limit: Int): [Stat!]!

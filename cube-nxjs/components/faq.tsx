@@ -65,7 +65,7 @@ export default function Faq({ items, slug = "homepage" }: FaqProps = {}) {
   }
 
   return (
-    <section className="md:py-16 md:pt-24 bg-white min-h-[948px] ">
+    <section className="md:py-16 md:pt-24 bg-white">
       <div className="container mx-auto px-6 md:px-24">
         <div className=" mb-6 md:mb-12 leading-[67px] tracking-[3.75px] uppercase">
           <div className="text-[23px] md:text-[46px] font-light mb-2">

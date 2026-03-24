@@ -312,7 +312,7 @@ function ServiceSolutionItem({
             {solution.projects.map((project) => (
               <Link
                 key={project.id}
-                href={`/projects/details?slug=${project.slug}`}
+                href={`/projects/details/${project.slug}`}
                 className="flex-shrink-0 w-[280px] md:w-[347px] group cursor-pointer"
               >
                 <div className="relative h-[180px] md:h-[200px] mb-3 overflow-hidden rounded-sm">

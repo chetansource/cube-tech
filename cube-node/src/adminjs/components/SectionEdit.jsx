@@ -50,8 +50,8 @@ const BLOCK_TYPE_FIELDS = {
       { name: 'ctaText', type: 'text' },
       { name: 'ctaLink', type: 'text' },
       { name: 'backgroundImage', type: 'media' },
-      { name: 'solutions', type: 'refArray', ref: 'Solution' },
     ],
+    infoMessage: 'Solutions are managed from Site Elements → Solution. Tick "Show On Service Page" on each solution to display it here.',
   },
   'servicesSection': {
     label: 'Services Section',
@@ -998,7 +998,16 @@ const SectionEdit = (props) => {
       );
     }
 
-    return config.fields.map((fieldDef) => renderField(sectionIdx, fieldDef));
+    return (
+      <>
+        {config.fields.map((fieldDef) => renderField(sectionIdx, fieldDef))}
+        {config.infoMessage && config.fields.length > 0 && (
+          <Box style={styles.infoBox} mt="md">
+            <Text fontSize="sm">{config.infoMessage}</Text>
+          </Box>
+        )}
+      </>
+    );
   };
 
   // ── Main render ──

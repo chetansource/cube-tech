@@ -8,7 +8,7 @@ import PopularSearch from "@/components/popular-searche";
 import ServicesSolutions from "@/components/servcies-solutions";
 import Link from "next/link";
 import Image from "next/image";
-import { getServicesPageContent, getServices, getPopularSearches, getMapProjects } from "@/utils/routes/Services";
+import { getServicesPageContent, getServices, getPopularSearches, getMapProjects, getServicePageSolutions } from "@/utils/routes/Services";
 import { getServicePageResources } from "@/utils/routes/Resources";
 
 // Force dynamic rendering - don't pre-render at build time
@@ -35,6 +35,9 @@ const Services = async () => {
 
   // Fetch resources marked for services banner
   const servicesBannerResources = await getServicePageResources();
+
+  // Fetch solutions marked for service page
+  const servicePageSolutions = await getServicePageSolutions();
 
   return (
     <div className="min-h-screen">
@@ -93,7 +96,7 @@ const Services = async () => {
         ctaText={solutionsSection?.ctaText}
         ctaLink={solutionsSection?.ctaLink}
         backgroundImage={solutionsSection?.backgroundImage?.url}
-        solutions={solutionsSection?.solutions}
+        solutions={servicePageSolutions}
       />
       {/* contact banner with button */}
       <section
