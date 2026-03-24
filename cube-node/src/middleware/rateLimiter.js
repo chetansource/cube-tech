@@ -9,8 +9,13 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   skip: (req) => {
     const ip = req.ip || '';
-    // Skip rate limiting for localhost and Docker internal network requests
-    return ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(ip) || ip.startsWith('::ffff:172.') || ip.startsWith('172.');
+    // Skip rate limiting for: localhost, Docker internal network, and server-to-server requests (Next.js frontend)
+    if (['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(ip)) return true;
+    if (ip.startsWith('::ffff:172.') || ip.startsWith('172.')) return true;
+    // Skip for Next.js server-side requests (user-agent is "node" or "undici")
+    const ua = (req.headers['user-agent'] || '').toLowerCase();
+    if (ua === 'node' || ua.startsWith('undici')) return true;
+    return false;
   },
 });
 
