@@ -44,7 +44,6 @@ export default function KeyProjectsSection({
 }: KeyProjectsSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
   // Fallback project data if no projects provided
@@ -78,27 +77,6 @@ export default function KeyProjectsSection({
   ];
 
   const displayProjects = projects.length > 0 ? projects : fallbackProjects;
-
-  // Set up intersection observer to detect when section is in viewport
-  useEffect(() => {
-    const currentSection = sectionRef.current;
-
-    if (!currentSection) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        setIsInView(entry.isIntersecting);
-      },
-      { threshold: 0.1 }
-    );
-
-    observer.observe(currentSection);
-
-    return () => {
-      observer.unobserve(currentSection);
-    };
-  }, []);
 
   // Track active project based on scroll position
   useEffect(() => {
@@ -155,7 +133,7 @@ export default function KeyProjectsSection({
         </div>
 
         <div ref={scrollContainerRef} className="h-[800px] md:h-[900px] overflow-y-scroll snap-y snap-mandatory scroll-smooth hide-scrollbar" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-          {displayProjects.map((project, index) => {
+          {displayProjects.map((project) => {
             const projectTitle = project.title?.split(" - ")[0] || project.title;
             const projectLocation = project.location || "";
             const projectHighlight = project.category || project.studyType || "";
