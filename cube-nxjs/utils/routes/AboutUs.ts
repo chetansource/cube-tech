@@ -76,7 +76,6 @@ export const getAboutPageContent = async (slug: string) => {
                   alt
                   filename
                 }
-                bio
                 linkedIn
               }
             }
@@ -92,7 +91,6 @@ export const getAboutPageContent = async (slug: string) => {
                   alt
                   filename
                 }
-                bio
                 linkedIn
               }
             }

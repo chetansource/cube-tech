@@ -130,7 +130,6 @@ const typeDefs = gql`
     name: String!
     designation: String!
     image: Media
-    bio: String
     linkedIn: String
   }
 
@@ -145,7 +144,6 @@ const typeDefs = gql`
     name: String!
     designation: String!
     image: Media
-    bio: String
     linkedIn: String
   }
 

@@ -35,7 +35,6 @@ export interface LeaderCard {
   name: string;
   designation: string;
   image?: Media;
-  bio?: string;
   linkedIn?: string;
 }
 
@@ -50,7 +49,6 @@ export interface TeamMember {
   name: string;
   designation: string;
   image?: Media;
-  bio?: string;
   linkedIn?: string;
 }
 

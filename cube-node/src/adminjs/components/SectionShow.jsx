@@ -52,8 +52,8 @@ const getSubFieldNames = (fieldName) => {
     case 'socials': return ['platform', 'url'];
     case 'faqs': return ['question', 'answer'];
     case 'cards': return ['title', 'content', 'date', 'cardType', 'bgColor', 'textColor', 'order'];
-    case 'leaders': return ['name', 'designation', 'bio', 'linkedIn'];
-    case 'members': return ['name', 'designation', 'bio', 'linkedIn'];
+    case 'leaders': return ['name', 'designation', 'linkedIn'];
+    case 'members': return ['name', 'designation', 'linkedIn'];
     case 'timelineItems': return ['year', 'side', 'title', 'content', 'isIconOnly', 'iconType'];
     default: return [];
   }

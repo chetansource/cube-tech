@@ -316,14 +316,12 @@ const getSubFieldsForArray = (fieldName) => {
       { name: 'name', type: 'text' },
       { name: 'designation', type: 'text' },
       { name: 'image', type: 'media' },
-      { name: 'bio', type: 'textarea' },
       { name: 'linkedIn', type: 'text' },
     ];
     case 'members': return [
       { name: 'name', type: 'text' },
       { name: 'designation', type: 'text' },
       { name: 'image', type: 'media' },
-      { name: 'bio', type: 'textarea' },
       { name: 'linkedIn', type: 'text' },
     ];
     case 'timelineItems': return [

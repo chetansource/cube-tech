@@ -112,7 +112,6 @@ const sectionSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Media'
     },
-    bio: String,
     linkedIn: String
   }],
 
@@ -124,7 +123,6 @@ const sectionSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Media'
     },
-    bio: String,
     linkedIn: String
   }],
 

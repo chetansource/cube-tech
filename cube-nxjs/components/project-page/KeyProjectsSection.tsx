@@ -43,8 +43,9 @@ export default function KeyProjectsSection({
   className = "",
 }: KeyProjectsSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const carouselRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   // Fallback project data if no projects provided
   const fallbackProjects: Project[] = [
@@ -98,79 +99,32 @@ export default function KeyProjectsSection({
       observer.unobserve(currentSection);
     };
   }, []);
-  
-  // Auto-scroll + drag-to-scroll for policy card carousels
+
+  // Track active project based on scroll position
   useEffect(() => {
-    const cleanups: (() => void)[] = [];
+    const container = scrollContainerRef.current;
+    if (!container) return;
 
-    carouselRefs.current.forEach((container) => {
-      if (!container) return;
+    const handleScroll = () => {
+      const scrollTop = container.scrollTop;
+      const itemHeight = container.clientHeight;
+      const index = Math.round(scrollTop / itemHeight);
+      setActiveIndex(index);
+    };
 
-      let animationId: number;
-      let isPaused = !isInView;
-      const scrollSpeed = 0.5;
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
 
-      const scroll = () => {
-        if (container && !isPaused) {
-          container.scrollLeft += scrollSpeed;
-          if (container.scrollLeft >= container.scrollWidth - container.clientWidth) {
-            container.scrollLeft = 0;
-          }
-        }
-        animationId = requestAnimationFrame(scroll);
-      };
-
-      // Drag to scroll
-      let isDragging = false;
-      let startX = 0;
-      let startScrollLeft = 0;
-
-      const handleMouseDown = (e: MouseEvent) => {
-        isDragging = true;
-        isPaused = true;
-        startX = e.pageX;
-        startScrollLeft = container.scrollLeft;
-        container.style.cursor = 'grabbing';
-      };
-
-      const handleMouseMove = (e: MouseEvent) => {
-        if (!isDragging) return;
-        e.preventDefault();
-        const walk = (e.pageX - startX) * 1.5;
-        container.scrollLeft = startScrollLeft - walk;
-      };
-
-      const handleMouseUp = () => {
-        isDragging = false;
-        isPaused = false;
-        container.style.cursor = 'grab';
-      };
-
-      const handleMouseLeave = () => {
-        isDragging = false;
-        isPaused = false;
-        container.style.cursor = 'grab';
-      };
-
-      container.style.cursor = 'grab';
-      container.addEventListener('mousedown', handleMouseDown);
-      container.addEventListener('mousemove', handleMouseMove);
-      container.addEventListener('mouseup', handleMouseUp);
-      container.addEventListener('mouseleave', handleMouseLeave);
-
-      animationId = requestAnimationFrame(scroll);
-
-      cleanups.push(() => {
-        cancelAnimationFrame(animationId);
-        container.removeEventListener('mousedown', handleMouseDown);
-        container.removeEventListener('mousemove', handleMouseMove);
-        container.removeEventListener('mouseup', handleMouseUp);
-        container.removeEventListener('mouseleave', handleMouseLeave);
-      });
+  const scrollToProject = (index: number) => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    container.scrollTo({
+      top: index * container.clientHeight,
+      behavior: "smooth",
     });
+  };
 
-    return () => cleanups.forEach((fn) => fn());
-  }, [isInView, projects]);
 
   return (
     <section ref={sectionRef} className={`w-full bg-white ${className}`}>
@@ -182,22 +136,39 @@ export default function KeyProjectsSection({
         </h2>
       </div>
 
-      {/* Fixed Height Scroll Container - One project visible at a time */}
-      <div className="h-[800px] md:h-[900px] overflow-y-scroll snap-y snap-mandatory scroll-smooth hide-scrollbar" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-        {displayProjects.map((project, index) => {
-          const projectTitle = project.title?.split(" - ")[0] || project.title;
-          const projectLocation = project.location || "";
-          const projectHighlight = project.category || project.studyType || "";
-          const projectDescription = project.shortDescription || project.description || "";
-          const projectImage = project.mainImage?.url || "/services-section-banner.webp";
-          const policyCards = project.policyCards || [];
+      {/* Fixed Height Scroll Container with indicator */}
+      <div className="relative">
+        {/* Right side indicator bars - one per project */}
+        <div className="hidden md:flex flex-col gap-3 absolute right-6 top-1/2 -translate-y-1/2 z-10">
+          {displayProjects.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => scrollToProject(i)}
+              className={`rounded-sm cursor-pointer transition-all duration-500 ease-in-out ${
+                activeIndex === i
+                  ? "w-[6px] h-[100px] bg-accent"
+                  : "w-[4px] h-[80px] bg-gray-300 hover:bg-accent/50 hover:h-[90px]"
+              }`}
+              aria-label={`Go to project ${i + 1}`}
+            />
+          ))}
+        </div>
 
-          return (
-            <div
-              key={project.id}
-              className="h-[800px] md:h-[900px] w-full snap-start snap-always flex-shrink-0"
-            >
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-15 h-full">
+        <div ref={scrollContainerRef} className="h-[800px] md:h-[900px] overflow-y-scroll snap-y snap-mandatory scroll-smooth hide-scrollbar" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+          {displayProjects.map((project, index) => {
+            const projectTitle = project.title?.split(" - ")[0] || project.title;
+            const projectLocation = project.location || "";
+            const projectHighlight = project.category || project.studyType || "";
+            const projectDescription = project.shortDescription || project.description || "";
+            const projectImage = project.mainImage?.url || "/services-section-banner.webp";
+            const policyCards = project.policyCards || [];
+
+            return (
+              <div
+                key={project.id}
+                className="h-[800px] md:h-[900px] w-full snap-start snap-always flex-shrink-0"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-15 h-full">
                 {/* Left Column - Image */}
                 <div className="relative h-[400px] md:h-[702px] overflow-hidden">
                   <Image
@@ -210,7 +181,7 @@ export default function KeyProjectsSection({
                 </div>
 
                 {/* Right Column - Project Details */}
-                <div className="flex flex-col p-4 md:p-0">
+                <div className="flex flex-col p-4 md:p-0 md:pr-12">
                   {/* Project Title and Description */}
                   <div className="flex-shrink-0 w-full md:w-[650px] max-w-full pb-25 md:pb-0">
                     <h3 className="text-xl md:text-2xl md:text-[40px] font-light leading-[26px] md:leading-[40px] tracking-[3.75px] pb-11">
@@ -233,22 +204,20 @@ export default function KeyProjectsSection({
                     </Link>
                   </div>
 
-                  {/* Policy Cards */}
+                  {/* Policy Cards - CSS infinite carousel */}
                   {policyCards.length > 0 && (
-                    <div className="mt-8 overflow-hidden">
+                    <div className="mt-8 overflow-hidden group">
                       <div
-                        ref={(el) => { carouselRefs.current[index] = el; }}
-                        className="flex gap-6 overflow-x-auto"
-                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                        className="flex gap-6 w-max animate-[scrollCards_20s_linear_infinite] group-hover:[animation-play-state:paused]"
                       >
-                        {policyCards.map((card, cardIndex) => (
+                        {[...policyCards, ...policyCards].map((card, cardIndex) => (
                           <div
                             key={cardIndex}
                             className="w-[200px] md:w-[280px] flex-shrink-0 bg-white pb-6 border-b border-gray-200"
                           >
                             {/* Icon */}
                             <div className="text-accent mb-4">
-                                <div className="w-10 h-10 rounded-full border-2 border-accent flex items-center justify-center">
+                              <div className="w-10 h-10 rounded-full border-2 border-accent flex items-center justify-center">
                                 <CheckCircle className="w-5 h-5 text-accent" />
                               </div>
                             </div>
@@ -266,7 +235,6 @@ export default function KeyProjectsSection({
                             ) : (
                               <div className="h-16 md:h-20"></div>
                             )}
-
                           </div>
                         ))}
                       </div>
@@ -276,7 +244,8 @@ export default function KeyProjectsSection({
               </div>
             </div>
           );
-        })}
+          })}
+        </div>
       </div>
     </section>
   );
