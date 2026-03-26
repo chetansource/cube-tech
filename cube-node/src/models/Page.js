@@ -59,7 +59,8 @@ const sectionSchema = new mongoose.Schema({
       'projectMapSection',
       'projectsHeroSection',
       'resourcesFaqSection',
-      'teamSection'
+      'teamSection',
+      'richTextSection'
     ]
   },
   // FAQ Section fields

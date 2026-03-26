@@ -141,6 +141,8 @@ const pageResolvers = {
           return 'ResourcesFaqSection';
         case 'teamSection':
           return 'TeamSection';
+        case 'richTextSection':
+          return 'RichTextSection';
         default:
           return 'GenericSection';
       }

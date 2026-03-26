@@ -274,6 +274,13 @@ const BLOCK_TYPE_FIELDS = {
     fields: [],
     infoMessage: 'Solutions data comes from the Solutions collection. Go to Site Elements → Solution to add/edit.',
   },
+  'richTextSection': {
+    label: 'Rich Text / Legal Content',
+    fields: [
+      { name: 'title', type: 'text' },
+      { name: 'content', type: 'textarea' },
+    ],
+  },
 };
 
 // Block type dropdown options

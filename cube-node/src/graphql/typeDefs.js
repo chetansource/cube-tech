@@ -288,7 +288,13 @@ const typeDefs = gql`
     backgroundImage: Media
   }
 
-  union Section = FaqSection | ContactInfo | CareerTitle | JobListSection | HeroSection | ExploreCardsSection | GenericSection | AboutHeroSection | LeadershipSection | TimelineSection | CorporateResponsibilitySection | StatsSection | TestimonialsSection | ResourcesHeroSection | InsightsImpactSection | ResourceGallerySection | NewsEventsSection | ExploreMoreSection | ServicesHeroSection | ServicesOfferedSection | ServicesSolutionsSection | ContactBannerSection | ProjectMapSection | ProjectsHeroSection | ResourcesFaqSection | TeamSection
+  type RichTextSection {
+    blockType: String!
+    title: String
+    content: String
+  }
+
+  union Section = FaqSection | ContactInfo | CareerTitle | JobListSection | HeroSection | ExploreCardsSection | GenericSection | AboutHeroSection | LeadershipSection | TimelineSection | CorporateResponsibilitySection | StatsSection | TestimonialsSection | ResourcesHeroSection | InsightsImpactSection | ResourceGallerySection | NewsEventsSection | ExploreMoreSection | ServicesHeroSection | ServicesOfferedSection | ServicesSolutionsSection | ContactBannerSection | ProjectMapSection | ProjectsHeroSection | ResourcesFaqSection | TeamSection | RichTextSection
 
   # Page Type
   type Page {
