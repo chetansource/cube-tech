@@ -674,6 +674,12 @@ const createAdminJS = () => {
     rootPath: '/admin',
     locale: {
       translations: {
+        labels: {
+          loginWelcome: 'Welcome to Cube Highways',
+        },
+        messages: {
+          loginWelcome: 'India\'s largest portfolio of toll roads. Manage highway operations, toll management, traffic advisory, road safety, and infrastructure projects — all from one place.',
+        },
         properties: {
           featured: 'Show In Resource Gallery',
           showOnResourceBanner: 'Show On Resource Banner',
