@@ -134,7 +134,7 @@ export default function InsightsImpact({ resources, pageContent }: InsightsImpac
               backgroundImage: `url('${pageContent?.insightsBackgroundImage?.url || "/resource-page-hero-section.png"}')`,
             }}
           >
-            <div className="absolute bottom-15 right-[-1] z-20 pointer-events-none">
+            <div className="absolute bottom-[-1px] right-[-1px] z-20 pointer-events-none">
               <PolygonIcon />
             </div>
 
@@ -160,66 +160,71 @@ export default function InsightsImpact({ resources, pageContent }: InsightsImpac
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
-            {/* Sliding Wrapper */}
+            {/* Sliding wrapper — one full-height slide per page */}
             <div
               className="transition-transform duration-700 ease-in-out"
-              style={{
-                transform: `translateY(-${slides.length > 0 ? activeIndex * (100 / slides.length) : 0}%)`,
-              }}
+              style={{ transform: `translateY(-${activeIndex * 773}px)` }}
             >
-              {caseStudies.map((item, index) => (
+              {slides.map((slide, slideIdx) => (
                 <div
-                  key={index}
-                  className="h-[386.5px] flex flex-col justify-center px-4 md:px-0 overflow-hidden"
+                  key={slideIdx}
+                  className="h-[773px] flex flex-col divide-y divide-gray-100"
                 >
-                  <h3 className="text-7xl font-thin text-gray-200 mb-3">
-                    {item.id}
-                  </h3>
+                  {slide.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex-1 min-h-0 flex flex-col justify-center px-4 md:px-0 overflow-hidden py-6"
+                    >
+                      <h3 className="text-7xl font-thin text-gray-200 mb-3">
+                        {item.id}
+                      </h3>
 
-                  <p className="md:w-[60%] text-lg md:leading-[24px] mb-3 line-clamp-2">
-                    {item.title}
-                  </p>
+                      <p className="md:w-[60%] text-lg md:leading-[24px] mb-3 line-clamp-2">
+                        {item.title}
+                      </p>
 
-                  <p className="md:w-[60%] text-base text-[#4d4d4d] mb-4 line-clamp-3">
-                    {item.description}
-                  </p>
+                      <p className="md:w-[60%] text-base text-[#4d4d4d] mb-4 line-clamp-3">
+                        {item.description}
+                      </p>
 
-                  {/* CTA */}
-                  <div className="flex items-center justify-between mt-3">
-                    {item.downloadFile?.url ? (
-                      <a
-                        href={item.downloadFile.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        download
-                        className="text-[#808080] text-base flex items-center gap-3 hover:text-accent transition-colors cursor-pointer"
-                      >
-                        DOWNLOAD <DownTailedArrow />
-                      </a>
-                    ) : (
-                      <span className="text-[#808080] text-base flex items-center gap-3 cursor-pointer">
-                        DOWNLOAD <DownTailedArrow />
-                      </span>
-                    )}
+                      {/* CTA */}
+                      <div className="flex items-center justify-between mt-3">
+                        {item.downloadFile?.url ? (
+                          <a
+                            href={item.downloadFile.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            download
+                            className="text-[#808080] text-base flex items-center gap-3 hover:text-accent transition-colors cursor-pointer"
+                          >
+                            DOWNLOAD <DownTailedArrow />
+                          </a>
+                        ) : (
+                          <span className="text-[#808080] text-base flex items-center gap-3 cursor-pointer">
+                            DOWNLOAD <DownTailedArrow />
+                          </span>
+                        )}
 
-                    {item.slug ? (
-                      <Link
-                        href={`/resources/details/${item.slug}`}
-                        className="text-[#808080] text-base flex items-center gap-3 hover:text-accent transition-colors cursor-pointer"
-                      >
-                        /CASESTUDY <RightArrowIcon color="#5FBA51" />
-                      </Link>
-                    ) : (
-                      <span className="text-[#808080] text-base flex items-center gap-3">
-                        /CASESTUDY <RightArrowIcon color="#5FBA51" />
-                      </span>
-                    )}
-                  </div>
+                        {item.slug ? (
+                          <Link
+                            href={`/resources/details/${item.slug}`}
+                            className="text-[#808080] text-base flex items-center gap-3 hover:text-accent transition-colors cursor-pointer"
+                          >
+                            /CASESTUDY <RightArrowIcon color="#5FBA51" />
+                          </Link>
+                        ) : (
+                          <span className="text-[#808080] text-base flex items-center gap-3">
+                            /CASESTUDY <RightArrowIcon color="#5FBA51" />
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ))}
             </div>
 
-            {/* Vertical Sticks (Option A) */}
+            {/* Vertical Sticks indicator */}
             <div className="absolute top-0 right-[-15] h-full flex flex-col justify-center gap-6 pr-4">
               {slides.map((_, idx) => (
                 <div
