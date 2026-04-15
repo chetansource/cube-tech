@@ -3,14 +3,12 @@
 import React, { useState } from "react";
 import CaseStudiesGrid from "./case-study-grid";
 import { Resource } from "@/utils/routes/Resources";
-import { ResourceGallerySection } from "@/utils/routes/ResourcesPage";
 
 interface ResourcesPageClientProps {
   allResources: Resource[];
-  gallerySection?: ResourceGallerySection;
 }
 
-const ResourcesPageClient: React.FC<ResourcesPageClientProps> = ({ allResources, gallerySection }) => {
+const ResourcesPageClient: React.FC<ResourcesPageClientProps> = ({ allResources }) => {
   const [activeCategory] = useState<string | null>(null);
 
   // Category filtering is currently disabled (see commented code below)

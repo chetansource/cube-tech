@@ -22,7 +22,6 @@ const ResourcesPage = async () => {
   // Extract sections from page content with fallbacks
   const heroSection = pageContent.heroSection;
   const insightsSection = pageContent.insightsSection;
-  const gallerySection = pageContent.gallerySection;
   const resourcesFaqSection = pageContent.faqSection;
 
   return (
@@ -46,10 +45,7 @@ const ResourcesPage = async () => {
         <ResourcesSection resources={newsResources} />
 
         {/* Client component for filtering and dynamic sections */}
-        <ResourcesPageClient
-          allResources={allResources}
-          gallerySection={gallerySection}
-        />
+        <ResourcesPageClient allResources={allResources} />
 
         <Awards />
         <Faq items={resourcesFaqSection?.faqs} />

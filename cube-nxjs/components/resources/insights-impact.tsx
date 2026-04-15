@@ -125,7 +125,7 @@ export default function InsightsImpact({ resources, pageContent }: InsightsImpac
       </section>
 
       {/* Insights + Carousel */}
-      <section className="md:px-15 py-16 max-w-8xl mx-auto md:h-[773px] overflow-hidden">
+      <section className="md:px-15 max-w-8xl mx-auto md:h-[773px] overflow-hidden">
         <div className="grid md:grid-cols-2 gap-16">
           {/* Left column image */}
           <div
@@ -164,23 +164,23 @@ export default function InsightsImpact({ resources, pageContent }: InsightsImpac
             <div
               className="transition-transform duration-700 ease-in-out"
               style={{
-                transform: `translateY(-${activeIndex * 50}%)`,
+                transform: `translateY(-${slides.length > 0 ? activeIndex * (100 / slides.length) : 0}%)`,
               }}
             >
               {caseStudies.map((item, index) => (
                 <div
                   key={index}
-                  className="h-[50%] pb-12 flex flex-col justify-center px-4 md:px-0"
+                  className="h-[386.5px] flex flex-col justify-center px-4 md:px-0 overflow-hidden"
                 >
-                  <h3 className="text-8xl font-thin text-gray-100 mb-4">
+                  <h3 className="text-7xl font-thin text-gray-200 mb-3">
                     {item.id}
                   </h3>
 
-                  <p className="md:w-[60%] text-lg md:leading-[27px] mb-4">
+                  <p className="md:w-[60%] text-lg md:leading-[24px] mb-3 line-clamp-2">
                     {item.title}
                   </p>
 
-                  <p className="md:w-[60%] text-base text-[#4d4d4d] mb-6">
+                  <p className="md:w-[60%] text-base text-[#4d4d4d] mb-4 line-clamp-3">
                     {item.description}
                   </p>
 
