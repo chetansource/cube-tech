@@ -38,7 +38,6 @@ const Navbar = () => {
 
       <div className="hidden md:flex flex-wrap py-8">
         {[
-          "HOME",
           "SERVICES",
           "PROJECTS",
           "ABOUT US",
@@ -46,10 +45,7 @@ const Navbar = () => {
           "CAREERS",
           "CONTACT US",
         ].map((item) => {
-          const path =
-            item.toLowerCase() === "home"
-              ? "/"
-              : `/${item.toLowerCase().replace(/\s+/g, "-")}`;
+          const path = `/${item.toLowerCase().replace(/\s+/g, "-")}`;
           const label = item === "RESOURCES" ? "KNOWLEDGE CENTER" : item;
 
           const isActive = pathname === path;

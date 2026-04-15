@@ -254,7 +254,7 @@ const CaseStudyGrid: React.FC<CaseStudyGridProps> = ({ resources, activeCategory
                     <RightArrowIcon color={layout.textWhite ? '#FFFFFF' : '#5FBA51'} />
                   </div>
 
-                  <h3 className={`text-lg font-semibold md:leading-[22px] md:tracking-[0.75px] mb-2 ${layout.textWhite ? 'text-white' : 'text-black'} ${hasLink ? 'group-hover:text-accent transition-colors' : ''}`}>
+                  <h3 className={`text-lg font-semibold md:leading-[22px] md:tracking-[0.75px] mb-2 ${layout.textWhite ? 'text-white' : 'text-black'} ${hasLink ? (layout.textWhite ? 'group-hover:text-[#1B5E20] transition-colors' : 'group-hover:text-accent transition-colors') : ''}`}>
                     {resource.title}
                   </h3>
 

@@ -38,20 +38,22 @@ const ResourcesPage = async () => {
         }
         featuredResources={resourceBannerResources}
       />
-      <InsightsImpact
-        resources={featuredCaseStudies}
-        pageContent={insightsSection}
-      />
-      <ResourcesSection resources={newsResources} />
+      <div className="flex flex-col gap-[60px]">
+        <InsightsImpact
+          resources={featuredCaseStudies}
+          pageContent={insightsSection}
+        />
+        <ResourcesSection resources={newsResources} />
 
-      {/* Client component for filtering and dynamic sections */}
-      <ResourcesPageClient
-        allResources={allResources}
-        gallerySection={gallerySection}
-      />
+        {/* Client component for filtering and dynamic sections */}
+        <ResourcesPageClient
+          allResources={allResources}
+          gallerySection={gallerySection}
+        />
 
-      <Awards />
-      <Faq items={resourcesFaqSection?.faqs} />
+        <Awards />
+        <Faq items={resourcesFaqSection?.faqs} />
+      </div>
     </div>
   );
 };

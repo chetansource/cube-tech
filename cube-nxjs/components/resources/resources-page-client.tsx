@@ -25,12 +25,16 @@ const ResourcesPageClient: React.FC<ResourcesPageClientProps> = ({ allResources,
   return (
     <>
       {/* Resource Gallery start */}
-      <div
-        className="relative h-[300px] md:h-[500px] w-full bg-no-repeat md:pb-[53px] bg-[20px_center] md:bg-[53px_center] bg-[length:70%] md:bg-[length:60%]"
-        style={{
-          backgroundImage: `url('${gallerySection?.galleryBackgroundImage?.url || "/Resource Gallery.webp"}')`,
-        }}
-      >
+      <div className="relative w-full overflow-hidden pl-5 md:pl-[53px]">
+        <h2
+          className="font-normal select-none text-[#EDEDED] text-[90px] md:text-[220px]"
+          style={{
+            lineHeight: "0.847",
+            letterSpacing: "-2.72px",
+          }}
+        >
+          Resource<br />Gallery
+        </h2>
         {/* <div className="absolute bottom-0 right-0 p-4 text-[#C3C3C3] text-xs md:text-xl leading-[10px] mr-8">
           <ul className="flex space-x-4 md:space-x-12">
             {(gallerySection?.showNewsLink !== false) && (

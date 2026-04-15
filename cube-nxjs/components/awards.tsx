@@ -170,7 +170,7 @@ const Awards = () => {
   }, [awards]);
 
   return (
-    <section className="bg-white relative overflow-hidden pb-[300px]">
+    <section className="bg-white relative overflow-hidden pb-[200px]">
       <div className="md:py-8 md:p-12 relative">
         <div className="absolute w-[90%] md:w-[90%] h-full">
           <p className="pl-4 md:pr-[170px] font-roboto text-[90px] md:text-[181.122px] font-normal leading-[153.5px] tracking-[-2.717px] text-black/5 select-none">

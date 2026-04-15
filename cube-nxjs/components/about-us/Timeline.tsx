@@ -95,13 +95,14 @@ export default function Timeline({
             const contentBlock = (
               <div className="relative min-h-[260px]">
                 {item.image?.url && (
-                  <div className="w-[80%] h-[160px] md:w-[90%] md:h-[180px] relative mb-3">
+                  <div className="w-[80%] md:w-[90%] relative mb-3">
                     <Image
                       src={item.image.url}
                       alt={item.image.alt || item.title || "Timeline image"}
-                      fill
+                      width={400}
+                      height={200}
                       sizes="(max-width: 768px) 80vw, 50vw"
-                      className="rounded-lg object-cover"
+                      className="rounded-lg w-full h-auto object-contain"
                     />
                   </div>
                 )}
@@ -139,7 +140,7 @@ export default function Timeline({
 
                 {/* Center node */}
                 <div className="absolute left-1/2 transform -translate-x-1/2 z-10 pointer-events-none">
-                  <div className="w-14 h-14 rounded-full bg-accent text-white flex items-center justify-center font-medium shadow-md">
+                  <div className="min-w-14 h-14 px-2 rounded-full bg-accent text-white flex items-center justify-center font-medium shadow-md text-xs md:text-sm whitespace-nowrap">
                     {item.year}
                   </div>
                 </div>

@@ -258,7 +258,7 @@ export default function ResourcesSection({ resources = [], exploreMoreSection }:
     : fallbackResources;
 
   return (
-    <section className="w-full  md:mb-34">
+    <section className="w-full">
       <div className="grid grid-cols-2 md:grid-cols-3">
         {/* Left panel with background image and heading */}
         <LeftPanel

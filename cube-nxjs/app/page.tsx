@@ -75,46 +75,48 @@ export default async function Home() {
         ctaText={homepageData.hero?.ctaText || "Explore Services"}
         ctaLink={homepageData.hero?.ctaLink || "services"}
       />
-      <Partners partners={homepageData.partners} />
-      <Solutions
-        solutions={homepageData.solutions}
-        sectionConfig={homepageData.solutionsSection ? {
-          backgroundImage: homepageData.solutionsSection.backgroundImage?.url,
-          heading: homepageData.solutionsSection.heading,
-          highlightedWord: homepageData.solutionsSection.highlightedWord,
-          ctaText: homepageData.solutionsSection.ctaText,
-          ctaLink: homepageData.solutionsSection.ctaLink,
-        } : undefined}
-      />
-      <ServiceSection
-        services={homepageData.services}
-        sectionConfig={homepageData.servicesSection ? {
-          bannerImage: homepageData.servicesSection.image?.url,
-          heading: homepageData.servicesSection.title?.split(' ').slice(0, -1).join(' '),
-          highlightedWord: homepageData.servicesSection.title?.split(' ').pop(),
-          description: homepageData.servicesSection.description,
-        } : undefined}
-      />
-      <Projects projects={homepageData.projects} />
-      <Stats stats={homepageData.stats} />
-      <section id="rnd">
-        <ResourceDevelopment
-          resources={homepageData.featuredResources}
-          sectionConfig={homepageData.rdSection ? {
-            backgroundImage: homepageData.rdSection.exploreMoreBackgroundImage?.url,
-            heading: homepageData.rdSection.exploreMoreTitle?.split(' ').slice(0, -1).join(' '),
-            highlightedWord: homepageData.rdSection.exploreMoreTitle?.split(' ').pop(),
-            buttonText: homepageData.rdSection.exploreMoreDescription,
-            buttonLink: "/resources",
+      <div className="flex flex-col gap-[60px]">
+        <Partners partners={homepageData.partners} />
+        <Solutions
+          solutions={homepageData.solutions}
+          sectionConfig={homepageData.solutionsSection ? {
+            backgroundImage: homepageData.solutionsSection.backgroundImage?.url,
+            heading: homepageData.solutionsSection.heading,
+            highlightedWord: homepageData.solutionsSection.highlightedWord,
+            ctaText: homepageData.solutionsSection.ctaText,
+            ctaLink: homepageData.solutionsSection.ctaLink,
           } : undefined}
         />
-      </section>
-      <Testimonial testimonials={homepageData.testimonials} />
-      <Awards />
-      <ResourcesSection />
-      <section id="faq">
-        <Faq />
-      </section>
+        <ServiceSection
+          services={homepageData.services}
+          sectionConfig={homepageData.servicesSection ? {
+            bannerImage: homepageData.servicesSection.image?.url,
+            heading: homepageData.servicesSection.title?.split(' ').slice(0, -1).join(' '),
+            highlightedWord: homepageData.servicesSection.title?.split(' ').pop(),
+            description: homepageData.servicesSection.description,
+          } : undefined}
+        />
+        <Projects projects={homepageData.projects} />
+        <Stats stats={homepageData.stats} />
+        <section id="rnd">
+          <ResourceDevelopment
+            resources={homepageData.featuredResources}
+            sectionConfig={homepageData.rdSection ? {
+              backgroundImage: homepageData.rdSection.exploreMoreBackgroundImage?.url,
+              heading: homepageData.rdSection.exploreMoreTitle?.split(' ').slice(0, -1).join(' '),
+              highlightedWord: homepageData.rdSection.exploreMoreTitle?.split(' ').pop(),
+              buttonText: homepageData.rdSection.exploreMoreDescription,
+              buttonLink: "/resources",
+            } : undefined}
+          />
+        </section>
+        <Testimonial testimonials={homepageData.testimonials} />
+        <Awards />
+        <ResourcesSection />
+        <section id="faq">
+          <Faq />
+        </section>
+      </div>
     </div>
   );
 }
